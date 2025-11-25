@@ -1,0 +1,243 @@
+
+Let's create a 2 dimensional (2d) turn-based space game called "Wade Space"!  The game should written in Python and the code should be modular and easy to read and maintain.  The main portion of the's game's code should be stored in a sub directory called "src".  The description of the game's mechanics, organized by the game's objects or related rules using labels in all capital letters, is described as follows:
+
+THE UNIVERSE:
+* The game world is a universe that contains the following objects:  stars, planets orbiting stars, black holes, pulsars, worm holes, starbases, asteroid fields, and ships
+* The basic unit of distance for the universe is an AU
+* The size of the universe is 10000 by 10000 AU
+* Objects in the universe should be randomly placed
+* There should be 1000 stars in the universe
+* There should be 9999 planets orbiting stars in the universe
+* Each star can have between 0 and 15 planets orbiting it
+* There should be 100 black holes in the universe
+* There should be 100 pulsars in the universe
+* There should be 20 worm holes in the universe
+* There should be 200 starbases in the universe
+* There should be 1000 asteroid fields in the universe
+* Each object in the universe should have a unique identifier that consists of two letters followed by a randomly generated numeric identifier that is at most 4 digits long.  The first two letters of the object's identifier should logically indicate what type of object it is.  For example, "st" for a star, "pl" for a planet, "bh" for a black hole, "pu" for a pulsar, "wh" for a worm hole, "sb" for a starbase, "af" for an asteroid field, and "s" for a ship
+* Worm holes are generated in pairs with each worm hole connected to the other in the pair logically
+
+THE SHIP:
+* The player controls a ship that travels through a fictional universe that is randomly generated each time the game starts that contain the above objects
+* The onboard systems of each ship should be the same as the ones available from Star Trek:
+	1) shields for defense
+	2) phasers and photon torpedos for weapons
+	3) sensors for detecting objects in the region of the universe that the player's ship is in
+	4) impluse drive for sub light travel
+	5) warp drive for faster than light travel
+	6) warp core for powering the onboard systems listed in the above
+* The ship's vital statistics are:
+	1) ship damage (shown on a scale between 0 and 100 percent)
+	2) energy (shown on a scale as 0-100 percent)
+	3) shields (shown on a scale between 0 and 100 percent)
+	4) operational status of phasers and photon torpedos as a binary indication
+	5) the current warp speed and heading of the ship
+	6) the amount of charge in the phasers on a scale of 1 to 100 percent
+	7) the number of photon torpedos remaining
+	8) warp core temperature (shown on a scale between 0 and 100 percent of max)
+	9) the number of crew remaining out of 1000 (the player starts with 1000 when the game begins)
+	10) the number of dollars the player has onboard
+* The enemy players controls a similar type of ship as the player with the same onboard systems
+* Enemy ships behave the same as the player's ship
+* The player's ship should look like the ship from Star Trek on the map
+* Enemy ships should look like Klingon ships on the map
+* Each ship is powered by energy carried onboard the ship.  Energy is expressed as percentage between 0 and 100 percent
+* Each ship starts the game with 100 percent for energy, shields, and phasers
+* Each ship starts with 0 percent damage
+* A ship that is not moving can repair up to 5 percent of its total damage each turn if the ship has 100 percent of its crew onboard.  The amount of damage repaired percentage-wise by the crew each turn is porportional to the number of crew remaining aboard the ship out of the maximum that the ship can hold (up to the maximum 5 percent damage repairable each turn).  If the ship only has 50 percent of its crew onboard, only 2.5 percent of the ship's damage will be repaired each turn.
+* Ships that are moving cannot auto repair
+* The ship becomes disabled if there are no more crew aboard
+* The game is over when the player's ship is either destroyed or disabled
+* Shields consume 2 percent of the ship's energy each turn when it is active
+* Sensors do not consume any energy to use
+* Sensor range is 50 AU max
+* Each ship, the player and enemies, needs to have a unique numeric identifer assigned to it and shown on the map
+
+SHIP COMMANDS:
+* The player controls the ship through the command prompt
+* The commands issues by the player should be processed by an AI for natural language understanding
+* Commands that the player can issue to the ship is expressed in natural English syntax familiar to English speakers.  For example:  warp 8 means to set the warp drive to move the ship 8 AU each turn
+* Commands expressed as the command itself and description of the command in parenthesis that the player can issue that are connected to the ship's functions are:
+	1) warp (set warp speed)
+	2) imp (activate impluse drive on or off)
+	3) head (set the heading of the ship)
+	4) scan (if issued without an object identifer, use sensors to list all of the objects within 20 AU of the ship and each object's statistics.  If issued with a specified object identifier, use sensors to return data about the specified object)
+	5) shi (sets the ship's shields up or down)
+	6) lock (allows a ship to lock phasers on a specific ship or starbase identifier)
+	7) fire (on locked target)
+	8) tor (fire a torpedo towards a ship identified by its unique numeric identifier)
+	9) sta (show status of the ship)
+	10) skip (skips current turn)
+	11) tell (allows the player to talk to the object ID in natural language)
+	12) nav (enables the player to auto-navigate the ship to the specified object identifier.  You will issue the correct warp and impulse commands to get the player's ship to the vicinity of the specified object.  Once the player's ship is within 2 AU of the specified object, issue commands to stop the player's ship.  If the object is more than)
+	13) stop (allows the player to cancel auto-navigation mode and stop the ship where it is)
+	14) ask (enables the player to ask questions about the game using natural language syntax.  For example, if the player asks "which is the nearest star?" the game's AI should return the star that is the closest to the player's ship.)
+	15) targets (show the first 25 enemy ships closest to the player's ship sorted by distance in ascending order)
+	16) debug (this command takes a single argument.  If the argument is "on", debug mode is on and what enemy ships are currently thinking and doing should be displayed in the Messages area each turn.  If the argument is "off", debug mode is then turned off and what the enemy ships are thinking and doing will no longer be shown in the Messages area.  When debug is on, only show the thinking and activities of the 5 enemy ships closest to the player's ship)
+* Hitting the up arrow on the keyboard should show the last command that the player issued and allow the player to execute the command again
+* The player can query the status of each object on the map if the player's ship's onboard sensors are operational using the "scan" command
+* If the enemy ship is destroyed, the player's ship should exit auto-navigate mode
+* If the player issues a warp, imp, or head command while auto-navigate mode is enabled, auto-navigate should be cancelled and the ship should comply with the new command
+* Heading is expressed as a number between 0 and 359 with 0 for northbound, 90 for eastbound, 180 for southbound, and 270 for westbound.  Headings inbetween the 4 cardinal points should be honored
+* Once the player locks onto an enemy ship using the "lock" command, the "fire" and "tor" commands can be issued against the locked target without any further command arguments
+
+THE SHIP'S WEAPONS:
+* Each ship also starts with 50 photon torpedos
+* Ships should not be able to fire phases once the amount of energy reaches zero percent
+* Ships should not be able to fire photo torpedos once the amount of energy reaches zero perent or if the number of torpedos remaining reaches zero
+* Each torpedo does 10 percent damage to a ship when hit
+* Torpedos have a 1 percent chance of hitting the warp core if the torpedo does hit the target ship
+* Torpedos have a 25 percent chance of missing the target ship
+* When a torpedo is fired, a small dot should be drawn in the game's map UI to represent the torpedo
+* Torpedos can damage both ships and starbases
+* When a torpedo is fired at a selected target, the torpedo should travel in a straight line at a rate of 10 AU per turn towards the target
+* When a torpedo hits a ship, a small blue circle about the same size as the target hit should be shown briefly in the location of the target
+* A torpedo can only travel a maximum of 50 AU before it runs out of fuel and disappears from the game
+* When fired against a target ship, Torpedos travel 1 AU each turn
+* Ships can only fire their phasers once per turn
+* Each phaser does 5 percent damage to a ship shields when the phaser hits the ship
+* If the target ship's shields are down, phasers will cause 5 percent damage to the ship itself each time it hits the ship
+* If a phaser hits the warp core of a ship, it adds 10 percent to the warp core's overall temperature
+* Phasers hit instantly
+* When phasers are fired, a red line should be drawn in the game's map UI between the ship that fired the phaser and the target ship
+* Phasers hits randomly between 50 to 100 percentage of the time
+* Phasers need to be locked on the enemy ship before it can be fired
+* Phasers can damage both ships and starbases
+* When a phaser hits a ship, a small red circle about the same size as the target hit should be shown briefly in the location of the target
+* The range of phasers is 10 AU.  
+* Phasers recharge 25 percent per turn
+* A ship is destroyed when damage reaches 100 percent
+* When a ship is destroyed, an explosion animation reminiscient of the Death Star explosion in the Star Wars moview should be shown
+
+SHIP PROPULSION:
+* There are two propulsion mechanisms that a ship can use:  1) Warp drive 2) Impulse drive
+* Warp drive and impulse cannot be used simultaneously
+* Each ship has an warp core and is governed by the core's temperature
+* The ship will not be able to move if the warp core's temperature is at 100 percent
+* Warp drives consume 0.5 percent of the ship's energy each turn when it is active
+* Impulse drives consume 1 percent of the ship's energy each turn when it is active
+* Ships should not be able to move at all once the amount of energy reaches zero percent
+* If the ship is operating its warp drives or impulse drive within normal ranges, the warp core temperature will not rise
+* The core temperature cools down by 5 percent each turn when the warp drive is not active
+* The core temperature cools down by 10 percent each turn when the impulse drive is not active
+* The ship's warp speed can be set for the ship to travel between 2 and 9 AU per turn
+* Ships can warp beyond 9 AU per turn but that will cause the ship's warp core temperature to rise quickly
+* For each AU beyond the maximum 9 AU that the ship can normally move in a turn, the ship's warp core temperature will rise by the same percentage each turn.  So if the ship is traveling at 15 AU per turn, the warp core will rise by an additional 6 percent per turn
+* Impulse speed is 1 AU per turn
+* A ship can move by either warp drive or impluse drive towards to a specified heading between 0 and 359 degrees
+* The ship is destroyed instantly if the warp core is hit
+
+ENEMY SHIPS:
+* Enemy ships have the same characteristics and behaviors as the player's ship
+* The behavior of enemy ships is to be controlled through GPT-4o LLM using the API key specified in the .env file in the project's folder whenever the player's ship is within sensor range of the enemy ship
+* The enemy ship's captain can respond to the player when the player calls the ship by its identifier using the tell commmand
+* The enemy ship's captain should respond using natural language that is appropriate to the player's message
+* Enemy ships can use phasers and torpedos to attack the player's ship
+* Enemy ships should appear randomly throughout the game
+* The number of enemy ships that are in the universe at any given moment is 50
+* At most 3 enemy ships should appear within 50 AU of the player's ship when the game first starts
+* Enemy ships can only first appear within 20 AU of the player's ship
+* Enemy ships can use their warp drives and impulse drives pursue or escape away from the player
+* Enemy ships should stop chasing the player's ship if the player's ship moves beyond the range of the enemy ship's sensors
+* Enemy ships that are not pursuing the player should behave like the player ship normally would
+* Enemy ships should dock at starbases friendly to the enemy ship for repairs and supplies and refuel next to stars when low on fuel
+* When an enemy ship is destroyed, the player's ship receives the cash carried onboard the enemy ship and a message should be shown in the Messages area to indicate the amount received
+* Enemy ships strategize to destroy the player's ship
+* If the player's ship is within the enemy's sensor range, the enemy ship should close in to attack the player's ship if the enemy ship is not too damaged and still able to attack
+* If the enemy ship is heavily damaged, the enemy ship should evade the player's ship
+* Enemy ships can communicate with one another to coordinate an attack on the player's ship
+* The player uses the enemy ship identifier when targeting the enemy ship using weapons or sensors
+* When an enemy ship is destroyed, it should be removed from the universe and a new enemy ship generated to take its place and placed in a random location in the universe
+
+STARS:
+* Stars provide energy for ships
+* Stars are where ships can refuel besides starbases
+* Stars cannot be destroyed by ships
+* Ships needs to be within 1 AU of a star to refuel
+* Ships recover 10 percent energy each turn while next to a star
+
+PLANETS:
+* Planets can be habited or inhabited.  Habited planets can contain a random number of crew members between 0 to 1000 that are willing to join the player.
+* The player cannot recruit new crew members from the planet when the ship's shields are up
+* Planets cannot be destroyed by ships
+
+BLACK HOLES:
+* Black holes destroy ships if they are within 3 AU of the black hole
+
+PULSARS:
+* Pulsars will disrupt the ship's sensors if the ship is within 2 AU of the pulsar
+* When the ship's sensors are disrupted, the objects shown on the 2d map may be random while the ship is within 2 AU of the pulsar
+
+WORM HOLES:
+* Worm holes are paired and they appear randomly throughout the universe
+* Worm holes allows ships to travel to the other end of the worm hole within the same turn
+* Ships needs to be within 1 AU in order to enter the worm hole
+* Ship's energy is not consumed when travelling through a worm hole
+
+STARBASES:
+* There are two types of starbases:
+	1) starbases that are friendly to the player's ship shown as green icons in the game's map
+	2) starbases that are friendly to enemy ships shown as red icons in the game's map
+* The player's ship cannot use starbases that are friendly to enemy ships
+* Enemy ships cannot use starbases that are friendly to the player's ship
+* The total number of starbases should be 100 in the entire universe and 50 percent of the total should be friendly to the player and 50 percent of the total should be friendly to the enemy ships
+* Starbases should be randomly positioned in the universe
+* Starbases should be greater than 10 AU from one another
+* Starbases have the same onboard systems as ships
+* Starbases allow ships to be repaired when the ship is within 1 AU of the starbase
+* Ships can replenish 25 percent their torpedos each turn when the ship is within 1 AU of the starbase
+* Ships can refuel at a starbase at the rate of 10 percent energy gained per turn
+* Refueling a ship drains the starbase's energy by 1 percent per turn
+* Starbases use shields for defense with phasers and photon torpedos for weapons
+* Starbases that are friendly to the player should attack enemy ships that are within 10 AU of the starbase
+* Starbases that are friendly to enemy ships should attack the player's ship when the player is within 10 AU of the starbase
+* Starbases start with 100 percent energy and energy is replenished 1 percent each turn
+* Starbases consume 1 percent of the energy when firing phasers or photon torpedos
+* Starbases are destroyed when their damage reaches 100 percent
+* Each torpedo costs 50 dollars at a starbase
+* Starbases should be shown as an o-ring on the map
+* When the player's ship is within 1 AU of a friendly starbase getting repairs, torpedos, and fuel, print a message to the Message panel to indicate repair status, number of torpedos purchased, the amount of fuel loaded, and the amount of money spent at the starbase each turn that the player's ship is docked at the starbase
+
+ASTEROIDS AND ASTEROID FIELDS:
+* Asteroid fields contain a random number of asteroids in each cluster
+* Asteroid clusters can occupy within 5 by 5 AU block on the map
+* Each individual asteroid should be shown separately on the map
+* Asteroids are where the player can mine for dollars
+* The ship has to be within 1 AU of the asteroid to mine it
+* Each ship can mine once per turn
+* Each mining attempt can generate between 0 to 1000 dollars
+
+GAME UI:
+* The main game UI consists of five areas:
+	1) a 2d map on the left half of the UI representing the part of the universe that the player is traveling through with the player's ship at the center of the map and all of the objects that are within 20 20 AU of the player's ship.  Object identifier labels should be shown next to the object on the map.
+	2) The right half of the game UI should be divided into thirds and should show:
+		a) A ship status UI showing all of the ship's vital statistics discussed earlier.  The UI should occupy half of the top third of the right hand side of the game's UI
+		b) A minimap on the other half of the top third of the right hand side of the game's UI that shows a 500 by 500 AU minimap centered around the player's ship that show all objects within the player's vicinity.  The labels shown in the minimap should not overlap one another and should be easily readable
+		c) A message area that occupies the middle third of the right hand side of the game's UI that displays in game messages instead of printing those same messages to the console
+		d) A command prompt on the bottom third of the right hand side of the game's UI.  The player can enter in natural language commands for the player's ship there
+* The ship's vital statistics should be shown graphically in the ship status UI.
+* Each vital statistic should be show as a labeled horizontal bar chart representing the range of each vital statistic
+* The label for each vital statistics should not overlap the bar chart
+* The font size used in the game should be 14 points
+* The 2d map should show the objects in the universe using graphical symbols that resemble those objects
+* The 2d map should show a 20 by 20 AU portion of the universe
+* The main game UI should be resizeable and maximizable to fit the player's screen
+* Determine the resolution of the player's screen by querying the underlying operating system's API
+* The initial size of the main game UI should be two thirds of the maximum screen resolution of the player's computer that the game is running on
+* For objects shown in the 2d map, the object should be shown with its identifer, energy level, and shield level next to the object's graphical icon
+* The game should print what the enemy ships are thinking in the message area while the game is running
+* The minimap should allow the player to zoom in and out by a maximum of 300 AU using the mouse scroll wheel
+* When the player's ship is taking damage from enemy weapons, please print a message to the Messages panel to show type of weapon that hit the player's ship, the enemy's ship's identifer, and the amount of damage that the hit caused
+
+OTHER GAME RULES:
+* Please keep track of the following in-game statistics:
+	1) The number of enemy ships that the player destroys
+	2) The number of times the player has fired the player ship's phaser
+	3) The number of times the player has fired a torpedo
+	4) The number of times that the player has hit an enemy ship with a torpedo
+* Add a section in the ship's status panel to show the in-game statistics and update them in the status panel each turn
+* Each turn allows the player and enemies to execute their commands simultaneously
+* Don't bother generating extensive documentation for now.  Just a simple summary markdown describing the game's architecture is sufficient
+
+
+
