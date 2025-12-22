@@ -80,18 +80,28 @@ class CommandParser:
         return None
     
     def _match_impulse(self, text: str) -> Optional[dict]:
-        """Match impulse command: 'impulse on', 'impulse off', 'imp on', etc."""
+        """Match impulse command: 'imp 50' (percentage 1-100), 'impulse on', 'impulse off', etc."""
+        # Match impulse with percentage: 'imp 50', 'impulse 75'
+        percentage_match = re.search(r'imp(?:ulse)?\s+(\d+)', text)
+        if percentage_match:
+            percent = int(percentage_match.group(1))
+            # Clamp to 1-100 range
+            percent = max(1, min(100, percent))
+            self.last_command = {'command': 'impulse', 'active': True, 'percent': percent}
+            return self.last_command
+        
+        # Match on/off patterns
         on_patterns = [r'imp(?:ulse)?\s+(?:on|activate|engage)', r'engage\s+impulse']
         off_patterns = [r'imp(?:ulse)?\s+(?:off|deactivate|disable)', r'disable\s+impulse']
         
         for pattern in on_patterns:
             if re.search(pattern, text):
-                self.last_command = {'command': 'impulse', 'active': True}
+                self.last_command = {'command': 'impulse', 'active': True, 'percent': 100}
                 return self.last_command
         
         for pattern in off_patterns:
             if re.search(pattern, text):
-                self.last_command = {'command': 'impulse', 'active': False}
+                self.last_command = {'command': 'impulse', 'active': False, 'percent': 0}
                 return self.last_command
         
         return None

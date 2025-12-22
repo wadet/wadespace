@@ -45,7 +45,7 @@ THE SHIP:
 * Each ship starts the game with 100 percent for energy, shields, and phasers
 * Each ship starts with 0 percent damage
 * A ship that is not moving can repair up to 5 percent of its total damage each turn if the ship has 100 percent of its crew onboard.  The amount of damage repaired percentage-wise by the crew each turn is porportional to the number of crew remaining aboard the ship out of the maximum that the ship can hold (up to the maximum 5 percent damage repairable each turn).  If the ship only has 50 percent of its crew onboard, only 2.5 percent of the ship's damage will be repaired each turn.
-* Ships that are moving cannot auto repair
+* Ships that are moving can only auto repair 1 percent of its total damage each turn.  This applies to both player and enemy ships
 * The ship becomes disabled if there are no more crew aboard
 * The game is over when the player's ship is either destroyed or disabled
 * Shields consume 2 percent of the ship's energy each turn when it is active
@@ -69,7 +69,7 @@ SHIP COMMANDS:
 	9) sta (show status of the ship)
 	10) skip (skips current turn)
 	11) tell (allows the player to talk to the object ID in natural language)
-	12) nav (enables the player to auto-navigate the ship to the specified object identifier.  You will issue the correct warp and impulse commands to get the player's ship to the vicinity of the specified object.  Once the player's ship is within 2 AU of the specified object, issue commands to stop the player's ship.  If the object is more than)
+	12) nav (enables the player to auto-navigate the ship to the specified object identifier.  You will issue the correct warp and impulse commands to get the player's ship to the vicinity of the specified object.  Once the player's ship is within 0.5 AU of the specified object, issue commands to stop the player's ship)
 	13) stop (allows the player to cancel auto-navigation mode and stop the ship where it is)
 	14) ask (enables the player to ask questions about the game using natural language syntax.  For example, if the player asks "which is the nearest star?" the game's AI should return the star that is the closest to the player's ship.)
 	15) targets (show the first 25 enemy ships closest to the player's ship sorted by distance in ascending order)
@@ -123,7 +123,7 @@ SHIP PROPULSION:
 * The ship's warp speed can be set for the ship to travel between 2 and 9 AU per turn
 * Ships can warp beyond 9 AU per turn but that will cause the ship's warp core temperature to rise quickly
 * For each AU beyond the maximum 9 AU that the ship can normally move in a turn, the ship's warp core temperature will rise by the same percentage each turn.  So if the ship is traveling at 15 AU per turn, the warp core will rise by an additional 6 percent per turn
-* Impulse speed is 1 AU per turn
+* Impulse speed expressed as a percentage of 1 AU per turn.  For example, if the player issues "imp 50", the ship should move at 0.5 AU per turn.
 * A ship can move by either warp drive or impluse drive towards to a specified heading between 0 and 359 degrees
 * The ship is destroyed instantly if the warp core is hit
 

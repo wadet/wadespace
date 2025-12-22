@@ -162,10 +162,17 @@ Make a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):
 }}
 
 Priorities:
-1. If player is in phaser range and you're healthy, attack
-2. If heavily damaged ({90 if enemy_damage >= 50 else 100}% damage), evade or seek repairs
-3. If shields low, reposition
-4. Otherwise patrol the area
+1. If player is in phaser range (10 AU) and you're healthy, attack with phasers
+2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage
+3. If heavily damaged ({90 if enemy_damage >= 50 else 100}% damage), evade or seek repairs
+4. If shields low, reposition or evade
+5. Otherwise patrol the area
+
+Weapons Strategy:
+- Use phasers for close-range combat (< 10 AU)
+- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower
+- Fire both phasers AND torpedos when player is in range and you have ammo
+- Coordinate heading to keep approaching player while firing
 """
         return prompt
     

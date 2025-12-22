@@ -185,16 +185,33 @@ class GameEngine:
                     ship.auto_nav_target_id = None
         
         elif cmd == 'impulse':
-            active = command.get('active', False)
-            ship.propulsion.impulse_active = active
-            ship.propulsion.warp_active = False
-            self.messages.append(f"Impulse drive {'activated' if active else 'deactivated'}")
-            # Cancel auto-navigate if active (impulse is a movement command)
-            if active and ship.auto_nav_target_id:
-                self.messages.append(f"Auto-navigation cancelled")
+            # Cancel auto-navigate first (as per requirements)
+            if ship.auto_nav_target_id:
                 ship.auto_nav_target_id = None
+                self.messages.append(f"Auto-navigation cancelled")
+            
+            active = command.get('active', False)
+            percent = command.get('percent', 100)
+            
+            if active:
+                # Calculate speed as percentage of 1 AU
+                speed = percent / 100.0  # Convert percentage to decimal (1-100 -> 0.01-1.0)
+                ship.propulsion.impulse_active = True
+                ship.propulsion.warp_active = False
+                ship.propulsion.current_speed = speed
+                self.messages.append(f"Impulse drive activated at {percent}% ({speed:.2f} AU/turn)")
+            else:
+                ship.propulsion.impulse_active = False
+                ship.propulsion.warp_active = False
+                ship.propulsion.current_speed = 0.0
+                self.messages.append(f"Impulse drive deactivated")
         
         elif cmd == 'heading':
+            # Cancel auto-navigate first (as per requirements)
+            if ship.auto_nav_target_id:
+                ship.auto_nav_target_id = None
+                self.messages.append(f"Auto-navigation cancelled")
+            
             degrees = command.get('degrees', 0)
             ship.set_heading(float(degrees))
             self.messages.append(f"Heading set to {degrees}°")
@@ -232,6 +249,10 @@ class GameEngine:
             self._execute_status(ship)
         
         elif cmd == 'stop':
+            # Cancel auto-navigate and stop ship
+            if ship.auto_nav_target_id:
+                ship.auto_nav_target_id = None
+                self.messages.append("Auto-navigation cancelled")
             ship.stop()
             self.messages.append("All stop")
         
@@ -294,9 +315,10 @@ class GameEngine:
         # Calculate distance to target
         distance = ship.position.distance_to(target_obj.position)
         
-        # Check if target reached
-        if distance <= 2.0:
-            self.messages.append(f"Auto-nav: Target {ship.auto_nav_target_id} reached")
+        # Check if target reached (0.5 AU as per requirements)
+        # Use 0.51 to account for floating point precision
+        if distance <= 0.51:
+            self.messages.append(f"Auto-nav: Target {ship.auto_nav_target_id} reached (within 0.5 AU)")
             ship.auto_nav_target_id = None
             ship.propulsion.warp_active = False
             ship.propulsion.impulse_active = False
@@ -311,7 +333,7 @@ class GameEngine:
         
         # Prevent overshoot: reduce speed if approaching target
         # If next turn's movement would overshoot, reduce speed accordingly
-        safe_speed = distance - 2.0  # Stop 2 AU before target
+        safe_speed = distance - 0.5  # Stop 0.5 AU before target
         
         # Choose drive based on distance, but cap speed to prevent overshoot
         if distance > 20.0:
@@ -324,24 +346,34 @@ class GameEngine:
                     # Warp failed (core overheated), try impulse instead
                     ship.propulsion.warp_active = False
                     ship.propulsion.impulse_active = True
-                    ship.propulsion.current_speed = min(5.0, safe_speed)
+                    ship.propulsion.current_speed = min(1.0, safe_speed)
             else:
                 # Speed too low for warp, switch to impulse
                 ship.propulsion.warp_active = False
                 ship.propulsion.impulse_active = True
-                ship.propulsion.current_speed = min(5.0, safe_speed)
-        else:
-            # Use impulse drive for short distances (speed 5 AU/turn max)
-            desired_speed = min(5.0, safe_speed)
-            if desired_speed > 0:
+                ship.propulsion.current_speed = min(1.0, safe_speed)
+        elif distance > 2.0:
+            # Medium distance: use slower warp or fast impulse
+            desired_speed = min(4.0, safe_speed)
+            if desired_speed >= 2.0:
+                if ship.set_warp_speed(desired_speed):
+                    ship.propulsion.impulse_active = False
+                else:
+                    ship.propulsion.warp_active = False
+                    ship.propulsion.impulse_active = True
+                    ship.propulsion.current_speed = min(1.0, safe_speed)
+            else:
                 ship.propulsion.warp_active = False
                 ship.propulsion.impulse_active = True
-                ship.propulsion.current_speed = desired_speed
-            else:
-                # Very close, stop
-                ship.propulsion.warp_active = False
-                ship.propulsion.impulse_active = False
-                ship.propulsion.current_speed = 0.0
+                ship.propulsion.current_speed = min(1.0, safe_speed)
+        else:
+            # Close approach: use slow impulse for precision
+            # Calculate percentage based on distance (10-100%)
+            percent = max(10, min(100, int(distance * 50)))
+            speed = percent / 100.0
+            ship.propulsion.warp_active = False
+            ship.propulsion.impulse_active = True
+            ship.propulsion.current_speed = min(speed, safe_speed)
     
     def _execute_enemy_command(self, ship: Ship, show_debug: bool = False) -> None:
         """Execute a command for an enemy ship using GPT-4o LLM when in sensor range."""
@@ -473,11 +505,12 @@ class GameEngine:
                         self.messages.append(f"{ship.id} fires phasers at you! Hit for {damage:.1f}% {damage_type} damage!")
                         if show_debug:
                             self.messages.append(f"[DEBUG] {ship.id}: phaser attack")
-                    
-                    if random.random() < 0.15 and ship.weapons.torpedos > 0:
-                        result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
-                        if result:  # result is now a dict
-                            self.messages.append(f"{ship.id} launches a torpedo!")
+                
+                # Also try to fire torpedos if in range (separate from phasers)
+                if distance_to_player < 50 and random.random() < 0.2 and ship.weapons.torpedos > 0:
+                    result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
+                    if result:  # result is now a dict
+                        self.messages.append(f"{ship.id} launches a torpedo!")
         else:
             # Player not in sensor range - random patrol behavior
             if random.random() < 0.25:
@@ -498,13 +531,38 @@ class GameEngine:
         
         if target_id:
             # Scan specific object
+            target_obj = None
+            distance = 0.0
+            
+            # Check if it's a universe object (star, planet, etc.)
             if target_id in self.universe_objects:
-                obj = self.universe_objects[target_id]
-                distance = ship.position.distance_to(obj.position)
+                target_obj = self.universe_objects[target_id]
+                distance = ship.position.distance_to(target_obj.position)
+            # Check if it's the player ship
+            elif target_id == self.player_ship.id:
+                target_obj = self.player_ship
+                distance = ship.position.distance_to(self.player_ship.position)
+            # Check if it's an enemy ship
+            elif target_id in self.enemy_ships:
+                target_obj = self.enemy_ships[target_id]
+                distance = ship.position.distance_to(target_obj.position)
+            
+            if target_obj:
                 if distance > ship.sensors.sensor_range:
                     self.messages.append(f"{target_id} is out of sensor range")
                 else:
-                    self.messages.append(f"Scan of {target_id}: {obj.get_display_symbol()} at {distance:.1f} AU")
+                    # Display scan information
+                    if isinstance(target_obj, Ship):
+                        # For ships, show more detailed information
+                        status = "destroyed" if target_obj.is_destroyed else "operational"
+                        shields_status = "up" if target_obj.shields_active else "down"
+                        self.messages.append(f"Scan of {target_id}: Ship at {distance:.1f} AU")
+                        self.messages.append(f"  Status: {status}, Damage: {target_obj.damage:.1f}%, Energy: {target_obj.energy:.1f}%")
+                        self.messages.append(f"  Shields: {shields_status} ({target_obj.shields:.1f}%), Crew: {target_obj.crew}")
+                        self.messages.append(f"  Speed: {target_obj.propulsion.current_speed:.1f} AU/turn, Heading: {target_obj.propulsion.current_heading:.0f}°")
+                    else:
+                        # For universe objects
+                        self.messages.append(f"Scan of {target_id}: {target_obj.get_display_symbol()} at {distance:.1f} AU")
             else:
                 self.messages.append(f"Object {target_id} not found")
         else:
@@ -584,23 +642,215 @@ class GameEngine:
         self.messages.append(f"Torpedos: {status['torpedos']}")
     
     def _execute_ask(self, ship: Ship, question: str) -> None:
-        """Execute ask command (query system)."""
+        """Execute ask command (query system with natural language support)."""
         lower_q = question.lower()
         
-        if 'nearest star' in lower_q:
-            nearby = self.get_objects_in_range(ship.position, 1000.0)
-            stars = [(obj_id, obj, dist) for obj_id, obj, dist in nearby if obj_id.startswith('st')]
-            if stars:
-                nearest_id, nearest_obj, distance = stars[0]
-                self.messages.append(f"Nearest star: {nearest_id} at {distance:.1f} AU")
-        elif 'nearest planet' in lower_q:
-            nearby = self.get_objects_in_range(ship.position, 1000.0)
-            planets = [(obj_id, obj, dist) for obj_id, obj, dist in nearby if obj_id.startswith('pl')]
-            if planets:
-                nearest_id, nearest_obj, distance = planets[0]
-                self.messages.append(f"Nearest planet: {nearest_id} at {distance:.1f} AU")
+        # Query: Nearest enemy ship
+        if any(keyword in lower_q for keyword in ['nearest enemy', 'closest enemy', 'nearest hostile', 'closest hostile']):
+            self._query_nearest_enemy(ship)
+        
+        # Query: Nearest starbase (check before star to avoid partial match)
+        elif any(keyword in lower_q for keyword in ['nearest starbase', 'closest starbase', 'nearest base', 'closest base']):
+            self._query_nearest_object(ship, 'sb', 'starbase')
+        
+        # Query: Nearest star
+        elif any(keyword in lower_q for keyword in ['nearest star', 'closest star']):
+            self._query_nearest_object(ship, 'st', 'star')
+        
+        # Query: Nearest planet
+        elif any(keyword in lower_q for keyword in ['nearest planet', 'closest planet']):
+            self._query_nearest_object(ship, 'pl', 'planet')
+        
+        # Query: Nearest black hole
+        elif any(keyword in lower_q for keyword in ['nearest black hole', 'closest black hole']):
+            self._query_nearest_object(ship, 'bh', 'black hole')
+        
+        # Query: Nearest wormhole
+        elif any(keyword in lower_q for keyword in ['nearest wormhole', 'closest wormhole']):
+            self._query_nearest_object(ship, 'wh', 'wormhole')
+        
+        # Query: Nearest pulsar
+        elif any(keyword in lower_q for keyword in ['nearest pulsar', 'closest pulsar']):
+            self._query_nearest_object(ship, 'pu', 'pulsar')
+        
+        # Query: Nearest asteroid field
+        elif any(keyword in lower_q for keyword in ['nearest asteroid', 'closest asteroid']):
+            self._query_nearest_object(ship, 'af', 'asteroid field')
+        
+        # Query: Object count
+        elif 'how many' in lower_q or 'count' in lower_q:
+            self._query_object_count(lower_q)
+        
+        # Query: Enemy count
+        elif 'enemies left' in lower_q or 'enemy count' in lower_q:
+            active_enemies = len([e for e in self.enemy_ships.values() if not e.is_destroyed])
+            self.messages.append(f"Active enemy ships: {active_enemies}/{len(self.enemy_ships)}")
+        
+        # Query: Where am I
+        elif 'where am i' in lower_q or 'my location' in lower_q or 'my position' in lower_q:
+            self.messages.append(f"Your position: ({ship.position.x:.1f}, {ship.position.y:.1f})")
+        
+        # Query: Distance to object
+        elif 'distance to' in lower_q or 'how far' in lower_q:
+            self._query_distance(ship, question)
+        
+        # Query: Objects in range
+        elif 'in range' in lower_q or 'nearby' in lower_q or 'around me' in lower_q:
+            self._query_nearby_objects(ship)
+        
+        # Query: Specific object info
+        elif 'what is' in lower_q or 'tell me about' in lower_q or 'info on' in lower_q:
+            self._query_object_info(question)
+        
         else:
-            self.messages.append("I don't understand that question.")
+            self.messages.append("I don't understand that question. Try asking:")
+            self.messages.append("  - 'nearest enemy', 'nearest starbase', 'nearest planet'")
+            self.messages.append("  - 'how many enemies left', 'where am i'")
+            self.messages.append("  - 'distance to <id>', 'nearby objects'")
+            self.messages.append("  - 'what is <id>', 'how many stars'")
+    
+    def _query_nearest_enemy(self, ship: Ship) -> None:
+        """Find and report the nearest enemy ship."""
+        if not self.enemy_ships:
+            self.messages.append("No enemy ships detected in the universe.")
+            return
+        
+        # Find nearest active enemy
+        nearest_enemy = None
+        nearest_distance = float('inf')
+        
+        for enemy_id, enemy_ship in self.enemy_ships.items():
+            if not enemy_ship.is_destroyed:
+                distance = ship.position.distance_to(enemy_ship.position)
+                if distance < nearest_distance:
+                    nearest_distance = distance
+                    nearest_enemy = (enemy_id, enemy_ship)
+        
+        if nearest_enemy:
+            enemy_id, enemy_ship = nearest_enemy
+            health = 100.0 - enemy_ship.damage
+            self.messages.append(f"Nearest enemy: {enemy_id}")
+            self.messages.append(f"  Location: ({enemy_ship.position.x:.1f}, {enemy_ship.position.y:.1f})")
+            self.messages.append(f"  Distance: {nearest_distance:.1f} AU")
+            self.messages.append(f"  Health: {health:.1f}% | Shields: {enemy_ship.shields:.1f}%")
+        else:
+            self.messages.append("No active enemy ships detected.")
+    
+    def _query_nearest_object(self, ship: Ship, prefix: str, obj_name: str) -> None:
+        """Find and report the nearest object of a given type."""
+        nearby = self.get_objects_in_range(ship.position, 10000.0)  # Search entire universe
+        objects = [(obj_id, obj, dist) for obj_id, obj, dist in nearby if obj_id.startswith(prefix)]
+        
+        if objects:
+            nearest_id, nearest_obj, distance = objects[0]
+            self.messages.append(f"Nearest {obj_name}: {nearest_id}")
+            self.messages.append(f"  Location: ({nearest_obj.position.x:.1f}, {nearest_obj.position.y:.1f})")
+            self.messages.append(f"  Distance: {distance:.1f} AU")
+        else:
+            self.messages.append(f"No {obj_name}s found in the universe.")
+    
+    def _query_object_count(self, query: str) -> None:
+        """Count objects of a specific type."""
+        if 'star' in query:
+            count = len([obj for obj in self.universe_objects.values() if isinstance(obj, Star)])
+            self.messages.append(f"Stars in universe: {count}")
+        elif 'planet' in query:
+            count = len([obj for obj in self.universe_objects.values() if isinstance(obj, Planet)])
+            self.messages.append(f"Planets in universe: {count}")
+        elif 'starbase' in query or 'base' in query:
+            count = len([obj for obj in self.universe_objects.values() if isinstance(obj, Starbase)])
+            self.messages.append(f"Starbases in universe: {count}")
+        elif 'black hole' in query:
+            count = len([obj for obj in self.universe_objects.values() if isinstance(obj, BlackHole)])
+            self.messages.append(f"Black holes in universe: {count}")
+        elif 'asteroid' in query:
+            count = len([obj for obj in self.universe_objects.values() if isinstance(obj, AsteroidField)])
+            self.messages.append(f"Asteroid fields in universe: {count}")
+        elif 'enemy' in query or 'enemies' in query or 'hostile' in query:
+            count = len([e for e in self.enemy_ships.values() if not e.is_destroyed])
+            self.messages.append(f"Active enemy ships: {count}/{len(self.enemy_ships)}")
+        else:
+            self.messages.append(f"Total objects in universe: {len(self.universe_objects)}")
+            self.messages.append(f"Active enemy ships: {len(self.enemy_ships)}")
+    
+    def _query_distance(self, ship: Ship, query: str) -> None:
+        """Calculate distance to a specific object."""
+        # Extract object ID from query using regex for better accuracy
+        import re
+        # Match patterns like st1234, pl5678, s1234, etc.
+        match = re.search(r'\b(st\d+|pl\d+|sb\d+|bh\d+|wh\d+|pu\d+|af\d+|s\d+)\b', query, re.IGNORECASE)
+        
+        if not match:
+            self.messages.append("Please specify an object ID (e.g., 'distance to st1')")
+            return
+        
+        target_id = match.group(1).lower()
+        
+        # Check universe objects
+        if target_id in self.universe_objects:
+            obj = self.universe_objects[target_id]
+            distance = ship.position.distance_to(obj.position)
+            self.messages.append(f"Distance to {target_id}: {distance:.1f} AU")
+            self.messages.append(f"  Location: ({obj.position.x:.1f}, {obj.position.y:.1f})")
+        # Check enemy ships
+        elif target_id in self.enemy_ships:
+            enemy = self.enemy_ships[target_id]
+            distance = ship.position.distance_to(enemy.position)
+            self.messages.append(f"Distance to {target_id}: {distance:.1f} AU")
+            self.messages.append(f"  Location: ({enemy.position.x:.1f}, {enemy.position.y:.1f})")
+        else:
+            self.messages.append(f"Object {target_id} not found.")
+    
+    def _query_nearby_objects(self, ship: Ship) -> None:
+        """List objects within sensor range."""
+        nearby = self.get_objects_in_range(ship.position, ship.sensors.sensor_range)
+        
+        if not nearby:
+            self.messages.append(f"No objects within sensor range ({ship.sensors.sensor_range:.0f} AU)")
+            return
+        
+        self.messages.append(f"Objects within {ship.sensors.sensor_range:.0f} AU:")
+        for obj_id, obj, distance in nearby[:10]:
+            symbol = obj.get_display_symbol() if hasattr(obj, 'get_display_symbol') else '?'
+            self.messages.append(f"  {obj_id} ({symbol}): {distance:.1f} AU")
+        
+        if len(nearby) > 10:
+            self.messages.append(f"  ... and {len(nearby) - 10} more objects")
+    
+    def _query_object_info(self, query: str) -> None:
+        """Get detailed information about a specific object."""
+        # Extract object ID from query using regex for better accuracy
+        import re
+        # Match patterns like st1234, pl5678, s1234, etc.
+        match = re.search(r'\b(st\d+|pl\d+|sb\d+|bh\d+|wh\d+|pu\d+|af\d+|s\d+)\b', query, re.IGNORECASE)
+        
+        if not match:
+            self.messages.append("Please specify an object ID (e.g., 'what is st1')")
+            return
+        
+        target_id = match.group(1).lower()
+        
+        # Check universe objects
+        if target_id in self.universe_objects:
+            obj = self.universe_objects[target_id]
+            symbol = obj.get_display_symbol() if hasattr(obj, 'get_display_symbol') else '?'
+            self.messages.append(f"Object {target_id} ({symbol}):")
+            self.messages.append(f"  Type: {type(obj).__name__}")
+            self.messages.append(f"  Location: ({obj.position.x:.1f}, {obj.position.y:.1f})")
+            distance = self.player_ship.position.distance_to(obj.position)
+            self.messages.append(f"  Distance from you: {distance:.1f} AU")
+        # Check enemy ships
+        elif target_id in self.enemy_ships:
+            enemy = self.enemy_ships[target_id]
+            self.messages.append(f"Enemy ship {target_id}:")
+            self.messages.append(f"  Location: ({enemy.position.x:.1f}, {enemy.position.y:.1f})")
+            distance = self.player_ship.position.distance_to(enemy.position)
+            self.messages.append(f"  Distance from you: {distance:.1f} AU")
+            self.messages.append(f"  Health: {100 - enemy.damage:.1f}%")
+            self.messages.append(f"  Shields: {enemy.shields:.1f}%")
+            self.messages.append(f"  Status: {'DESTROYED' if enemy.is_destroyed else 'ACTIVE'}")
+        else:
+            self.messages.append(f"Object {target_id} not found.")
     
     def _execute_targets(self, ship: Ship) -> None:
         """Display the 5 closest enemy ships to the player."""
@@ -676,7 +926,15 @@ class GameEngine:
     def _update_torpedos(self) -> None:
         """Update all active torpedos - move them 10 AU/turn toward target."""
         # Update player torpedos
-        active_torpedos = self.player_ship.weapons.active_torpedos
+        self._update_torpedos_for_ship(self.player_ship, is_player=True)
+        
+        # Update enemy torpedos
+        for enemy_ship in self.enemy_ships.values():
+            self._update_torpedos_for_ship(enemy_ship, is_player=False)
+    
+    def _update_torpedos_for_ship(self, ship: Ship, is_player: bool) -> None:
+        """Update torpedos for a specific ship."""
+        active_torpedos = ship.weapons.active_torpedos
         torpedos_to_remove = []
         
         for torpedo in active_torpedos:
@@ -710,62 +968,98 @@ class GameEngine:
                     # Torpedo hit target - find what was hit by proximity
                     torpedos_to_remove.append(torpedo)
                     
-                    # Check enemy ships first
-                    hit_target = None
-                    for enemy_id, enemy_ship in self.enemy_ships.items():
-                        dist_to_enemy = enemy_ship.position.distance_to(torpedo['current_pos'])
-                        if dist_to_enemy < 2.0:
-                            hit_target = ('enemy', enemy_id, enemy_ship)
-                            break
-                    
-                    # Check universe objects
-                    if not hit_target:
-                        for obj_id, obj in self.universe_objects.items():
-                            dist_to_obj = obj.position.distance_to(torpedo['current_pos'])
-                            if dist_to_obj < 2.0:
-                                hit_target = ('object', obj_id, obj)
+                    if is_player:
+                        # Player torpedo - check enemy ships first
+                        hit_target = None
+                        for enemy_id, enemy_ship in self.enemy_ships.items():
+                            dist_to_enemy = enemy_ship.position.distance_to(torpedo['current_pos'])
+                            if dist_to_enemy < 2.0:
+                                hit_target = ('enemy', enemy_id, enemy_ship)
                                 break
-                    
-                    # Apply damage if hit something
-                    if hit_target:
-                        hit_type, hit_id, hit_obj = hit_target
-                        if hit_type == 'enemy':
-                            damage = 25.0  # Torpedo damage
-                            hit_obj.damage = min(100.0, hit_obj.damage + damage)
-                            self.messages.append(f"Torpedo hit {hit_id}! Damage: {damage:.0f}%")
-                            
-                            # Track torpedo hit
-                            self.player_ship.stats['torpedo_hits'] += 1
-                            
-                            # Check if destroyed
-                            if hit_obj.damage >= 100.0:
-                                hit_obj.is_destroyed = True
-                                self.messages.append(f"{hit_id} destroyed!")
+                        
+                        # Check universe objects
+                        if not hit_target:
+                            for obj_id, obj in self.universe_objects.items():
+                                dist_to_obj = obj.position.distance_to(torpedo['current_pos'])
+                                if dist_to_obj < 2.0:
+                                    hit_target = ('object', obj_id, obj)
+                                    break
+                        
+                        # Apply damage if hit something
+                        if hit_target:
+                            hit_type, hit_id, hit_obj = hit_target
+                            if hit_type == 'enemy':
+                                damage = 25.0  # Torpedo damage
+                                hit_obj.damage = min(100.0, hit_obj.damage + damage)
+                                self.messages.append(f"Torpedo hit {hit_id}! Damage: {damage:.0f}%")
                                 
-                                # Transfer cash from destroyed enemy ship
-                                cash_received = hit_obj.cash
-                                self.player_ship.cash += cash_received
-                                self.messages.append(f"Salvaged ${cash_received} from {hit_id}")
+                                # Track torpedo hit
+                                self.player_ship.stats['torpedo_hits'] += 1
                                 
-                                # Track enemy destruction
-                                self.player_ship.stats['enemies_destroyed'] += 1
-                                
-                                # Cancel auto-navigate if this was the target
-                                if self.player_ship.auto_nav_target_id == hit_id:
-                                    self.player_ship.auto_nav_target_id = None
-                                    self.messages.append(f"Auto-navigation cancelled - target destroyed")
-                                
-                                # Remove destroyed enemy ship and spawn a replacement
-                                if hit_id in self.enemy_ships:
-                                    del self.enemy_ships[hit_id]
-                                    self._spawn_single_enemy()
-                                    new_enemy_id = list(self.enemy_ships.keys())[-1]
-                                    new_enemy = self.enemy_ships[new_enemy_id]
-                                    self.messages.append(f"New enemy ship {new_enemy_id} spawned at ({new_enemy.position.x:.0f}, {new_enemy.position.y:.0f})")
+                                # Check if destroyed
+                                if hit_obj.damage >= 100.0:
+                                    hit_obj.is_destroyed = True
+                                    self.messages.append(f"{hit_id} destroyed!")
+                                    
+                                    # Transfer cash from destroyed enemy ship
+                                    cash_received = hit_obj.cash
+                                    self.player_ship.cash += cash_received
+                                    self.messages.append(f"Salvaged ${cash_received} from {hit_id}")
+                                    
+                                    # Track enemy destruction
+                                    self.player_ship.stats['enemies_destroyed'] += 1
+                                    
+                                    # Cancel auto-navigate if this was the target
+                                    if self.player_ship.auto_nav_target_id == hit_id:
+                                        self.player_ship.auto_nav_target_id = None
+                                        self.messages.append(f"Auto-navigation cancelled - target destroyed")
+                                    
+                                    # Remove destroyed enemy ship and spawn a replacement
+                                    if hit_id in self.enemy_ships:
+                                        del self.enemy_ships[hit_id]
+                                        self._spawn_single_enemy()
+                                        new_enemy_id = list(self.enemy_ships.keys())[-1]
+                                        new_enemy = self.enemy_ships[new_enemy_id]
+                                        self.messages.append(f"New enemy ship {new_enemy_id} spawned at ({new_enemy.position.x:.0f}, {new_enemy.position.y:.0f})")
+                            else:
+                                self.messages.append(f"Torpedo impacted {hit_id}")
                         else:
-                            self.messages.append(f"Torpedo impacted {hit_id}")
+                            self.messages.append("Torpedo target missed")
                     else:
-                        self.messages.append("Torpedo target missed")
+                        # Enemy torpedo - check if hit player
+                        dist_to_player = self.player_ship.position.distance_to(torpedo['current_pos'])
+                        if dist_to_player < 2.0:
+                            # Hit the player!
+                            damage = 10.0  # 10% damage per torpedo hit (as per requirements)
+                            
+                            # Apply damage to shields first, then ship
+                            if self.player_ship.shields_active and self.player_ship.shields > 0:
+                                shield_damage = min(damage, self.player_ship.shields)
+                                self.player_ship.shields -= shield_damage
+                                remaining_damage = damage - shield_damage
+                                
+                                if remaining_damage > 0:
+                                    self.player_ship.damage = min(100.0, self.player_ship.damage + remaining_damage)
+                                    self.messages.append(f"Enemy torpedo hit! Shields absorbed {shield_damage:.1f}%, ship took {remaining_damage:.1f}% damage!")
+                                else:
+                                    self.messages.append(f"Enemy torpedo hit! Shields absorbed {shield_damage:.1f}% damage!")
+                            else:
+                                self.player_ship.damage = min(100.0, self.player_ship.damage + damage)
+                                self.messages.append(f"Enemy torpedo hit! {damage:.1f}% damage to ship!")
+                            
+                            # 1% chance to damage warp core (as per requirements)
+                            if random.random() < 0.01:
+                                self.player_ship.propulsion.warp_core_temp = min(100.0, 
+                                    self.player_ship.propulsion.warp_core_temp + 50.0)
+                                self.messages.append("CRITICAL: Torpedo struck warp core!")
+                            
+                            # Check if player destroyed
+                            if self.player_ship.damage >= 100.0:
+                                self.player_ship.is_destroyed = True
+                                self.messages.append("YOUR SHIP HAS BEEN DESTROYED!")
+                        else:
+                            # Missed the player
+                            self.messages.append(f"{ship.id} torpedo missed")
             else:
                 # Already at target
                 torpedos_to_remove.append(torpedo)

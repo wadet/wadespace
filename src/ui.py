@@ -454,7 +454,7 @@ class GameUI:
         spacing = 26
         
         # Calculate label width based on longest label
-        longest_label = max(["Energy", "Shields", "Damage", "Hull", "Warp Core"], key=len)
+        longest_label = max(["Energy", "Shields", "Damage", "Warp Core"], key=len)
         label_width = self.font_small.render(longest_label, True, Colors.WHITE).get_width()
         
         # Calculate total width available for the bar row (accounting for padding)
@@ -464,7 +464,6 @@ class GameUI:
             ("Energy", ship.energy, Colors.CYAN),
             ("Shields", ship.shields, Colors.BLUE),
             ("Damage", 100 - ship.damage, Colors.GREEN),
-            ("Hull", 100 - ship.damage, Colors.ORANGE),
             ("Warp Core", ship.propulsion.warp_core_temp, Colors.RED),
         ]
         

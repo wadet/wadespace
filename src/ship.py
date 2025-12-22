@@ -127,19 +127,22 @@ class Ship:
         self.energy = max(0.0, self.energy - energy_drain)
     
     def update_damage_repair(self) -> None:
-        """Repair damage each turn when not moving, scaled by crew availability.
+        """Repair damage each turn, with different rates for stationary vs moving ships.
         
-        Maximum repair is 5% per turn with full crew.
+        Stationary ships: Maximum repair is 5% per turn with full crew.
         Repair scales proportionally with crew percentage.
         For example: 50% crew = 2.5% repair per turn.
+        
+        Moving ships: Auto repair 1% per turn regardless of crew.
         """
-        # Only repair if the ship is stationary (current_speed = 0)
         if self.propulsion.current_speed == 0.0:
-            # Calculate crew percentage (crew out of max 1000)
+            # Stationary: repair up to 5% scaled by crew percentage
             crew_percentage = self.crew / 1000.0  # Returns 0.0 to 1.0
-            # Maximum repair is 5%, scales with crew percentage
             max_repair = 5.0 * crew_percentage
             self.damage = max(0.0, self.damage - max_repair)
+        else:
+            # Moving: auto repair 1% per turn
+            self.damage = max(0.0, self.damage - 1.0)
     
     def update_warp_core(self) -> None:
         """Update warp core temperature."""
@@ -169,7 +172,7 @@ class Ship:
     def take_damage(self, damage: float, bypass_shields: bool = False) -> None:
         """Apply damage to the ship."""
         if bypass_shields or self.shields <= 0:
-            # Direct hull damage
+            # Direct ship damage
             self.damage += damage
         else:
             # Damage shields first
@@ -188,7 +191,7 @@ class Ship:
         if self.shields_active:
             self.shields = max(0.0, self.shields - damage)
         else:
-            # Direct hull damage
+            # Direct ship damage
             self.damage += damage
     
     def fire_phaser(self, target_ship: 'Ship') -> dict:
@@ -240,8 +243,8 @@ class Ship:
             damage_type = 'shield'
             actual_damage = shields_before - shields_after
         else:
-            # Shields were down, damage went to hull
-            damage_type = 'hull'
+            # Shields were down, damage went to ship
+            damage_type = 'ship'
             actual_damage = damage
         
         self.weapons.phaser_can_fire_this_turn = True
