@@ -99,6 +99,7 @@ class GameUI:
         self.minimap_zoom_offset = 0.0  # 0 = 500 AU base, ±300 AU max adjustment
         self.mouse_pos = (0, 0)  # Track mouse position for hover effects
         self.minimap_objects = []  # Store (screen_x, screen_y, obj_id, radius) for click detection
+        self.nav_target_id = None  # Track object being navigated to for yellow circle
         self.running = True
         self.clock = pygame.time.Clock()
         
@@ -636,6 +637,10 @@ class GameUI:
                 # Draw minimap object (smaller version)
                 self._draw_object_visual_small(obj, screen_x, screen_y)
                 
+                # Draw yellow circle if this is the navigation target
+                if self.nav_target_id == obj.id:
+                    pygame.draw.circle(self.screen, Colors.YELLOW, (int(screen_x), int(screen_y)), 10, 2)
+                
                 # Store for click detection
                 self.minimap_objects.append((screen_x, screen_y, obj.id, hover_radius))
                 
@@ -668,6 +673,10 @@ class GameUI:
                     (screen_x - size, screen_y)
                 ]
                 pygame.draw.polygon(self.screen, Colors.RED, points)
+                
+                # Draw yellow circle if this is the navigation target
+                if self.nav_target_id == enemy_id:
+                    pygame.draw.circle(self.screen, Colors.YELLOW, (int(screen_x), int(screen_y)), 10, 2)
                 
                 # Store for click detection
                 self.minimap_objects.append((screen_x, screen_y, enemy_id, hover_radius))
@@ -937,13 +946,23 @@ class GameUI:
         for obj_x, obj_y, obj_id, radius in self.minimap_objects:
             distance = ((obj_x - click_x) ** 2 + (obj_y - click_y) ** 2) ** 0.5
             if distance <= radius:
-                # Object was clicked - issue nav command
+                # Show immediate feedback message
+                self.add_message(f"Setting course for {obj_id}")
+                
+                # Execute nav command first
                 nav_command = f"nav {obj_id}"
                 self._execute_command(nav_command)
+                
+                # Set navigation target after command to show yellow circle in subsequent frames
+                self.nav_target_id = obj_id
                 return
     
     def _execute_command(self, command: str):
         """Execute a command and add result to messages."""
+        # Clear previous navigation target at the start of a new command
+        prev_nav_target = self.nav_target_id
+        self.nav_target_id = None
+        
         # Check if player ship is destroyed
         if self.engine.player_ship.is_destroyed:
             self.add_message("Simulation completed. You have lost the battle!")
