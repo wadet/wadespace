@@ -415,15 +415,38 @@ class GameUI:
             pygame.draw.circle(self.screen, Colors.WHITE, (int(x), int(y)), 2)
     
     def _draw_player_ship(self, x: float, y: float):
-        """Draw the player's ship at the center."""
-        # Draw ship as a green triangle pointing up
-        points = [
-            (x, y - 10),      # Top point
-            (x - 8, y + 8),   # Bottom left
-            (x + 8, y + 8),   # Bottom right
-        ]
-        pygame.draw.polygon(self.screen, Colors.GREEN, points)
-        pygame.draw.polygon(self.screen, Colors.LIGHT_GRAY, points, 2)  # Border
+        """Draw the player's ship at the center - USS Enterprise top-down view."""
+        # Draw the iconic Enterprise shape from top-down view
+        
+        # Saucer section (primary hull) - circular front
+        saucer_radius = 8
+        pygame.draw.circle(self.screen, Colors.GREEN, (int(x), int(y - 2)), saucer_radius)
+        pygame.draw.circle(self.screen, Colors.LIGHT_GRAY, (int(x), int(y - 2)), saucer_radius, 1)
+        
+        # Secondary hull (engineering section) - elongated rectangle
+        secondary_hull = pygame.Rect(x - 3, y + 3, 6, 10)
+        pygame.draw.rect(self.screen, Colors.GREEN, secondary_hull)
+        pygame.draw.rect(self.screen, Colors.LIGHT_GRAY, secondary_hull, 1)
+        
+        # Warp nacelles (port and starboard)
+        nacelle_width = 3
+        nacelle_height = 14
+        
+        # Port nacelle (left)
+        left_nacelle = pygame.Rect(x - 12, y, nacelle_width, nacelle_height)
+        pygame.draw.rect(self.screen, Colors.GREEN, left_nacelle)
+        pygame.draw.rect(self.screen, Colors.LIGHT_GRAY, left_nacelle, 1)
+        
+        # Starboard nacelle (right)
+        right_nacelle = pygame.Rect(x + 9, y, nacelle_width, nacelle_height)
+        pygame.draw.rect(self.screen, Colors.GREEN, right_nacelle)
+        pygame.draw.rect(self.screen, Colors.LIGHT_GRAY, right_nacelle, 1)
+        
+        # Connecting struts (pylons) from saucer to nacelles
+        # Left pylon
+        pygame.draw.line(self.screen, Colors.LIGHT_GRAY, (x - 6, y + 2), (x - 10, y + 3), 2)
+        # Right pylon
+        pygame.draw.line(self.screen, Colors.LIGHT_GRAY, (x + 6, y + 2), (x + 10, y + 3), 2)
         
         # Draw player ship label
         ship = self.engine.player_ship
