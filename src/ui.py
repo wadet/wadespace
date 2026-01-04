@@ -98,6 +98,7 @@ class GameUI:
         self.current_input = ""
         self.minimap_zoom_offset = 0.0  # 0 = 500 AU base, ±300 AU max adjustment
         self.mouse_pos = (0, 0)  # Track mouse position for hover effects
+        self.minimap_objects = []  # Store (screen_x, screen_y, obj_id, radius) for click detection
         self.running = True
         self.clock = pygame.time.Clock()
         
@@ -614,10 +615,11 @@ class GameUI:
         pixels_per_au_x = self.minimap_area_width / visible_au
         pixels_per_au_y = self.minimap_area_height / visible_au
         
-        # Track hovered object
+        # Track hovered object and clickable objects
         hovered_object = None
         hovered_position = None
         hover_radius = 8  # Pixels around object to detect hover
+        self.minimap_objects = []  # Clear previous frame's objects
         
         # Draw objects
         positions_and_sizes = []
@@ -633,6 +635,9 @@ class GameUI:
                 self.minimap_rect.top <= screen_y <= self.minimap_rect.bottom):
                 # Draw minimap object (smaller version)
                 self._draw_object_visual_small(obj, screen_x, screen_y)
+                
+                # Store for click detection
+                self.minimap_objects.append((screen_x, screen_y, obj.id, hover_radius))
                 
                 # Check if mouse is hovering over this object
                 mouse_x, mouse_y = self.mouse_pos
@@ -663,6 +668,9 @@ class GameUI:
                     (screen_x - size, screen_y)
                 ]
                 pygame.draw.polygon(self.screen, Colors.RED, points)
+                
+                # Store for click detection
+                self.minimap_objects.append((screen_x, screen_y, enemy_id, hover_radius))
                 
                 # Check if mouse is hovering over this enemy ship
                 mouse_x, mouse_y = self.mouse_pos
@@ -865,6 +873,10 @@ class GameUI:
                 self.screen_height = event.size[1]
                 self._calculate_layout()
             
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Left click
+                    self._handle_minimap_click(event.pos)
+            
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     if self.current_input:
@@ -912,6 +924,23 @@ class GameUI:
         
         # Update mouse position for hover detection
         self.mouse_pos = pygame.mouse.get_pos()
+    
+    def _handle_minimap_click(self, click_pos):
+        """Handle mouse click on minimap to navigate to clicked object."""
+        click_x, click_y = click_pos
+        
+        # Check if click is within minimap bounds
+        if not self.minimap_rect.collidepoint(click_x, click_y):
+            return
+        
+        # Find clicked object
+        for obj_x, obj_y, obj_id, radius in self.minimap_objects:
+            distance = ((obj_x - click_x) ** 2 + (obj_y - click_y) ** 2) ** 0.5
+            if distance <= radius:
+                # Object was clicked - issue nav command
+                nav_command = f"nav {obj_id}"
+                self._execute_command(nav_command)
+                return
     
     def _execute_command(self, command: str):
         """Execute a command and add result to messages."""
