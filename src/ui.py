@@ -254,10 +254,29 @@ class GameUI:
                 screen_x = self.map_rect.centerx + rel_x * pixels_per_au_x
                 screen_y = self.map_rect.centery + rel_y * pixels_per_au_y
                 
-                # Draw torpedo as small white circle
+                # Draw torpedo as small green circle (matching player ship color)
                 torpedo_radius = 2
-                pygame.draw.circle(self.screen, Colors.WHITE, (int(screen_x), int(screen_y)), torpedo_radius)
-                pygame.draw.circle(self.screen, Colors.WHITE, (int(screen_x), int(screen_y)), torpedo_radius, 1)
+                pygame.draw.circle(self.screen, Colors.GREEN, (int(screen_x), int(screen_y)), torpedo_radius)
+                pygame.draw.circle(self.screen, Colors.GREEN, (int(screen_x), int(screen_y)), torpedo_radius, 1)
+        
+        # Draw active torpedos from enemy ships
+        for enemy_id, enemy_ship in self.engine.enemy_ships.items():
+            for torpedo in enemy_ship.weapons.active_torpedos:
+                rel_x = torpedo['current_pos'].x - player_pos.x
+                rel_y = torpedo['current_pos'].y - player_pos.y
+                
+                # Check if torpedo is in viewport
+                if abs(rel_x) <= self.VIEWPORT_SIZE / 2 and abs(rel_y) <= self.VIEWPORT_SIZE / 2:
+                    pixels_per_au_x = self.map_area_width / self.VIEWPORT_SIZE
+                    pixels_per_au_y = self.map_area_height / self.VIEWPORT_SIZE
+                    
+                    screen_x = self.map_rect.centerx + rel_x * pixels_per_au_x
+                    screen_y = self.map_rect.centery + rel_y * pixels_per_au_y
+                    
+                    # Draw torpedo as small red circle (matching enemy ship color)
+                    torpedo_radius = 2
+                    pygame.draw.circle(self.screen, Colors.RED, (int(screen_x), int(screen_y)), torpedo_radius)
+                    pygame.draw.circle(self.screen, Colors.RED, (int(screen_x), int(screen_y)), torpedo_radius, 1)
         
         # Draw player ship at center
         center_x = self.map_rect.centerx
