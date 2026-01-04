@@ -1040,12 +1040,12 @@ class GameEngine:
                                 
                                 if remaining_damage > 0:
                                     self.player_ship.damage = min(100.0, self.player_ship.damage + remaining_damage)
-                                    self.messages.append(f"Enemy torpedo hit! Shields absorbed {shield_damage:.1f}%, ship took {remaining_damage:.1f}% damage!")
+                                    self.messages.append(f"Torpedo hit from {torpedo['source_ship_id']}! Shields absorbed {shield_damage:.1f}%, ship took {remaining_damage:.1f}% damage!")
                                 else:
-                                    self.messages.append(f"Enemy torpedo hit! Shields absorbed {shield_damage:.1f}% damage!")
+                                    self.messages.append(f"Torpedo hit from {torpedo['source_ship_id']}! Shields absorbed {shield_damage:.1f}% damage!")
                             else:
                                 self.player_ship.damage = min(100.0, self.player_ship.damage + damage)
-                                self.messages.append(f"Enemy torpedo hit! {damage:.1f}% damage to ship!")
+                                self.messages.append(f"Torpedo hit from {torpedo['source_ship_id']}! {damage:.1f}% damage to ship!")
                             
                             # 1% chance to damage warp core (as per requirements)
                             if random.random() < 0.01:
