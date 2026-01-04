@@ -870,7 +870,7 @@ class GameUI:
             
             elif event.type == pygame.MOUSEWHEEL:
                 # Zoom minimap with mouse scroll
-                zoom_amount = 10.0 if event.y > 0 else -10.0
+                zoom_amount = -10.0 if event.y > 0 else 10.0
                 new_zoom = self.minimap_zoom_offset + zoom_amount
                 # Clamp to ±300 AU
                 self.minimap_zoom_offset = max(-self.MAX_ZOOM_ADJUSTMENT,
