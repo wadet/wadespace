@@ -842,6 +842,10 @@ class GameUI:
                         self.command_history.append(self.current_input)
                         self.history_index = -1
                         self.current_input = ""
+                    else:
+                        # Empty input treated as "skip" command
+                        self._execute_command("skip")
+                        self.history_index = -1
                 
                 elif event.key == pygame.K_BACKSPACE:
                     self.current_input = self.current_input[:-1]
@@ -881,6 +885,11 @@ class GameUI:
     
     def _execute_command(self, command: str):
         """Execute a command and add result to messages."""
+        # Check if player ship is destroyed
+        if self.engine.player_ship.is_destroyed:
+            self.add_message("Simulation completed. You have lost the battle!")
+            return
+        
         parsed = self.parser.parse(command)
         
         if parsed is None:
