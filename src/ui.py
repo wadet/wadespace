@@ -97,6 +97,7 @@ class GameUI:
         self.history_index = -1
         self.current_input = ""
         self.minimap_zoom_offset = 0.0  # 0 = 500 AU base, ±300 AU max adjustment
+        self.mouse_pos = (0, 0)  # Track mouse position for hover effects
         self.running = True
         self.clock = pygame.time.Clock()
         
@@ -583,6 +584,11 @@ class GameUI:
         pixels_per_au_x = self.minimap_area_width / visible_au
         pixels_per_au_y = self.minimap_area_height / visible_au
         
+        # Track hovered object
+        hovered_object = None
+        hovered_position = None
+        hover_radius = 8  # Pixels around object to detect hover
+        
         # Draw objects
         positions_and_sizes = []
         for obj_tuple in nearby_objects:
@@ -597,6 +603,13 @@ class GameUI:
                 self.minimap_rect.top <= screen_y <= self.minimap_rect.bottom):
                 # Draw minimap object (smaller version)
                 self._draw_object_visual_small(obj, screen_x, screen_y)
+                
+                # Check if mouse is hovering over this object
+                mouse_x, mouse_y = self.mouse_pos
+                distance_to_mouse = ((screen_x - mouse_x) ** 2 + (screen_y - mouse_y) ** 2) ** 0.5
+                if distance_to_mouse <= hover_radius:
+                    hovered_object = obj
+                    hovered_position = (screen_x, screen_y)
                 
                 # Store for label positioning
                 positions_and_sizes.append((screen_x, screen_y, obj.id))
@@ -620,6 +633,14 @@ class GameUI:
                     (screen_x - size, screen_y)
                 ]
                 pygame.draw.polygon(self.screen, Colors.RED, points)
+                
+                # Check if mouse is hovering over this enemy ship
+                mouse_x, mouse_y = self.mouse_pos
+                distance_to_mouse = ((screen_x - mouse_x) ** 2 + (screen_y - mouse_y) ** 2) ** 0.5
+                if distance_to_mouse <= hover_radius:
+                    hovered_object = enemy_ship
+                    hovered_object.id = enemy_id  # Ensure enemy has ID for display
+                    hovered_position = (screen_x, screen_y)
         
         # Draw player ship as green triangle at center
         player_size = 5
@@ -637,6 +658,44 @@ class GameUI:
             True, Colors.WHITE
         )
         self.screen.blit(zoom_text, (self.minimap_rect.left + 10, self.minimap_rect.top + 30))
+        
+        # Draw hover label if an object is being hovered over
+        if hovered_object and hovered_position:
+            hover_x, hover_y = hovered_position
+            hover_label = hovered_object.id
+            hover_text = self.font_small.render(hover_label, True, Colors.YELLOW)
+            
+            # Position label on top of (above) the object, centered
+            label_x = hover_x - hover_text.get_width() // 2
+            label_y = hover_y - hover_text.get_height() - 8
+            
+            # Adjust if label would go off the left edge
+            if label_x < self.minimap_rect.left + 5:
+                label_x = self.minimap_rect.left + 5
+            
+            # Adjust if label would go off the right edge
+            if label_x + hover_text.get_width() > self.minimap_rect.right - 5:
+                label_x = self.minimap_rect.right - hover_text.get_width() - 5
+            
+            # Adjust if label would go off the top edge
+            if label_y < self.minimap_rect.top + 5:
+                label_y = hover_y + 10  # Place below instead
+            
+            # Draw semi-transparent background for better readability
+            padding = 2
+            bg_rect = pygame.Rect(
+                label_x - padding,
+                label_y - padding,
+                hover_text.get_width() + padding * 2,
+                hover_text.get_height() + padding * 2
+            )
+            bg_surface = pygame.Surface((bg_rect.width, bg_rect.height))
+            bg_surface.set_alpha(180)
+            bg_surface.fill(Colors.BLACK)
+            self.screen.blit(bg_surface, (bg_rect.x, bg_rect.y))
+            
+            # Draw the label
+            self.screen.blit(hover_text, (label_x, label_y))
         
         # Draw legend
         self._draw_minimap_legend()
@@ -816,6 +875,9 @@ class GameUI:
                 # Clamp to ±300 AU
                 self.minimap_zoom_offset = max(-self.MAX_ZOOM_ADJUSTMENT,
                                                min(self.MAX_ZOOM_ADJUSTMENT, new_zoom))
+        
+        # Update mouse position for hover detection
+        self.mouse_pos = pygame.mouse.get_pos()
     
     def _execute_command(self, command: str):
         """Execute a command and add result to messages."""
