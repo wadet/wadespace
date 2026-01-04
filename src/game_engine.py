@@ -589,6 +589,7 @@ class GameEngine:
         
         if not target_ship:
             self.messages.append(f"Target {target_id} not found")
+            ship.weapons.phaser_locked_target = None  # Clear invalid lock
             return
         
         distance = ship.position.distance_to(target_ship.position)
@@ -1014,6 +1015,10 @@ class GameEngine:
                                         self.player_ship.auto_nav_target_id = None
                                         self.messages.append(f"Auto-navigation cancelled - target destroyed")
                                     
+                                    # Clear weapon lock if this was the locked target
+                                    if self.player_ship.weapons.phaser_locked_target == hit_id:
+                                        self.player_ship.weapons.phaser_locked_target = None
+                                    
                                     # Remove destroyed enemy ship and spawn a replacement
                                     if hit_id in self.enemy_ships:
                                         del self.enemy_ships[hit_id]
@@ -1161,6 +1166,9 @@ class GameEngine:
             for enemy_id, enemy in list(self.enemy_ships.items()):
                 if enemy.position.distance_to(bh.position) < 3.0:
                     enemy.is_destroyed = True
+                    # Clear weapon lock if this was the locked target
+                    if self.player_ship.weapons.phaser_locked_target == enemy_id:
+                        self.player_ship.weapons.phaser_locked_target = None
     
     def _check_game_over(self) -> None:
         """Check win/loss conditions."""

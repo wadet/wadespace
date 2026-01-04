@@ -544,8 +544,26 @@ class GameUI:
             text = self.font_small.render(vital_text, True, Colors.WHITE)
             self.screen.blit(text, (self.status_rect.left + 10, text_y + i * 18))
         
+        # Draw auto-navigation status if active
+        status_line_count = 0
+        if ship.auto_nav_target_id:
+            nav_text = f"Navigating to: {ship.auto_nav_target_id}"
+            text = self.font_small.render(nav_text, True, Colors.YELLOW)
+            self.screen.blit(text, (self.status_rect.left + 10, text_y + len(other_vitals) * 18 + status_line_count * 18))
+            status_line_count += 1
+        
+        # Draw weapon lock status if active
+        if ship.weapons.phaser_locked_target:
+            lock_text = f"Locked on: {ship.weapons.phaser_locked_target}"
+            text = self.font_small.render(lock_text, True, Colors.RED)
+            self.screen.blit(text, (self.status_rect.left + 10, text_y + len(other_vitals) * 18 + status_line_count * 18))
+            status_line_count += 1
+        
         # Draw game statistics
         stats_y = text_y + len(other_vitals) * 18 + 15
+        # Add extra spacing for status lines
+        if status_line_count > 0:
+            stats_y += status_line_count * 18
         stats_title = self.font_small.render("Game Statistics", True, Colors.YELLOW)
         self.screen.blit(stats_title, (self.status_rect.left + 10, stats_y))
         
