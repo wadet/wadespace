@@ -188,16 +188,46 @@ class GameUI:
                 screen_x = self.map_rect.centerx + rel_x * pixels_per_au_x
                 screen_y = self.map_rect.centery + rel_y * pixels_per_au_y
                 
-                # Draw enemy ship as red diamond
-                size = 6
-                points = [
-                    (screen_x, screen_y - size),
-                    (screen_x + size, screen_y),
-                    (screen_x, screen_y + size),
-                    (screen_x - size, screen_y)
+                # Draw enemy ship as Klingon Bird of Prey (top-down view)
+                # Circular bridge/command pod at front
+                bridge_radius = 4
+                pygame.draw.circle(self.screen, Colors.RED, (int(screen_x), int(screen_y - 6)), bridge_radius)
+                pygame.draw.circle(self.screen, (139, 0, 0), (int(screen_x), int(screen_y - 6)), bridge_radius, 1)
+                
+                # Thin neck connecting bridge to rear
+                neck = pygame.Rect(screen_x - 1.5, screen_y - 2, 3, 8)
+                pygame.draw.rect(self.screen, Colors.RED, neck)
+                pygame.draw.rect(self.screen, (139, 0, 0), neck, 1)
+                
+                # Rear engineering section (small triangle)
+                rear_section = [
+                    (screen_x - 3, screen_y + 6),
+                    (screen_x + 3, screen_y + 6),
+                    (screen_x, screen_y + 10),
                 ]
-                pygame.draw.polygon(self.screen, Colors.RED, points)
-                pygame.draw.polygon(self.screen, Colors.RED, points, 1)
+                pygame.draw.polygon(self.screen, Colors.RED, rear_section)
+                pygame.draw.polygon(self.screen, (139, 0, 0), rear_section, 1)
+                
+                # Wing extensions (Bird of Prey style)
+                # Left wing - swept back
+                left_wing = [
+                    (screen_x - 2, screen_y - 2),
+                    (screen_x - 10, screen_y - 7),
+                    (screen_x - 10, screen_y + 3),
+                    (screen_x - 3, screen_y + 4),
+                ]
+                pygame.draw.polygon(self.screen, Colors.RED, left_wing)
+                pygame.draw.polygon(self.screen, (139, 0, 0), left_wing, 1)
+                
+                # Right wing - swept back
+                right_wing = [
+                    (screen_x + 2, screen_y - 2),
+                    (screen_x + 10, screen_y - 7),
+                    (screen_x + 10, screen_y + 3),
+                    (screen_x + 3, screen_y + 4),
+                ]
+                pygame.draw.polygon(self.screen, Colors.RED, right_wing)
+                pygame.draw.polygon(self.screen, (139, 0, 0), right_wing, 1)
                 
                 # Draw enemy label with info
                 label = f"{enemy_id}"
