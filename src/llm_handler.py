@@ -272,7 +272,7 @@ Weapons Strategy:
         all_objects = universe_data.get('nearby_objects', [])
         enemy_ships = universe_data.get('enemy_ships', {})
         search_entire_universe = universe_data.get('search_entire_universe', False)
-        sensor_range = universe_data.get('sensor_range', 100)
+        sensor_range = universe_data.get('sensor_range', 50)
         
         # Determine search scope message
         search_scope = "ENTIRE UNIVERSE" if search_entire_universe else f"SENSOR RANGE ({sensor_range} AU)"
