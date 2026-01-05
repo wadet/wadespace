@@ -566,7 +566,17 @@ class GameUI:
         # Draw auto-navigation status if active
         status_line_count = 0
         if ship.auto_nav_target_id:
-            nav_text = f"Navigating to: {ship.auto_nav_target_id}"
+            # Calculate distance to target
+            target_obj = self.engine.universe_objects.get(ship.auto_nav_target_id)
+            if not target_obj:
+                target_obj = self.engine.enemy_ships.get(ship.auto_nav_target_id)
+            
+            if target_obj:
+                distance = ship.position.distance_to(target_obj.position)
+                nav_text = f"Navigating to: {ship.auto_nav_target_id}  ({distance:.2f} AU)"
+            else:
+                nav_text = f"Navigating to: {ship.auto_nav_target_id}"
+            
             text = self.font_small.render(nav_text, True, Colors.YELLOW)
             self.screen.blit(text, (self.status_rect.left + 10, text_y + len(other_vitals) * 18 + status_line_count * 18))
             status_line_count += 1
@@ -701,13 +711,12 @@ class GameUI:
             
             if (self.minimap_rect.left <= screen_x <= self.minimap_rect.right and
                 self.minimap_rect.top <= screen_y <= self.minimap_rect.bottom):
-                # Draw enemy ship as small red diamond
-                size = 3
+                # Draw enemy ship as red triangle (same size as player ship)
+                size = 5
                 points = [
-                    (screen_x, screen_y - size),
-                    (screen_x + size, screen_y),
-                    (screen_x, screen_y + size),
-                    (screen_x - size, screen_y)
+                    (screen_x, screen_y - size),  # Top point
+                    (screen_x + size, screen_y + size),  # Bottom right
+                    (screen_x - size, screen_y + size)  # Bottom left
                 ]
                 pygame.draw.polygon(self.screen, Colors.RED, points)
                 
@@ -810,8 +819,21 @@ class GameUI:
         legend_y = self.minimap_rect.bottom - (total_legend_height + 5)
         
         for color, label in legend_items:
-            # Draw colored dot
-            pygame.draw.circle(self.screen, color, (int(legend_x + 3), int(legend_y + 2)), 2)
+            # Draw colored symbol
+            if label == "Enemy":
+                # Draw red triangle for enemy ships
+                size = 3
+                center_x = legend_x + 3
+                center_y = legend_y + 2
+                points = [
+                    (center_x, center_y - size),  # Top point
+                    (center_x + size, center_y + size),  # Bottom right
+                    (center_x - size, center_y + size)  # Bottom left
+                ]
+                pygame.draw.polygon(self.screen, color, points)
+            else:
+                # Draw colored dot for other objects
+                pygame.draw.circle(self.screen, color, (int(legend_x + 3), int(legend_y + 2)), 2)
             
             # Draw label
             text = self.font_small.render(label, True, Colors.WHITE)
