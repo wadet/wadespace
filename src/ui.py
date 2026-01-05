@@ -799,13 +799,14 @@ class GameUI:
     def _draw_minimap_legend(self):
         """Draw legend for minimap colors."""
         legend_items = [
-            (Colors.YELLOW, "Star"),
-            (Colors.BLUE, "Planet"),
-            (Colors.CYAN, "Wormhole"),
-            (Colors.MAGENTA, "Pulsar"),
-            (Colors.ORANGE, "Asteroid"),
-            (Colors.GREEN, "Starbase"),
-            (Colors.RED, "Enemy"),
+            (Colors.YELLOW, "Star", "circle"),
+            (Colors.BLUE, "Planet", "circle"),
+            (Colors.CYAN, "Wormhole", "circle"),
+            (Colors.MAGENTA, "Pulsar", "circle"),
+            (Colors.ORANGE, "Asteroid", "circle"),
+            (Colors.GREEN, "Friendly Base", "square"),
+            (Colors.RED, "Enemy Base", "square"),
+            (Colors.RED, "Enemy Ship", "triangle"),
         ]
         
         legend_x = self.minimap_rect.left + 10
@@ -818,9 +819,9 @@ class GameUI:
         total_legend_height = len(legend_items) * line_height
         legend_y = self.minimap_rect.bottom - (total_legend_height + 5)
         
-        for color, label in legend_items:
-            # Draw colored symbol
-            if label == "Enemy":
+        for color, label, shape in legend_items:
+            # Draw colored symbol based on shape
+            if shape == "triangle":
                 # Draw red triangle for enemy ships
                 size = 3
                 center_x = legend_x + 3
@@ -831,6 +832,9 @@ class GameUI:
                     (center_x - size, center_y + size)  # Bottom left
                 ]
                 pygame.draw.polygon(self.screen, color, points)
+            elif shape == "square":
+                # Draw colored square for starbases
+                pygame.draw.rect(self.screen, color, (int(legend_x + 1), int(legend_y), 4, 4))
             else:
                 # Draw colored dot for other objects
                 pygame.draw.circle(self.screen, color, (int(legend_x + 3), int(legend_y + 2)), 2)
