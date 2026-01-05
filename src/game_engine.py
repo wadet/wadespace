@@ -574,11 +574,26 @@ class GameEngine:
             else:
                 self.messages.append(f"Object {target_id} not found")
         else:
-            # Scan nearby objects
-            nearby = self.get_objects_in_range(ship.position, 20.0)
-            self.messages.append("Scan results:")
-            for obj_id, obj, distance in nearby[:10]:
-                self.messages.append(f"  {obj_id}: {obj.get_display_symbol()} @ {distance:.1f} AU")
+            # Scan nearby objects - include both universe objects and ships
+            nearby_objects = self.get_objects_in_range(ship.position, ship.sensors.sensor_range)
+            nearby_ships = self.get_ships_in_range(ship.position, ship.sensors.sensor_range, exclude_ship=ship.id)
+            
+            # Combine and sort by distance
+            all_nearby = nearby_objects + nearby_ships
+            all_nearby.sort(key=lambda x: x[2])
+            
+            self.messages.append(f"Scan results (sensor range: {ship.sensors.sensor_range:.0f} AU):")
+            if not all_nearby:
+                self.messages.append("  No objects detected")
+            else:
+                for obj_id, obj, distance in all_nearby[:20]:
+                    if hasattr(obj, 'get_display_symbol'):
+                        symbol = obj.get_display_symbol()
+                    else:
+                        symbol = "SHIP"
+                    self.messages.append(f"  {obj_id}: {symbol} @ {distance:.1f} AU")
+                if len(all_nearby) > 20:
+                    self.messages.append(f"  ... and {len(all_nearby) - 20} more objects")
     
     def _execute_fire(self, ship: Ship) -> None:
         """Execute phaser fire."""
