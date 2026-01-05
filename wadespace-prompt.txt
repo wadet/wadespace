@@ -71,7 +71,7 @@ SHIP COMMANDS:
 	11) tell (allows the player to talk to the object ID in natural language)
 	12) nav (enables the player to auto-navigate the ship to the specified object identifier.  You will issue the correct warp and impulse commands to get the player's ship to the vicinity of the specified object.  Once the player's ship is within 0.5 AU of the specified object, issue commands to stop the player's ship)
 	13) stop (allows the player to cancel auto-navigation mode and stop the ship where it is)
-	14) ask (enables the player to ask questions about the game using natural language syntax.  For example, if the player asks "which is the nearest star?" the game's AI should return the star that is the closest to the player's ship.)
+	14) hal (enables the player to ask questions about the game using natural language syntax.  For example, if the player asks "which is the nearest star?" the game's AI should return the star that is the closest to the player's ship.)
 	15) targets (show the first 25 enemy ships closest to the player's ship sorted by distance in ascending order)
 	16) debug (this command takes a single argument.  If the argument is "on", debug mode is on and what enemy ships are currently thinking and doing should be displayed in the Messages area each turn.  If the argument is "off", debug mode is then turned off and what the enemy ships are thinking and doing will no longer be shown in the Messages area.  When debug is on, only show the thinking and activities of the 5 enemy ships closest to the player's ship)
 * Hitting the up arrow on the keyboard should show the last command that the player issued and allow the player to execute the command again

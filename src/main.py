@@ -29,7 +29,7 @@ def main():
     print(f"Starting position: {engine.player_ship.position}")
     print()
     print("Commands: warp, impulse, heading, shields, scan, fire, torpedo,")
-    print("          status, stop, nav, ask, tell, skip")
+    print("          status, stop, nav, hal, tell, skip")
     print()
     
     # Main game loop

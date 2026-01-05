@@ -284,9 +284,9 @@ class GameEngine:
             message = command.get('message', '')
             self.messages.append(f"Message to {target_id}: {message}")
         
-        elif cmd == 'ask':
+        elif cmd == 'hal':
             question = command.get('question', '')
-            self._execute_ask(ship, question)
+            self._execute_hal(ship, question)
         
         elif cmd == 'targets':
             self._execute_targets(ship)
@@ -642,8 +642,8 @@ class GameEngine:
         self.messages.append(f"Cash: ${status['cash']}")
         self.messages.append(f"Torpedos: {status['torpedos']}")
     
-    def _execute_ask(self, ship: Ship, question: str) -> None:
-        """Execute ask command (query system with natural language support)."""
+    def _execute_hal(self, ship: Ship, question: str) -> None:
+        """Execute hal command (query system with natural language support)."""
         # First, try using LLM for natural language understanding
         if self.llm_handler.enabled:
             try:

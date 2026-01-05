@@ -53,8 +53,8 @@ class CommandParser:
             return self._match_tell(input_text)
         elif self._match_nav(input_text):
             return self._match_nav(input_text)
-        elif self._match_ask(input_text):
-            return self._match_ask(input_text)
+        elif self._match_hal(input_text):
+            return self._match_hal(input_text)
         elif self._match_targets(input_text):
             return {'command': 'targets'}
         elif self._match_debug(input_text):
@@ -243,12 +243,12 @@ class CommandParser:
         
         return None
     
-    def _match_ask(self, text: str) -> Optional[dict]:
-        """Match ask command: 'ask which is the nearest star'"""
-        match = re.search(r'ask\s+(.+)', text)
+    def _match_hal(self, text: str) -> Optional[dict]:
+        """Match hal command: 'hal which is the nearest star'"""
+        match = re.search(r'hal\s+(.+)', text)
         if match:
             question = match.group(1)
-            self.last_command = {'command': 'ask', 'question': question}
+            self.last_command = {'command': 'hal', 'question': question}
             return self.last_command
         
         return None
