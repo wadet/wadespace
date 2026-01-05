@@ -426,12 +426,10 @@ class GameEngine:
     
     def _execute_llm_decision(self, ship: Ship, decision: Dict, 
                              distance_to_player: float, show_debug: bool) -> None:
-        """Execute the decision from LLM."""
-        # Set heading and speed
-        ship.set_heading(decision['heading'])
-        ship.set_warp_speed(decision['speed'])
+        """Execute the decision from LLM. Only ONE action per turn."""
+        action_taken = None
         
-        # Handle weapon fire
+        # Priority 1: Fire phasers if requested and in range
         if decision['fire_phasers'] and distance_to_player < 10:
             ship.weapons.phaser_locked_target = self.player_ship.id
             result = ship.fire_phaser(self.player_ship)
@@ -439,33 +437,41 @@ class GameEngine:
                 damage = result.get('damage', 0)
                 damage_type = result.get('damage_type', 'unknown')
                 self.messages.append(f"{ship.id} fires phasers at you! Hit for {damage:.1f}% {damage_type} damage!")
+                action_taken = "fire_phasers"
                 if show_debug:
-                    self.messages.append(f"[DEBUG] {ship.id}: {decision['reason']}")
+                    self.messages.append(f"[DEBUG] {ship.id}: phaser attack - {decision['reason']}")
         
-        if decision['fire_torpedos'] and distance_to_player < 50 and ship.weapons.torpedos > 0:
+        # Priority 2: Fire torpedoes if no other action and requested
+        elif decision['fire_torpedos'] and distance_to_player < 50 and ship.weapons.torpedos > 0:
             result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
             if result:  # result is now a dict
                 self.messages.append(f"{ship.id} launches a torpedo!")
+                action_taken = "fire_torpedo"
                 if show_debug:
                     self.messages.append(f"[DEBUG] {ship.id}: torpedo attack")
         
-        if show_debug:
-            action = decision['action']
-            heading = decision['heading']
-            speed = decision['speed']
-            self.messages.append(
-                f"[DEBUG] {ship.id}: {action} @ heading {heading}° warp {speed} - {decision['reason']}"
-            )
+        # Priority 3: Movement if no weapons fired
+        else:
+            ship.set_heading(decision['heading'])
+            ship.set_warp_speed(decision['speed'])
+            action_taken = "movement"
+            if show_debug:
+                action = decision['action']
+                heading = decision['heading']
+                speed = decision['speed']
+                self.messages.append(
+                    f"[DEBUG] {ship.id}: {action} @ heading {heading}° warp {speed} - {decision['reason']}"
+                )
     
     def _execute_basic_enemy_ai(self, ship: Ship, distance_to_player: float, 
                                player_in_range: bool, show_debug: bool) -> None:
-        """Fallback basic AI for when LLM is unavailable."""
+        """Fallback basic AI for when LLM is unavailable. Only ONE action per turn."""
         action_desc = None
         
         if player_in_range:
             # Player detected! Decide to attack or evade based on damage
             if ship.damage >= 50.0:
-                # Heavily damaged - evade the player
+                # Heavily damaged - evade the player (MOVEMENT ONLY)
                 dx = ship.position.x - self.player_ship.position.x
                 dy = ship.position.y - self.player_ship.position.y
                 
@@ -480,22 +486,8 @@ class GameEngine:
                     if show_debug:
                         self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
             else:
-                # Not too damaged - close in to attack
-                dx = self.player_ship.position.x - ship.position.x
-                dy = self.player_ship.position.y - ship.position.y
-                
-                if dx != 0 or dy != 0:
-                    attack_heading = math.atan2(dy, dx) * 180 / math.pi
-                    if attack_heading < 0:
-                        attack_heading += 360
-                    
-                    ship.set_heading(attack_heading)
-                    ship.set_warp_speed(6.0)
-                    action_desc = f"closing in to attack at {distance_to_player:.1f} AU"
-                    if show_debug:
-                        self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
-                
-                # Try to attack if close enough
+                # Not too damaged - decide between attacking or closing in
+                # Priority: Fire phasers if very close (30% chance)
                 if distance_to_player < 15 and random.random() < 0.3:
                     ship.weapons.phaser_locked_target = self.player_ship.id
                     result = ship.fire_phaser(self.player_ship)
@@ -505,12 +497,28 @@ class GameEngine:
                         self.messages.append(f"{ship.id} fires phasers at you! Hit for {damage:.1f}% {damage_type} damage!")
                         if show_debug:
                             self.messages.append(f"[DEBUG] {ship.id}: phaser attack")
-                
-                # Also try to fire torpedos if in range (separate from phasers)
-                if distance_to_player < 50 and random.random() < 0.2 and ship.weapons.torpedos > 0:
+                # Or fire torpedoes if in range (20% chance)
+                elif distance_to_player < 50 and distance_to_player > 15 and random.random() < 0.2 and ship.weapons.torpedos > 0:
                     result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
                     if result:  # result is now a dict
                         self.messages.append(f"{ship.id} launches a torpedo!")
+                        if show_debug:
+                            self.messages.append(f"[DEBUG] {ship.id}: torpedo attack")
+                # Otherwise move to close in
+                else:
+                    dx = self.player_ship.position.x - ship.position.x
+                    dy = self.player_ship.position.y - ship.position.y
+                    
+                    if dx != 0 or dy != 0:
+                        attack_heading = math.atan2(dy, dx) * 180 / math.pi
+                        if attack_heading < 0:
+                            attack_heading += 360
+                        
+                        ship.set_heading(attack_heading)
+                        ship.set_warp_speed(6.0)
+                        action_desc = f"closing in to attack at {distance_to_player:.1f} AU"
+                        if show_debug:
+                            self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
         else:
             # Player not in sensor range - random patrol behavior
             if random.random() < 0.25:
