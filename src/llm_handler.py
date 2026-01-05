@@ -227,3 +227,170 @@ Weapons Strategy:
         except Exception as e:
             print(f"[ERROR] Failed to get enemy response: {e}")
             return f"[{enemy_ship_id}]: *no response*"
+    
+    def answer_player_question(self, question: str, universe_data: Dict[str, Any]) -> str:
+        """
+        Use GPT-4o to answer player questions about the universe.
+        
+        Args:
+            question: The player's natural language question
+            universe_data: Dictionary containing:
+                - player_position: (x, y) tuple
+                - universe_objects: dict of all objects with their data
+                - enemy_ships: dict of all enemy ships with their data
+                - nearby_objects: list of objects within sensor range
+        
+        Returns:
+            String answer to the question
+        """
+        if not self.enabled or not self.client:
+            return "Ship's computer offline. LLM unavailable."
+        
+        try:
+            # Build context for the AI
+            prompt = self._build_question_prompt(question, universe_data)
+            
+            # Call GPT-4o
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.3,  # Lower temperature for factual responses
+                max_tokens=500
+            )
+            
+            return response.choices[0].message.content
+        except Exception as e:
+            print(f"[ERROR] Failed to answer question: {e}")
+            return f"Error processing question: {str(e)}"
+    
+    def _build_question_prompt(self, question: str, universe_data: Dict[str, Any]) -> str:
+        """Build a prompt for the AI to answer player questions."""
+        player_pos = universe_data.get('player_position', (0, 0))
+        all_objects = universe_data.get('nearby_objects', [])
+        enemy_ships = universe_data.get('enemy_ships', {})
+        search_entire_universe = universe_data.get('search_entire_universe', False)
+        sensor_range = universe_data.get('sensor_range', 100)
+        
+        # Determine search scope message
+        search_scope = "ENTIRE UNIVERSE" if search_entire_universe else f"SENSOR RANGE ({sensor_range} AU)"
+        
+        # Smart filtering: Prioritize relevant object types based on the question
+        lower_q = question.lower()
+        priority_types = set()
+        
+        # Determine which object types are relevant to the question
+        if any(word in lower_q for word in ['base', 'starbase', 'station']):
+            priority_types.add('Starbase')
+        if any(word in lower_q for word in ['star', 'sun']):
+            priority_types.add('Star')
+        if any(word in lower_q for word in ['planet', 'world']):
+            priority_types.add('Planet')
+        if any(word in lower_q for word in ['black hole', 'blackhole']):
+            priority_types.add('BlackHole')
+        if any(word in lower_q for word in ['wormhole', 'worm hole']):
+            priority_types.add('WormHole')
+        if any(word in lower_q for word in ['pulsar']):
+            priority_types.add('Pulsar')
+        if any(word in lower_q for word in ['asteroid']):
+            priority_types.add('AsteroidField')
+        
+        # If no specific type mentioned, show a reasonable mix
+        if not priority_types:
+            priority_types = {'Starbase', 'Star', 'Planet', 'BlackHole'}
+        
+        # Separate objects by priority
+        priority_objects = []
+        other_objects = []
+        
+        for obj_id, obj_data in all_objects:
+            if obj_data['type'] in priority_types:
+                priority_objects.append((obj_id, obj_data))
+            else:
+                other_objects.append((obj_id, obj_data))
+        
+        # Combine: show all priority objects (up to 100), then fill remaining with others
+        max_display = 100
+        display_objects = priority_objects[:max_display]
+        remaining_slots = max_display - len(display_objects)
+        if remaining_slots > 0:
+            display_objects.extend(other_objects[:remaining_slots])
+        
+        # Build object counts summary
+        object_count_by_type = {}
+        for obj_id, obj_data in all_objects:
+            obj_type = obj_data['type']
+            object_count_by_type[obj_type] = object_count_by_type.get(obj_type, 0) + 1
+        
+        # Build nearby objects summary  
+        nearby_desc = ""
+        
+        if search_entire_universe and len(all_objects) > max_display:
+            nearby_desc += f"TOTAL OBJECTS SCANNED: {len(all_objects)}\n"
+            nearby_desc += "Object counts by type:\n"
+            for obj_type, count in sorted(object_count_by_type.items()):
+                nearby_desc += f"  - {obj_type}: {count}\n"
+            nearby_desc += f"\nShowing {len(display_objects)} most relevant objects (prioritized by question):\n"
+        
+        # Show individual objects
+        for obj_id, obj_data in display_objects:
+            obj_type = obj_data.get('type', 'unknown')
+            pos = obj_data.get('position', (0, 0))
+            distance = obj_data.get('distance', 0)
+            
+            # Add starbase status
+            if obj_type == 'Starbase':
+                is_friendly = obj_data.get('friendly', True)
+                status = 'FRIENDLY' if is_friendly else 'HOSTILE/ENEMY'
+                nearby_desc += f"  - {obj_id} ({obj_type} - {status}): Position ({pos[0]:.1f}, {pos[1]:.1f}), Distance {distance:.1f} AU\n"
+            else:
+                nearby_desc += f"  - {obj_id} ({obj_type}): Position ({pos[0]:.1f}, {pos[1]:.1f}), Distance {distance:.1f} AU\n"
+        
+        # Build enemy ships summary
+        enemy_desc = ""
+        for enemy_id, enemy_data in enemy_ships.items():
+            if not enemy_data.get('is_destroyed', False):
+                pos = enemy_data.get('position', (0, 0))
+                distance = enemy_data.get('distance', 0)
+                health = 100.0 - enemy_data.get('damage', 0)
+                shields = enemy_data.get('shields', 0)
+                enemy_desc += f"  - {enemy_id}: Position ({pos[0]:.1f}, {pos[1]:.1f}), Distance {distance:.1f} AU, Health {health:.1f}%, Shields {shields:.1f}%\n"
+        
+        prompt = f"""The captain asks: "{question}"
+
+CURRENT SITUATION:
+Your Ship Position: ({player_pos[0]:.1f}, {player_pos[1]:.1f})
+Search Scope: {search_scope}
+
+OBJECTS (sorted by distance from your ship, filtered by relevance to question):
+{nearby_desc if nearby_desc else "  None detected"}
+
+ENEMY SHIPS:
+{enemy_desc if enemy_desc else "  None detected"}
+
+AVAILABLE OBJECT TYPES IN UNIVERSE:
+- Stars (st####): Energy sources
+- Planets (pl####): Some are inhabited  
+- Starbases (sb####): Repairs and supplies. NOTE: Half are FRIENDLY to you, half are HOSTILE/ENEMY bases!
+- Black Holes (bh####): Dangerous gravitational anomalies
+- Pulsars (pu####): Disrupt sensors
+- Wormholes (wh####): Teleport to paired wormhole
+- Asteroid Fields (af####): Mining opportunities
+- Enemy Ships (s####): Hostile vessels
+
+IMPORTANT NOTES:
+- When asked about "enemy base" or "hostile base", look for Starbase objects marked as HOSTILE/ENEMY (not friendly).
+- When asked about "friendly base", look for Starbase objects marked as FRIENDLY.
+- Starbases can be either friendly or enemy - check the status in the objects list.
+- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.
+
+Based on the available data, answer the captain's question concisely and accurately. 
+If asking for "nearest" or "closest" object, search through all listed objects and identify the closest one of that type.
+For enemy bases/starbases, ONLY report starbases that are marked as HOSTILE/ENEMY.
+For friendly bases, ONLY report starbases that are marked as FRIENDLY.
+Always include the object ID, position coordinates, and distance in your answer.
+If you don't have enough data to answer, say so clearly."""
+        
+        return prompt

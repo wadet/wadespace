@@ -644,6 +644,28 @@ class GameEngine:
     
     def _execute_ask(self, ship: Ship, question: str) -> None:
         """Execute ask command (query system with natural language support)."""
+        # First, try using LLM for natural language understanding
+        if self.llm_handler.enabled:
+            try:
+                # Check if question is asking for "nearest" or "closest" - search entire universe
+                lower_q = question.lower()
+                search_entire_universe = any(keyword in lower_q for keyword in 
+                    ['nearest', 'closest', 'where is', 'find', 'locate'])
+                
+                universe_data = self._get_universe_data_for_llm(ship, search_entire_universe)
+                answer = self.llm_handler.answer_player_question(question, universe_data)
+                
+                # Split the answer into lines for better message display
+                for line in answer.split('\n'):
+                    if line.strip():
+                        self.messages.append(line.strip())
+                return
+            except Exception as e:
+                # If LLM fails, fall back to pattern matching
+                print(f"[WARNING] LLM question answering failed: {e}")
+                self.messages.append("Ship's computer degraded - using basic pattern matching.")
+        
+        # Fallback: Use hardcoded pattern matching
         lower_q = question.lower()
         
         # Query: Nearest enemy ship
@@ -651,7 +673,7 @@ class GameEngine:
             self._query_nearest_enemy(ship)
         
         # Query: Nearest starbase (check before star to avoid partial match)
-        elif any(keyword in lower_q for keyword in ['nearest starbase', 'closest starbase', 'nearest base', 'closest base']):
+        elif any(keyword in lower_q for keyword in ['nearest starbase', 'closest starbase', 'nearest base', 'closest base', 'nearest enemy base', 'closest enemy base']):
             self._query_nearest_object(ship, 'sb', 'starbase')
         
         # Query: Nearest star
@@ -852,6 +874,59 @@ class GameEngine:
             self.messages.append(f"  Status: {'DESTROYED' if enemy.is_destroyed else 'ACTIVE'}")
         else:
             self.messages.append(f"Object {target_id} not found.")
+    
+    def _get_universe_data_for_llm(self, ship: Ship, search_entire_universe: bool = False) -> Dict:
+        """
+        Extract and format universe data for LLM question answering.
+        
+        Args:
+            ship: The player's ship
+            search_entire_universe: If True, include ALL objects in universe (not just sensor range)
+        
+        Returns:
+            Dictionary with all relevant universe data
+        """
+        # Determine search range
+        if search_entire_universe:
+            search_range = 100000.0  # Entire universe
+        else:
+            search_range = ship.sensors.sensor_range
+        
+        # Get objects within search range
+        nearby = self.get_objects_in_range(ship.position, search_range)
+        nearby_formatted = []
+        for obj_id, obj, distance in nearby:
+            obj_type = type(obj).__name__
+            obj_data = {
+                'type': obj_type,
+                'position': (obj.position.x, obj.position.y),
+                'distance': distance
+            }
+            # Add starbase-specific info
+            if isinstance(obj, Starbase):
+                obj_data['friendly'] = obj.friendly_to_player
+            nearby_formatted.append((obj_id, obj_data))
+        
+        # Get all enemy ships data
+        enemy_ships_data = {}
+        for enemy_id, enemy_ship in self.enemy_ships.items():
+            distance = ship.position.distance_to(enemy_ship.position)
+            enemy_ships_data[enemy_id] = {
+                'position': (enemy_ship.position.x, enemy_ship.position.y),
+                'distance': distance,
+                'damage': enemy_ship.damage,
+                'shields': enemy_ship.shields,
+                'energy': enemy_ship.energy,
+                'is_destroyed': enemy_ship.is_destroyed
+            }
+        
+        return {
+            'player_position': (ship.position.x, ship.position.y),
+            'nearby_objects': nearby_formatted,
+            'enemy_ships': enemy_ships_data,
+            'sensor_range': ship.sensors.sensor_range,
+            'search_entire_universe': search_entire_universe
+        }
     
     def _execute_targets(self, ship: Ship) -> None:
         """Display the 5 closest enemy ships to the player."""
