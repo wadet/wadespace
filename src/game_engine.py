@@ -756,39 +756,58 @@ class GameEngine:
             self.messages.append("  - 'what is <id>', 'how many stars'")
     
     def _execute_tell(self, ship: Ship, target_id: str, message: str) -> None:
-        """Execute tell command - send message to enemy ship and get LLM-generated response."""
+        """Execute tell command - send message to enemy ship or enemy starbase and get LLM-generated response."""
         # Check if target is an enemy ship
-        if target_id not in self.enemy_ships:
-            self.messages.append(f"Cannot send message: {target_id} is not an enemy ship.")
+        target_entity = None
+        entity_type = None
+        
+        if target_id in self.enemy_ships:
+            target_entity = self.enemy_ships[target_id]
+            entity_type = 'ship'
+            
+            # Check if enemy ship is destroyed
+            if target_entity.is_destroyed:
+                self.messages.append(f"Cannot send message: {target_id} has been destroyed.")
+                return
+        
+        # Check if target is an enemy starbase
+        elif target_id in self.universe_objects:
+            obj = self.universe_objects[target_id]
+            if isinstance(obj, Starbase):
+                if not obj.friendly_to_player:
+                    target_entity = obj
+                    entity_type = 'starbase'
+                else:
+                    self.messages.append(f"Cannot send message: {target_id} is a friendly starbase.")
+                    return
+            else:
+                self.messages.append(f"Cannot send message: {target_id} is not a valid target.")
+                return
+        else:
+            self.messages.append(f"Cannot send message: {target_id} not found.")
             return
         
-        enemy_ship = self.enemy_ships[target_id]
-        
-        # Check if enemy ship is destroyed
-        if enemy_ship.is_destroyed:
-            self.messages.append(f"Cannot send message: {target_id} has been destroyed.")
-            return
-        
-        # Calculate distance to enemy
-        distance = ship.position.distance_to(enemy_ship.position)
+        # Calculate distance to target
+        distance = ship.position.distance_to(target_entity.position)
         
         # Display player's message
         self.messages.append(f"You to {target_id}: {message}")
         
         # Generate LLM response with combat context
         if self.llm_handler.enabled:
-            # Build context for the enemy captain
+            # Build context for the enemy captain/commander
             player_damage = ship.damage
-            enemy_damage = enemy_ship.damage
+            target_damage = getattr(target_entity, 'damage', 0)
             
             context = {
                 'player_message': message,
                 'distance': distance,
                 'player_damage': player_damage,
-                'enemy_damage': enemy_damage,
+                'enemy_damage': target_damage,
                 'player_shields': ship.shields,
-                'enemy_shields': enemy_ship.shields,
-                'turn_count': self.turn_count
+                'enemy_shields': getattr(target_entity, 'shields', 100),
+                'turn_count': self.turn_count,
+                'entity_type': entity_type
             }
             
             response = self.llm_handler.get_enemy_taunt(target_id, context)

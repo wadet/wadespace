@@ -230,10 +230,10 @@ Weapons Strategy:
     
     def get_enemy_taunt(self, enemy_ship_id: str, context: Dict[str, Any]) -> str:
         """
-        Generate a context-aware taunt from an enemy ship captain.
+        Generate a context-aware taunt from an enemy ship captain or starbase commander.
         
         Args:
-            enemy_ship_id: ID of the enemy ship
+            enemy_ship_id: ID of the enemy ship or starbase
             context: Dictionary with combat context:
                 - player_message: The message sent by the player
                 - distance: Distance between ships in AU
@@ -242,9 +242,10 @@ Weapons Strategy:
                 - player_shields: Player shield strength (0-100)
                 - enemy_shields: Enemy shield strength (0-100)
                 - turn_count: Current game turn
+                - entity_type: 'ship' or 'starbase'
         
         Returns:
-            String with enemy captain's taunt/response
+            String with enemy captain's/commander's taunt/response
         """
         if not self.enabled or not self.client:
             return f"[{enemy_ship_id}]: *no response*"
@@ -257,15 +258,28 @@ Weapons Strategy:
             enemy_damage = context.get('enemy_damage', 0)
             player_shields = context.get('player_shields', 0)
             enemy_shields = context.get('enemy_shields', 0)
+            entity_type = context.get('entity_type', 'ship')
             
             # Determine tactical situation
             situation_notes = []
-            if enemy_damage < 30:
-                situation_notes.append("your ship is in excellent condition")
-            elif enemy_damage < 60:
-                situation_notes.append("your ship has taken some damage")
+            
+            if entity_type == 'starbase':
+                # Starbases are defensive installations
+                situation_notes.append("you are a heavily fortified starbase with powerful weapons")
+                if enemy_damage < 30:
+                    situation_notes.append("your defenses are at full strength")
+                elif enemy_damage < 60:
+                    situation_notes.append("your station has sustained some damage")
+                else:
+                    situation_notes.append("your station is heavily damaged but still operational")
             else:
-                situation_notes.append("your ship is badly damaged")
+                # Ships are mobile combat vessels
+                if enemy_damage < 30:
+                    situation_notes.append("your ship is in excellent condition")
+                elif enemy_damage < 60:
+                    situation_notes.append("your ship has taken some damage")
+                else:
+                    situation_notes.append("your ship is badly damaged")
             
             if player_damage > 60:
                 situation_notes.append("the player's ship is crippled")
@@ -275,13 +289,28 @@ Weapons Strategy:
                 situation_notes.append("the player's ship is still strong")
             
             if distance < 5:
-                situation_notes.append("you are very close (in weapons range)")
+                situation_notes.append("they are very close (in weapons range)")
             elif distance < 15:
-                situation_notes.append("you are at medium range")
+                situation_notes.append("they are at medium range")
             else:
-                situation_notes.append("you are far apart")
+                situation_notes.append("they are far away")
             
-            system_prompt = f"""You are the captain of hostile spacecraft {enemy_ship_id} engaged in space combat.
+            # Build role-specific prompt
+            if entity_type == 'starbase':
+                role_description = f"You are the commander of hostile starbase {enemy_ship_id}, a fortified military installation in space."
+                personality = """Respond as a stern, authoritative station commander. Be intimidating and territorial.
+- Emphasize your station's superior firepower and defenses
+- Warn intruders they're in hostile territory
+- Be commanding and imperious
+- If damaged: be resolute and unyielding, promising reinforcements"""
+            else:
+                role_description = f"You are the captain of hostile spacecraft {enemy_ship_id} engaged in space combat."
+                personality = """Respond as a fierce, confident enemy captain. Be taunting, threatening, or defiant depending on the situation.
+- If winning: be arrogant and mocking
+- If losing: be defiant and threatening revenge
+- If evenly matched: be cocky and challenging"""
+            
+            system_prompt = f"""{role_description}
 Tactical situation: {', '.join(situation_notes)}.
 Your damage: {enemy_damage:.0f}%, shields: {enemy_shields:.0f}%
 Enemy damage: {player_damage:.0f}%, shields: {player_shields:.0f}%
@@ -289,10 +318,7 @@ Distance: {distance:.1f} AU
 
 The player says: "{player_message}"
 
-Respond as a fierce, confident enemy captain. Be taunting, threatening, or defiant depending on the situation.
-- If winning: be arrogant and mocking
-- If losing: be defiant and threatening revenge
-- If evenly matched: be cocky and challenging
+{personality}
 Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
             
             response = self.client.chat.completions.create(
