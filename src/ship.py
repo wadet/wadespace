@@ -69,6 +69,7 @@ class Ship:
         self.shields_active = False
         self.crew = 1000
         self.cash = random.randint(1000, 5000)
+        self.reputation = random.randint(0, 100)  # 0-100, randomly assigned
         
         # Systems
         self.weapons = ShipWeaponSystem()

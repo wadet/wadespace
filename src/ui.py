@@ -539,7 +539,7 @@ class GameUI:
         vitals = [
             ("Energy", ship.energy, Colors.CYAN),
             ("Shields", ship.shields, Colors.BLUE),
-            ("Damage", 100 - ship.damage, Colors.GREEN),
+            ("Damage", ship.damage, Colors.RED),
             ("Warp Core", ship.propulsion.warp_core_temp, Colors.RED),
         ]
         

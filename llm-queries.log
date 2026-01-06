@@ -917,3 +917,738 @@ RESPONSE:
 }
 ================================================================================
 
+================================================================================
+TIMESTAMP: 2026-01-05T19:55:38.788853
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s8721 in a space combat scenario.\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (1808.1, 8987.9)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1810.0, 9003.3)\n- Distance: 15.5 AU\n- Damage: 0.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusSN1WTn9qbgVSvFy5diC1EvXVcb",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 0,\n    \"speed\": 15,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"Player is within torpedo range and I have full health, so I will launch torpedos for a distance attack.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 69,
+    "total_tokens": 503
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:55:41.405604
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5559 in a space combat scenario.\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (1831.4, 9011.5)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1810.0, 9003.3)\n- Distance: 22.9 AU\n- Damage: 0.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusSRcMQ1dCGZ1k4FlnDYLHxqIaRS",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 188,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship is within torpedo range (22.9 AU) and we are at full health, allowing us to launch a torpedo attack while closing in on their position.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 81,
+    "total_tokens": 515
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:55:43.528254
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5548 in a space combat scenario.\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (1800.1, 9006.2)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1810.0, 9003.3)\n- Distance: 10.3 AU\n- Damage: 0.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusSTDsTiLQ3L1eHuxRllN1zTtJTG",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 0,\n    \"speed\": 10,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship is within phaser range and I have full health. I will attack with both phasers and torpedos to maximize damage.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 74,
+    "total_tokens": 508
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:55:47.950123
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s8721 in a space combat scenario.\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (1808.1, 8987.9)\n- Damage: 0.0%\n- Energy: 99.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1810.0, 9003.3)\n- Distance: 15.5 AU\n- Damage: 10.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusSX29pd3xRPRrdzIuZPlgeyMpSo",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 90,\n    \"speed\": 15,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy is within torpedo range (15.5 AU) and I am healthy, allowing me to fire torpedos for additional damage.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 74,
+    "total_tokens": 508
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:55:49.774668
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5559 in a space combat scenario.\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (1831.4, 9011.5)\n- Damage: 0.0%\n- Energy: 99.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1810.0, 9003.3)\n- Distance: 22.9 AU\n- Damage: 10.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusSaWcJtEnTelH2yTAddeaoFCdNm",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship is within torpedo range (22.9 AU) and my ship is at full health, allowing for a strategic long-range attack to inflict damage.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 79,
+    "total_tokens": 513
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:55:51.551682
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5548 in a space combat scenario.\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (1800.1, 9006.2)\n- Damage: 0.0%\n- Energy: 99.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1810.0, 9003.3)\n- Distance: 10.3 AU\n- Damage: 10.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusSbBYaXpnksl7iDFDgAkcEkrVAT",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 0,\n    \"speed\": 10,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship is within phaser range and I have full energy and shields. I will attack with both phasers and torpedoes to maximize damage.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 76,
+    "total_tokens": 510
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:55:59.965345
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s8721 in a space combat scenario.\n\nCURRENT SITUATION (Turn 3):\nYour Ship Status:\n- Position: (1808.1, 8987.9)\n- Damage: 0.0%\n- Energy: 98.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1816.6, 8997.3)\n- Distance: 12.6 AU\n- Damage: 29.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusSkO1SNNO1FtQxDtJJSwARBWvzn",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 0,\n    \"speed\": 10,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship is within torpedo range (12.6 AU) and has sustained damage. Attacking with torpedos will maximize damage output while staying safe.\" \n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 79,
+    "total_tokens": 513
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:56:02.359721
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5559 in a space combat scenario.\n\nCURRENT SITUATION (Turn 3):\nYour Ship Status:\n- Position: (1831.4, 9011.5)\n- Damage: 0.0%\n- Energy: 98.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1816.6, 8997.3)\n- Distance: 20.5 AU\n- Damage: 29.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusSmi3hxxj3O8eXew62R0LwHD1XS",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 180,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship is within torpedo range (20.5 AU) and has taken damage. Firing torpedos to inflict additional damage while maintaining maximum speed towards their position.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 82,
+    "total_tokens": 516
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:56:03.959669
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5548 in a space combat scenario.\n\nCURRENT SITUATION (Turn 3):\nYour Ship Status:\n- Position: (1800.1, 9006.2)\n- Damage: 0.0%\n- Energy: 98.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1816.6, 8997.3)\n- Distance: 18.8 AU\n- Damage: 29.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusSo8u1085GcIs89ldazTfU52bJe",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship is within torpedo range (18.8 AU) and my ship is healthy, allowing for an effective long-range attack.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 73,
+    "total_tokens": 507
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:56:24.538804
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s8721 in a space combat scenario.\n\nCURRENT SITUATION (Turn 4):\nYour Ship Status:\n- Position: (1808.1, 8987.9)\n- Damage: 0.0%\n- Energy: 97.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1823.3, 8991.2)\n- Distance: 15.5 AU\n- Damage: 38.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusT8IpLm8jD1tbcyV7iiSNUdgBvM",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 15,\n    \"speed\": 15,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy is within torpedo range (15.5 AU) and I am at full health. I will fire torpedos for additional damage while moving closer.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 78,
+    "total_tokens": 512
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:56:26.711460
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5559 in a space combat scenario.\n\nCURRENT SITUATION (Turn 4):\nYour Ship Status:\n- Position: (1831.4, 9011.5)\n- Damage: 0.0%\n- Energy: 97.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1823.3, 8991.2)\n- Distance: 21.8 AU\n- Damage: 38.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusTAS5W0s9xeIsCnEuAqRX0h91Jf",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 180,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship is within torpedo range (21.8 AU), and I will fire torpedoes while maintaining maximum speed towards their position to close the distance for a potential phaser attack next turn.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 86,
+    "total_tokens": 520
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:56:29.110252
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5548 in a space combat scenario.\n\nCURRENT SITUATION (Turn 4):\nYour Ship Status:\n- Position: (1800.1, 9006.2)\n- Damage: 0.0%\n- Energy: 97.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1823.3, 8991.2)\n- Distance: 27.6 AU\n- Damage: 38.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusTCluWoilHThAaDNPCvMtZt8ATI",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship is within torpedo range and is damaged. Firing torpedos will capitalize on their vulnerability while ensuring I maintain maximum speed towards their position.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 77,
+    "total_tokens": 511
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:56:33.196954
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s8721 in a space combat scenario.\n\nCURRENT SITUATION (Turn 5):\nYour Ship Status:\n- Position: (1808.1, 8987.9)\n- Damage: 0.0%\n- Energy: 96.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1830.0, 8985.2)\n- Distance: 22.0 AU\n- Damage: 47.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusTH6f3NWLg2nZP3FwFElnG1MYPb",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 22,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy is within torpedo range (22 AU) and has sustained damage. Use torpedos for maximum impact while maintaining speed towards the enemy.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 75,
+    "total_tokens": 509
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:56:37.076921
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5559 in a space combat scenario.\n\nCURRENT SITUATION (Turn 5):\nYour Ship Status:\n- Position: (1831.4, 9011.5)\n- Damage: 0.0%\n- Energy: 96.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1830.0, 8985.2)\n- Distance: 26.4 AU\n- Damage: 47.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusTJzNLeUHEj7l5gZZh7nBXqaSXP",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 180,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy is within torpedo range and is already damaged. Firing torpedoes will maximize damage while maintaining distance.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 69,
+    "total_tokens": 503
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:56:38.659928
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5548 in a space combat scenario.\n\nCURRENT SITUATION (Turn 5):\nYour Ship Status:\n- Position: (1800.1, 9006.2)\n- Damage: 0.0%\n- Energy: 96.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1830.0, 8985.2)\n- Distance: 36.5 AU\n- Damage: 47.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CusTNacVT2RgQcsXdTLJOc1NUISMk",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy is within torpedo range and significantly damaged. Firing torpedos maximizes damage output while maintaining distance.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 69,
+    "total_tokens": 503
+  }
+}
+================================================================================
+
