@@ -1,0 +1,619 @@
+# WADE SPACE GAME - COMPLETE RECREATION PROMPT
+
+Please create a comprehensive 2D turn-based space game called "Wade Space" inspired by Star Trek. This is a complete game with procedurally generated universe, combat system, enemy AI, and both text-based and graphical (Pygame) interfaces.
+
+## PROJECT STRUCTURE
+
+Create the following directory structure:
+
+```
+wadespace/
+├── src/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── identifiers.py
+│   ├── universe_objects.py
+│   ├── universe.py
+│   ├── ship.py
+│   ├── command_parser.py
+│   ├── game_engine.py
+│   ├── llm_handler.py
+│   ├── ui.py
+│   ├── ui_main.py
+│   ├── effects.py
+├── tests/
+│   ├── conftest.py
+│   ├── test_core.py
+├── requirements.txt
+├── run_game.sh
+├── .env.example
+├── .gitignore
+└── README.md
+```
+
+## DEPENDENCIES (requirements.txt)
+
+```
+numpy>=1.21.0
+python-dotenv>=1.0.0
+pytest>=7.0.0
+pygame>=2.1.0
+openai>=1.0.0
+```
+
+## CORE GAME SPECIFICATIONS
+
+### Universe Details
+- Size: 10,000 x 10,000 AU (Astronomical Units)
+- 1,000 stars (infinite energy sources, refuel at 10%/turn within 1 AU)
+- 10,000 planets (0-1,000 crew recruitment, shields must be down)
+- 100 black holes (instant destruction within 3 AU)
+- 100 pulsars (disrupt sensors within 2 AU)
+- 20 wormhole pairs (free teleportation)
+- 100 starbases (50% friendly, 50% enemy - repairs 25%/turn, refuel, restock torpedos)
+- 1,000 asteroid fields (mining 0-1,000$ per attempt within 1 AU)
+- 50 enemy ships (1-3 spawn near player start, rest random across universe)
+- Minimum 5 AU spacing between objects (8 AU for stars, 20 AU for black holes, etc.)
+
+### Ship Systems
+
+**Vital Statistics:**
+- Damage: 0-100% (auto-repair 5%/turn when stationary with crew scaling, 1%/turn when moving)
+- Energy: 0-100% (drained by systems)
+- Shields: 0-100% (drain 2%/turn when active, absorb damage before hull)
+- Crew: 0-1,000 (ship disabled at 0, affects repair rate)
+- Cash: Starting $1,000-5,000 (earned from mining and destroyed enemies)
+- Photon Torpedos: 0-50 max
+- Reputation: 0-100 (affects enemy behavior and combat outcomes)
+
+**Weapon Systems:**
+- Phasers: Instant-hit, 10 AU range, 5% damage, 50-100% accuracy based on distance, requires lock-on, 1% energy cost, 25% recharge/turn
+- Photon Torpedos: 10% damage, 1 AU/turn speed, 20 AU max range, 25% miss chance, travel in straight line, 1% chance to damage warp core
+
+**Propulsion:**
+- Warp Drive: 2-9 AU/turn (0.5% energy/turn), speeds >9 cause core temp buildup
+- Impulse Drive: Percentage-based 1-100% of 1 AU/turn (1% energy at 100%), cannot use with warp simultaneously
+- Warp Core Temperature: 0-100%, cools 5%/turn when warp inactive, 10%/turn when impulse inactive
+- Auto-Navigation: Automatically calculates heading and speed to reach target object
+
+**Sensors:**
+- 50 AU detection range
+- 20 AU detailed scan range
+- No energy consumption
+- Disrupted by pulsars within 2 AU
+
+### Object ID System (identifiers.py)
+
+All objects have unique IDs with format: `<2-letter prefix><1-4 digit number>`
+
+Prefixes:
+- `st` = Star (st1 - st9999)
+- `pl` = Planet (pl1 - pl9999)
+- `bh` = Black Hole (bh1 - bh9999)
+- `pu` = Pulsar (pu1 - pu9999)
+- `wh` = Worm Hole (wh1 - wh9999)
+- `sb` = Starbase (sb1 - sb9999)
+- `af` = Asteroid Field (af1 - af9999)
+- `s` = Ship (s1 - s9999)
+
+The ObjectIdentifier class generates globally unique IDs and validates them.
+
+### Command System (command_parser.py)
+
+Natural language command parser supporting:
+
+**Navigation:**
+- `warp [2-9]` - Set warp speed
+- `impulse [1-100]` or `imp [1-100]` - Set impulse speed as percentage
+- `impulse on/off` - Activate/deactivate impulse
+- `heading [0-359]` - Set course in degrees
+- `nav [object_id]` - Auto-navigate to object (cancels on warp/impulse/heading commands)
+- `stop` or `all stop` - Stop all movement and cancel auto-nav
+
+**Combat:**
+- `scan` - Scan all objects within 20 AU
+- `scan [object_id]` - Scan specific object
+- `lock [object_id]` - Lock phasers on target
+- `fire` - Fire locked phasers
+- `torpedo [object_id]` or `tor [object_id]` - Fire torpedo at target
+- `targets` - Show all ships in 50 AU sensor range
+
+**Systems:**
+- `shields up/down` or `shi up/down` - Raise/lower shields
+- `status` or `sta` - Display ship status
+- `skip` - Skip turn
+
+**Communication:**
+- `tell [object_id] [message]` - Send message to object (for friendly starbases)
+- `ask [question]` or `hal [question]` - Query LLM about game state
+
+**Debug:**
+- `debug on/off` - Toggle debug mode (shows closest 5 enemy decisions)
+
+### Enemy AI System (llm_handler.py)
+
+Enemy ships use GPT-4o-mini for tactical decisions based on:
+- Behavior trait: aggressive, neutral, or timid
+- Ship condition (damage, energy, shields)
+- Player reputation (0-100)
+- Distance to player and other objects
+- Turn count
+
+**Behavior Traits:**
+- **Aggressive:** Attack if player reputation < 70, flee only if damage > 80%
+- **Neutral:** Attack if provoked or reputation < 50, flee if damage > 50%
+- **Timid:** Attack only if provoked or reputation < 25, flee if damage > 30%
+
+**Reputation System:**
+- Destroying timid ships OR ships with reputation > 70: -10 reputation
+- Destroying aggressive ships OR ships with reputation < 30: +10 reputation
+- Reputation affects how enemy ships perceive threat level
+
+LLM returns JSON with: action, heading, speed, fire_phasers, fire_torpedos, reason
+
+Fallback to rule-based AI if OpenAI API unavailable.
+
+### Game Engine (game_engine.py)
+
+Main game loop processes turns:
+1. Execute player command
+2. Process player auto-navigation
+3. Generate and execute enemy commands (using LLM)
+4. Update all objects (movement, energy, damage, shields, warp core)
+5. Update active projectiles (torpedos travel 1 AU/turn in straight line)
+6. Check collisions and interactions:
+   - Star refueling (10%/turn within 1 AU)
+   - Starbase services (25% repair/turn within 1 AU, refuel, restock)
+   - Planet crew recruitment (shields down, within 1 AU)
+   - Asteroid mining (within 1 AU, 0-1,000$ random)
+   - Black hole destruction (instant if within 3 AU)
+   - Wormhole teleportation (within 1 AU, teleport to paired wormhole)
+   - Pulsar sensor disruption (within 2 AU)
+   - Phaser hits (instant damage)
+   - Torpedo impacts (check if torpedo reached target)
+7. Check game over conditions
+
+**Game Over Conditions:**
+- Player ship destroyed (damage >= 100%)
+- Player ship disabled (crew <= 0)
+- Player ship consumed by black hole
+- Victory: All 50 enemy ships destroyed
+
+### Universe Generation (universe.py)
+
+Uses spatial grid partitioning for efficient object placement:
+- SpatialGrid class divides universe into 100 AU cells for fast proximity checks
+- Objects placed with minimum distance requirements
+- Stars use sector-based distribution for even spacing
+- Planets orbit stars at 5-50 AU distance using proper polar coordinates
+- Wormholes paired during generation
+- Starbases randomly assigned friendly/enemy status
+
+### Universe Objects (universe_objects.py)
+
+Base `UniverseObject` class with abstract methods:
+- `update()` - Update object state each turn
+- `get_display_symbol()` - Return ASCII/symbol for display
+
+Concrete classes:
+- **Star**: Infinite energy, symbol ★
+- **Planet**: Crew available if inhabited, symbol ● (inhabited) or ○ (uninhabited)
+- **BlackHole**: 3 AU destruction range, symbol ⊗
+- **Pulsar**: 2 AU disruption range, pulse counter, symbol ◇
+- **WormHole**: Paired teleportation, 1 AU entry range, symbol ◎
+- **Starbase**: Repairs/refuel/restock, shields, damage, friendly flag, symbol ⊕
+- **AsteroidField**: 5-20 asteroids in 5x5 AU cluster, symbol ✕
+
+Position class with `distance_to()` method for Euclidean distance calculations.
+
+### Ship Class (ship.py)
+
+Complete ship implementation with systems:
+
+**Data Classes:**
+- `ShipWeaponSystem` - Phasers and torpedos
+- `ShipPropulsionSystem` - Warp, impulse, heading, speed, core temperature
+- `ShipSensorSystem` - Range, disruption status
+
+**Methods:**
+- `can_move()` - Check if ship can move (energy > 0, crew > 0, not destroyed)
+- `can_fire_weapons()` - Check if can fire
+- `update_shields(active)` - Raise/lower shields
+- `update_energy()` - Apply energy drain from active systems
+- `update_damage_repair()` - Repair damage (5% stationary with crew scaling, 1% moving)
+- `update_warp_core()` - Manage core temperature
+- `update_phaser_charge()` - Recharge phasers (25%/turn)
+- `take_damage(amount, bypass_shields)` - Apply damage to ship
+- `take_shield_hit(amount)` - Hit shields or hull
+- `set_warp_speed(speed)` - Set warp speed, deactivate impulse
+- `set_heading(degrees)` - Set heading (0-359)
+- `lock_phasers(target_id)` - Lock weapons on target
+- `fire_phasers()` - Fire at locked target if in range
+- `fire_torpedo(target_pos)` - Launch torpedo toward position
+- `stop()` - Stop all movement
+- `update_position()` - Move ship based on heading and speed
+- `move_towards(target_pos, speed)` - Auto-navigation helper
+
+**Stats Tracking (player only):**
+- enemies_destroyed
+- phasers_fired
+- torpedos_fired
+- torpedo_hits
+
+### Visual Effects (effects.py)
+
+Pygame particle system for explosions and visual feedback:
+- `Particle` class - Individual particles with velocity, color, lifetime, fade
+- `ExplosionEffect` class - Star Wars-style radial explosion with multiple particles
+- `PhaserBeam` class - Animated phaser beam effect
+- `TorpedoTrail` class - Torpedo trail effect
+
+### Graphical UI (ui.py)
+
+Full Pygame interface with 2/3 screen resolution:
+
+**Layout:**
+- Left half: 20x20 AU 2D map (player-centered view)
+  - Grid overlay for reference
+  - All universe objects rendered with appropriate symbols/colors
+  - Enemy ships as red Klingon Bird of Prey designs
+  - Player ship as green USS Enterprise design
+  - Active torpedos as yellow projectiles
+  - Phaser beams animated
+  - Yellow navigation circle around target object
+
+- Right half divided into three sections:
+  - Top third: Split into Status (left) and Minimap (right)
+    - Status shows: Position, Energy, Shields, Damage, Crew, Cash, Torpedos, Reputation
+    - Color-coded health bars (green/yellow/red)
+    - Minimap shows 500±300 AU area (adjustable with mouse wheel)
+    - Minimap clickable to set nav targets
+  - Middle third: Scrolling message area
+    - Last 50 messages
+    - Auto-scroll to bottom
+    - Different colors for different message types
+  - Bottom third: Command prompt
+    - Text input with cursor
+    - Command history (up/down arrows)
+    - Command suggestions/help
+
+**Colors:**
+- Stars: Yellow
+- Planets: Green (inhabited) / Gray (uninhabited)
+- Black Holes: Purple
+- Pulsars: Cyan
+- Wormholes: Blue
+- Starbases: Green (friendly) / Red (enemy)
+- Asteroid Fields: Brown
+- Enemy Ships: Red
+- Player Ship: Green
+- Torpedos: Yellow
+- Phasers: Red beams
+
+**Interactions:**
+- Click minimap to set nav target
+- Mouse wheel to zoom minimap
+- Hover over objects for tooltips
+- Keyboard input for commands
+
+UI launches with: `python -m src.ui_main`
+
+### Text-Based UI (main.py)
+
+Simple command-line interface:
+- Turn counter
+- Position, energy, shields, damage, crew display
+- Command prompt with parser
+- Message output
+- Error handling
+
+Launches with: `python -m src.main`
+
+### Testing (tests/)
+
+pytest suite with:
+- Universe generation tests
+- Ship system tests
+- Command parser tests
+- Combat mechanics tests
+- Object interaction tests
+- Identifier system tests
+
+### Configuration Files
+
+**.env.example:**
+```
+OPENAI_API_KEY=your_api_key_here
+```
+
+**.gitignore:**
+```
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.env
+llm-queries.log
+*.swp
+.git/
+```
+
+**run_game.sh:**
+```bash
+#!/bin/bash
+# Launch Wade Space Game
+python -m src.ui_main
+```
+
+### README.md Content
+
+Include:
+- Project overview and features
+- Quick start instructions
+- Installation steps (pip install -r requirements.txt)
+- Command reference
+- Game mechanics explanation
+- Universe details
+- Combat system description
+- Development notes
+
+## IMPLEMENTATION NOTES
+
+### Critical Implementation Details
+
+1. **Position and Movement:**
+   - All positions use float coordinates
+   - Heading is 0-359 degrees (0=North, 90=East, 180=South, 270=West)
+   - Movement calculation: `x += speed * sin(heading)`, `y -= speed * cos(heading)`
+   - Distance calculations use Euclidean distance formula
+
+2. **Combat Mechanics:**
+   - Phasers hit instantly if target in range and line-of-sight
+   - Torpedos created as projectiles that move each turn
+   - Accuracy decreases with distance
+   - Shields absorb damage before hull
+   - Ship destroyed at 100% damage
+
+3. **Auto-Navigation:**
+   - Calculate heading to target using `atan2(dy, dx)`
+   - Set optimal speed (warp 5 if distance > 10 AU, else impulse)
+   - Cancel on manual warp/impulse/heading commands
+   - Stop when within 1 AU of target
+
+4. **Energy Management:**
+   - Shields: 2% per turn
+   - Warp: 0.5% per turn base, increases with speed > 9
+   - Impulse: 1% per turn at 100%
+   - Weapons: 1% per shot
+   - Auto-recharge from stars within 1 AU (10%/turn)
+
+5. **Turn Processing Order:**
+   - Player command execution
+   - Auto-navigation processing
+   - Enemy AI decisions (LLM calls)
+   - Enemy command execution
+   - Movement updates (all ships)
+   - Projectile updates (torpedos)
+   - System updates (energy, shields, damage, warp core)
+   - Collision detection
+   - Special interactions (refueling, mining, etc.)
+   - Game over check
+
+6. **Spatial Optimization:**
+   - Use grid-based spatial partitioning for object queries
+   - Cache nearby object lists
+   - Only query necessary range for each operation
+
+7. **LLM Integration:**
+   - Log all API calls to `llm-queries.log`
+   - Handle API failures gracefully with fallback AI
+   - Use GPT-4o-mini for cost efficiency
+   - Request JSON-formatted responses
+   - Include context: ship state, enemy state, nearby objects, behavior trait
+
+8. **Error Handling:**
+   - Validate all user inputs
+   - Check object IDs exist before operations
+   - Clamp values to valid ranges (heading 0-359, speed positive, etc.)
+   - Handle missing API keys gracefully
+   - Catch and log exceptions without crashing
+
+9. **Game Balance:**
+   - Enemy ships spawn with 500-2,000 cash
+   - Mining yields 0-1,000$ randomly
+   - Repair rates: 5%/turn stationary (crew-scaled), 1%/turn moving, 25%/turn at starbase
+   - Phaser damage: 5% per hit
+   - Torpedo damage: 10% per hit
+   - Enemy AI makes decisions every turn
+
+10. **UI Performance:**
+    - Render only visible objects on main map (20x20 AU viewport)
+    - Use minimap for strategic overview
+    - Limit message history to 50 entries
+    - Update display at 30 FPS
+    - Cache rendered text surfaces
+
+## FILE CONTENTS CHECKLIST
+
+Ensure each file contains:
+
+### src/__init__.py
+- Empty file for package initialization
+
+### src/identifiers.py
+- ObjectIdentifier class
+- PREFIX_MAP dictionary
+- generate(obj_type) method
+- is_valid(obj_id) method
+- get_type_from_id(obj_id) method
+- Global uniqueness tracking with set
+
+### src/universe_objects.py
+- Position dataclass with distance_to()
+- UniverseObject abstract base class
+- Star, Planet, BlackHole, Pulsar, WormHole, Starbase, AsteroidField classes
+- Each with update() and get_display_symbol()
+- Proper inheritance hierarchy
+
+### src/universe.py
+- SpatialGrid class for efficient spatial queries
+- UniverseGenerator class
+- generate() method creating all objects
+- Minimum spacing validation
+- Planet orbital mechanics with polar coordinates
+- Wormhole pairing logic
+
+### src/ship.py
+- ShipWeaponSystem, ShipPropulsionSystem, ShipSensorSystem dataclasses
+- Ship class with all vital statistics
+- Movement, combat, system management methods
+- Reputation and behavior_trait attributes
+- Stats dictionary for player ship
+
+### src/command_parser.py
+- CommandParser class
+- parse(input) method
+- Individual _match_*() methods for each command
+- Support for natural language variations
+- Command history tracking
+
+### src/game_engine.py
+- GameEngine class
+- Universe and ship initialization
+- process_turn() main loop
+- _execute_command() for all commands
+- _execute_enemy_command() with LLM integration
+- _check_collisions() for all interactions
+- _check_game_over() for win/loss conditions
+- Message list for player feedback
+
+### src/llm_handler.py
+- LLMHandler class
+- OpenAI client initialization
+- get_enemy_decision() method
+- _build_decision_prompt() with full context
+- _parse_gpt_response() for JSON parsing
+- _default_decision() fallback AI
+- _log_api_call() for debugging
+
+### src/effects.py
+- Particle class
+- ExplosionEffect class
+- PhaserBeam class (optional but recommended)
+- TorpedoTrail class (optional but recommended)
+- Update and draw methods
+
+### src/ui.py
+- Colors class with palette
+- GameUI class
+- Layout calculations
+- _draw_2d_map() with player-centered view
+- _draw_status_panel()
+- _draw_minimap() with zoom
+- _draw_messages()
+- _draw_command_prompt()
+- Event handling (keyboard, mouse)
+- Main run() loop
+
+### src/ui_main.py
+- Entry point for graphical UI
+- Initialize GameEngine and GameUI
+- Run main game loop
+
+### src/main.py
+- Entry point for text-based UI
+- Initialize GameEngine and CommandParser
+- Simple command-line loop
+- Message display
+
+### tests/conftest.py
+- pytest fixtures for engine, universe, ship
+- Common test setup
+
+### tests/test_core.py
+- Test universe generation
+- Test ship systems
+- Test command parsing
+- Test combat mechanics
+- Test identifiers
+
+## GAMEPLAY FLOW EXAMPLE
+
+1. Player starts near a star with 1-3 enemy ships nearby
+2. Use `scan` to detect nearby objects
+3. Navigate to star with `nav st1234` for refueling
+4. Use `heading 90` and `warp 5` for manual navigation
+5. Lock weapons with `lock s42` when enemy in range
+6. Fire phasers with `fire` or torpedos with `tor`
+7. Manage shields with `shi up` during combat
+8. Mine asteroids with automatic mining when within 1 AU
+9. Recruit crew from planets (shields must be down)
+10. Repair at friendly starbases
+11. Avoid black holes (instant death within 3 AU)
+12. Use wormholes for rapid transit across universe
+13. Track reputation and adjust tactics
+14. Win by destroying all 50 enemy ships
+
+## ADDITIONAL FEATURES TO IMPLEMENT
+
+The codebase includes these extra features:
+
+1. **Reputation System:**
+   - Track player reputation (0-100)
+   - Affects enemy behavior decisions
+   - Changes based on which ships are destroyed
+
+2. **Behavior Traits:**
+   - Each enemy has aggressive/neutral/timid trait
+   - Affects combat decisions and threshold for engagement/fleeing
+   - Visible in scan results
+
+3. **Debug Mode:**
+   - Toggle with `debug on/off`
+   - Shows LLM decisions for 5 closest enemies
+   - Displays reasoning in messages
+
+4. **Ask Command:**
+   - `ask [question]` or `hal [question]`
+   - Uses LLM to answer questions about game state
+   - Helpful for new players
+
+5. **Tell Command:**
+   - `tell [object_id] [message]`
+   - Communicate with friendly starbases
+   - Get status information
+
+6. **Targets Command:**
+   - `targets` shows all ships in 50 AU sensor range
+   - Lists distance and basic info
+
+7. **Visual Effects:**
+   - Explosion animations when ships destroyed
+   - Phaser beam animations
+   - Torpedo trail effects
+   - Particle systems
+
+8. **Minimap Interaction:**
+   - Click objects on minimap to set nav target
+   - Yellow circle shows navigation target
+   - Mouse wheel zoom (500±300 AU range)
+
+## FINAL NOTES
+
+This game is a complete, playable experience with:
+- Deep strategic gameplay
+- Intelligent AI opponents using LLM
+- Both text and graphical interfaces
+- Rich universe with many interactive elements
+- Star Trek-inspired mechanics and aesthetics
+- Proper software engineering practices (modular, tested, documented)
+
+The code should be production-quality with:
+- Type hints where appropriate
+- Docstrings for all classes and major methods
+- Error handling throughout
+- Clean separation of concerns
+- Efficient algorithms for large universe
+- Extensible architecture for future features
+
+Total implementation should be approximately 3000-4000 lines of Python code across all modules.
