@@ -96,6 +96,7 @@ class GameUI:
         self.command_history = []
         self.history_index = -1
         self.current_input = ""
+        self.cursor_position = 0  # Cursor position in the input string
         self.minimap_zoom_offset = 0.0  # 0 = 500 AU base, ±300 AU max adjustment
         self.mouse_pos = (0, 0)  # Track mouse position for hover effects
         self.minimap_objects = []  # Store (screen_x, screen_y, obj_id, radius) for click detection
@@ -913,10 +914,32 @@ class GameUI:
         pygame.draw.rect(self.screen, Colors.BLACK, input_box_rect)
         pygame.draw.rect(self.screen, Colors.LIGHT_GRAY, input_box_rect, 2)
         
-        # Draw input text
-        if self.current_input or pygame.time.get_ticks() % 1000 < 500:  # Blinking cursor
-            input_text = self.font.render(self.current_input + ("|" if not self.current_input or pygame.time.get_ticks() % 1000 < 500 else ""), True, Colors.WHITE)
-            self.screen.blit(input_text, (input_box_rect.left + 5, input_box_rect.top + 2))
+        # Draw input text with cursor at correct position
+        blink_cursor = pygame.time.get_ticks() % 1000 < 500
+        
+        # Split text at cursor position
+        text_before_cursor = self.current_input[:self.cursor_position]
+        text_after_cursor = self.current_input[self.cursor_position:]
+        
+        # Render text before cursor
+        if text_before_cursor:
+            before_surf = self.font.render(text_before_cursor, True, Colors.WHITE)
+            self.screen.blit(before_surf, (input_box_rect.left + 5, input_box_rect.top + 2))
+            cursor_x = input_box_rect.left + 5 + before_surf.get_width()
+        else:
+            cursor_x = input_box_rect.left + 5
+        
+        # Draw blinking cursor
+        if blink_cursor:
+            cursor_surf = self.font.render("|", True, Colors.WHITE)
+            self.screen.blit(cursor_surf, (cursor_x, input_box_rect.top + 2))
+        
+        # Render text after cursor
+        if text_after_cursor:
+            after_surf = self.font.render(text_after_cursor, True, Colors.WHITE)
+            # Add small offset if cursor is shown to avoid overlap
+            cursor_width = self.font.render("|", True, Colors.WHITE).get_width() if blink_cursor else 0
+            self.screen.blit(after_surf, (cursor_x + cursor_width, input_box_rect.top + 2))
         
         # Draw help text
         help_y = input_y + input_box_height + 10
@@ -956,35 +979,88 @@ class GameUI:
                         self.command_history.append(self.current_input)
                         self.history_index = -1
                         self.current_input = ""
+                        self.cursor_position = 0
                     else:
                         # Empty input treated as "skip" command
                         self._execute_command("skip")
                         self.history_index = -1
                 
                 elif event.key == pygame.K_BACKSPACE:
-                    self.current_input = self.current_input[:-1]
+                    # Delete character before cursor
+                    if self.cursor_position > 0:
+                        self.current_input = (self.current_input[:self.cursor_position - 1] + 
+                                            self.current_input[self.cursor_position:])
+                        self.cursor_position -= 1
+                
+                elif event.key == pygame.K_DELETE:
+                    # Delete character after cursor
+                    if self.cursor_position < len(self.current_input):
+                        self.current_input = (self.current_input[:self.cursor_position] + 
+                                            self.current_input[self.cursor_position + 1:])
+                
+                elif event.key == pygame.K_LEFT:
+                    # Move cursor left
+                    if self.cursor_position > 0:
+                        self.cursor_position -= 1
+                
+                elif event.key == pygame.K_RIGHT:
+                    # Move cursor right
+                    if self.cursor_position < len(self.current_input):
+                        self.cursor_position += 1
+                
+                elif event.key == pygame.K_HOME:
+                    # Move cursor to beginning
+                    self.cursor_position = 0
+                
+                elif event.key == pygame.K_END:
+                    # Move cursor to end
+                    self.cursor_position = len(self.current_input)
                 
                 elif event.key == pygame.K_ESCAPE:
                     self.current_input = ""
+                    self.cursor_position = 0
                     self.history_index = -1
                 
                 elif event.key == pygame.K_UP:
                     if self.command_history:
                         self.history_index = min(self.history_index + 1, len(self.command_history) - 1)
                         self.current_input = self.command_history[-(self.history_index + 1)]
+                        self.cursor_position = len(self.current_input)
                 
                 elif event.key == pygame.K_DOWN:
                     if self.history_index > 0:
                         self.history_index -= 1
                         self.current_input = self.command_history[-(self.history_index + 1)]
+                        self.cursor_position = len(self.current_input)
                     elif self.history_index == 0:
                         self.history_index = -1
                         self.current_input = ""
+                        self.cursor_position = 0
+                
+                elif event.key == pygame.K_a and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                    # Ctrl+A: Move to beginning
+                    self.cursor_position = 0
+                
+                elif event.key == pygame.K_e and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                    # Ctrl+E: Move to end
+                    self.cursor_position = len(self.current_input)
+                
+                elif event.key == pygame.K_k and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                    # Ctrl+K: Delete from cursor to end
+                    self.current_input = self.current_input[:self.cursor_position]
+                
+                elif event.key == pygame.K_u and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                    # Ctrl+U: Delete entire line
+                    self.current_input = ""
+                    self.cursor_position = 0
                 
                 else:
-                    # Add printable characters
+                    # Add printable characters at cursor position
                     if event.unicode.isprintable():
-                        self.current_input += event.unicode
+                        self.current_input = (self.current_input[:self.cursor_position] + 
+                                            event.unicode + 
+                                            self.current_input[self.cursor_position:])
+                        self.cursor_position += 1
             
             elif event.type == pygame.MOUSEWHEEL:
                 # Zoom minimap with mouse scroll
