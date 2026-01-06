@@ -3220,3 +3220,640 @@ RESPONSE:
 }
 ================================================================================
 
+================================================================================
+TIMESTAMP: 2026-01-05T20:38:21.649344
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5062 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (4559.4, 1053.4)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nEnemy Ship (PLAYER):\n- Position: (4541.3, 1029.3)\n- Distance: 30.1 AU\n- Damage: 0.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 25 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if player reputation < 10\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Check if you should attack based on reputation threshold (25) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut7kOFycZMMg9W6coZPHQuib8U9L",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"No damage taken and the enemy's reputation is below 25. Prefer to patrol cautiously.\" \n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 504,
+    "completion_tokens": 65,
+    "total_tokens": 569
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:38:23.493960
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s9695 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (4556.9, 1068.4)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nEnemy Ship (PLAYER):\n- Position: (4541.3, 1029.3)\n- Distance: 42.1 AU\n- Damage: 0.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 70 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Check if you should attack based on reputation threshold (70) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut7lse1FixemrCXxGftIc9LliZMm",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 36,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy's reputation is below 70, making them a valid target for attack. Torpedoes will be fired since they are within range.\" \n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 478,
+    "completion_tokens": 75,
+    "total_tokens": 553
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:38:35.256259
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5062 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (4559.4, 1053.4)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nEnemy Ship (PLAYER):\n- Position: (4541.3, 1029.3)\n- Distance: 30.1 AU\n- Damage: 0.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 25 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if player reputation < 10\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Check if you should attack based on reputation threshold (25) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut7x0Xac6wkZnH8nNl1Z7rwg0YbO",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"I am not provoked and the enemy has a low reputation, so I will cautiously patrol the area.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 504,
+    "completion_tokens": 67,
+    "total_tokens": 571
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:38:37.896395
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s9695 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (4556.9, 1068.4)\n- Damage: 0.0%\n- Energy: 99.0%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nEnemy Ship (PLAYER):\n- Position: (4541.3, 1029.3)\n- Distance: 42.1 AU\n- Damage: 0.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 70 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Check if you should attack based on reputation threshold (70) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut7zxkwPsZn2DQA5nOLpp2u5SFG7",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 45,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship has a low reputation of 0, making it a valid target for attack. I will engage using torpedoes since they are at a medium range of 42.1 AU.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 478,
+    "completion_tokens": 85,
+    "total_tokens": 563
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:39:03.891909
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5062 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 3):\nYour Ship Status:\n- Position: (4559.4, 1053.4)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nEnemy Ship (PLAYER):\n- Position: (4541.3, 1029.3)\n- Distance: 30.1 AU\n- Damage: 0.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 25 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if player reputation < 10\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Check if you should attack based on reputation threshold (25) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut8QZVhW1Towv6pxFMYCzv9es040",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"The enemy's reputation is 0, which allows for a cautious approach. I will patrol the area instead of attacking.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 504,
+    "completion_tokens": 70,
+    "total_tokens": 574
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:39:05.633687
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s9695 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 3):\nYour Ship Status:\n- Position: (4556.9, 1068.4)\n- Damage: 0.0%\n- Energy: 98.0%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nEnemy Ship (PLAYER):\n- Position: (4541.3, 1029.3)\n- Distance: 42.1 AU\n- Damage: 0.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 70 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Check if you should attack based on reputation threshold (70) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut8RskYN4Z1HY0myxjHibPvIGiWv",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship has a reputation of 0, allowing for a direct attack with torpedos since they are within range.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 478,
+    "completion_tokens": 70,
+    "total_tokens": 548
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:39:12.425391
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5062 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 4):\nYour Ship Status:\n- Position: (4559.4, 1053.4)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nEnemy Ship (PLAYER):\n- Position: (4546.7, 1036.5)\n- Distance: 21.1 AU\n- Damage: 0.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 25 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if player reputation < 10\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Check if you should attack based on reputation threshold (25) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut8Zf6QN3jv6pOpr3moYGYhpfkJb",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"evade\",\n    \"heading\": 180,\n    \"speed\": 2,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"The enemy ship has a low reputation, but I am currently undamaged and prefer to avoid confrontation.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 504,
+    "completion_tokens": 66,
+    "total_tokens": 570
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:39:14.668758
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s9695 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 4):\nYour Ship Status:\n- Position: (4556.9, 1068.4)\n- Damage: 0.0%\n- Energy: 97.0%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nEnemy Ship (PLAYER):\n- Position: (4546.7, 1036.5)\n- Distance: 33.5 AU\n- Damage: 0.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 70 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Check if you should attack based on reputation threshold (70) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut8aGpmD162IGjsOzYzrJ6VczTXC",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 45,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"Enemy has low reputation (0). Engaging with phasers at close range for maximum damage.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 478,
+    "completion_tokens": 64,
+    "total_tokens": 542
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:39:20.459508
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5062 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 5):\nYour Ship Status:\n- Position: (4557.4, 1053.4)\n- Damage: 50.0%\n- Energy: 99.5%\n- Shields: 100.0%\n- Behavior Type: timid\n\nEnemy Ship (PLAYER):\n- Position: (4552.1, 1043.7)\n- Distance: 11.1 AU\n- Damage: 20.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 25 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if player reputation < 10\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Check if you should attack based on reputation threshold (25) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut8hd9zok9h7x2Z2GPps4LVFwIWW",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"flee\",\n    \"heading\": 270,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"Damage is at 50%, which is greater than 30%. Fleeing to avoid further damage.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 504,
+    "completion_tokens": 67,
+    "total_tokens": 571
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:39:22.191587
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s9695 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 5):\nYour Ship Status:\n- Position: (4571.0, 1082.6)\n- Damage: 0.0%\n- Energy: 96.5%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nEnemy Ship (PLAYER):\n- Position: (4552.1, 1043.7)\n- Distance: 43.2 AU\n- Damage: 20.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 70 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Check if you should attack based on reputation threshold (70) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut8ivJyOCLAB24AEopWmiG22Q6G3",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"Enemy reputation is 0, I will use torpedoes to engage from a distance.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 478,
+    "completion_tokens": 63,
+    "total_tokens": 541
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:39:32.179699
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5062 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 6):\nYour Ship Status:\n- Position: (4557.4, 1033.4)\n- Damage: 49.0%\n- Energy: 99.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nEnemy Ship (PLAYER):\n- Position: (4554.0, 1047.2)\n- Distance: 14.2 AU\n- Damage: 29.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 25 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if player reputation < 10\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Check if you should attack based on reputation threshold (25) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut8sIeFj9mRH11HjgBbzX0DXH2h0",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"flee\",\n    \"heading\": 180,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"Damage exceeds 30%, prioritizing escape to avoid further damage.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 504,
+    "completion_tokens": 59,
+    "total_tokens": 563
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:39:41.797361
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5062 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 7):\nYour Ship Status:\n- Position: (4537.4, 1033.4)\n- Damage: 48.0%\n- Energy: 98.5%\n- Shields: 100.0%\n- Behavior Type: timid\n\nEnemy Ship (PLAYER):\n- Position: (4555.0, 1043.3)\n- Distance: 20.2 AU\n- Damage: 28.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 25 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if player reputation < 10\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Check if you should attack based on reputation threshold (25) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut92bPaGEpIGSeDco7ngm1yzQOUS",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"flee\",\n    \"heading\": 270,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"Ship damage is at 48%, exceeding the flee threshold of 30%.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 504,
+    "completion_tokens": 62,
+    "total_tokens": 566
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T20:39:53.684689
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5062 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 8):\nYour Ship Status:\n- Position: (4537.4, 1013.4)\n- Damage: 47.0%\n- Energy: 98.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nEnemy Ship (PLAYER):\n- Position: (4547.1, 1038.9)\n- Distance: 27.3 AU\n- Damage: 27.0%\n- Reputation: 0/100\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Player reputation < 25 OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if player reputation < 10\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Check if you should attack based on reputation threshold (25) or if provoked\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cut9ENnc4LSjFPWHHGTgbhH3ctY93",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"flee\",\n    \"heading\": 180,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"Current damage is 47.0%, which exceeds the flee threshold of 30%. Prioritize survival by moving away from the enemy.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 504,
+    "completion_tokens": 73,
+    "total_tokens": 577
+  }
+}
+================================================================================
+

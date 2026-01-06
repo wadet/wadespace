@@ -477,7 +477,8 @@ class GameEngine:
         elif decision['fire_torpedos'] and distance_to_player < 50 and ship.weapons.torpedos > 0:
             result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
             if result:  # result is now a dict
-                self.messages.append(f"{ship.id} launches a torpedo!")
+                target_id = result.get('target_id', 'unknown')
+                self.messages.append(f"{ship.id} launches a torpedo at {target_id}!")
                 action_taken = "fire_torpedo"
                 if show_debug:
                     self.messages.append(f"[DEBUG] {ship.id}: torpedo attack")
@@ -568,7 +569,8 @@ class GameEngine:
                 elif distance_to_player < 50 and distance_to_player > 15 and random.random() < 0.2 and ship.weapons.torpedos > 0:
                     result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
                     if result:  # result is now a dict
-                        self.messages.append(f"{ship.id} launches a torpedo!")
+                        target_id = result.get('target_id', 'unknown')
+                        self.messages.append(f"{ship.id} launches a torpedo at {target_id}!")
                         if show_debug:
                             self.messages.append(f"[DEBUG] {ship.id}: torpedo attack ({behavior})")
                 # Otherwise move to close in
