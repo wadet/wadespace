@@ -488,6 +488,23 @@ class GameEngine:
             ship.set_heading(decision['heading'])
             ship.set_warp_speed(decision['speed'])
             action_taken = "movement"
+            
+            # If fleeing, also return fire if in weapon range
+            if decision['action'] == 'evade':
+                # Lock on to player for potential return fire
+                ship.lock_phasers(self.player_ship.id)
+                
+                # Try phasers first if in range (< 10 AU)
+                if distance_to_player < 10 and ship.weapons.phaser_operational:
+                    result = ship.fire_phaser(self.player_ship)
+                    if result:
+                        self.messages.append(f"[{ship.id}] Return fire while fleeing! Phaser hit on {result['target_id']}: {result['damage']:.1f}% {result['damage_type']} damage")
+                # Otherwise try torpedos if in range (< 50 AU) and have ammo
+                elif distance_to_player < 50 and ship.weapons.torpedos > 0:
+                    result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
+                    if result:
+                        self.messages.append(f"[{ship.id}] Return fire while fleeing! Torpedo launched at {result['target_id']}")
+            
             if show_debug:
                 action = decision['action']
                 heading = decision['heading']
@@ -550,6 +567,21 @@ class GameEngine:
                     ship.set_heading(escape_heading)
                     ship.set_warp_speed(8.0)
                     action_desc = f"fleeing ({behavior}, damage {ship.damage:.0f}%) at {distance_to_player:.1f} AU"
+                    
+                    # Return fire while fleeing if in weapon range
+                    ship.lock_phasers(self.player_ship.id)
+                    
+                    # Try phasers first if in range (< 10 AU)
+                    if distance_to_player < 10 and ship.weapons.phaser_operational:
+                        result = ship.fire_phaser(self.player_ship)
+                        if result:
+                            self.messages.append(f"[{ship.id}] Return fire while fleeing! Phaser hit on {result['target_id']}: {result['damage']:.1f}% {result['damage_type']} damage")
+                    # Otherwise try torpedos if in range (< 50 AU) and have ammo
+                    elif distance_to_player < 50 and ship.weapons.torpedos > 0:
+                        result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
+                        if result:
+                            self.messages.append(f"[{ship.id}] Return fire while fleeing! Torpedo launched at {result['target_id']}")
+                    
                     if show_debug:
                         self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
             
