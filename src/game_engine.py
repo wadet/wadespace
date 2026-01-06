@@ -78,6 +78,7 @@ class GameEngine:
             enemy_id = self.id_generator.generate('ship')
             enemy_ship = Ship(enemy_id, pos, is_player=False)
             enemy_ship.cash = random.randint(500, 2000)
+            enemy_ship.behavior_trait = random.choice(['aggressive', 'neutral', 'timid'])
             self.enemy_ships[enemy_id] = enemy_ship
         
         # Place remaining 47-49 enemy ships randomly across universe
@@ -87,6 +88,7 @@ class GameEngine:
             enemy_id = self.id_generator.generate('ship')
             enemy_ship = Ship(enemy_id, pos, is_player=False)
             enemy_ship.cash = random.randint(500, 2000)
+            enemy_ship.behavior_trait = random.choice(['aggressive', 'neutral', 'timid'])
             self.enemy_ships[enemy_id] = enemy_ship
     
     def _spawn_single_enemy(self) -> None:
@@ -95,6 +97,7 @@ class GameEngine:
         enemy_id = self.id_generator.generate('ship')
         enemy_ship = Ship(enemy_id, pos, is_player=False)
         enemy_ship.cash = random.randint(500, 2000)
+        enemy_ship.behavior_trait = random.choice(['aggressive', 'neutral', 'timid'])
         self.enemy_ships[enemy_id] = enemy_ship
     
     def get_objects_in_range(self, position: Position, range_au: float) -> List[tuple]:
@@ -416,8 +419,10 @@ class GameEngine:
             enemy_damage=ship.damage,
             enemy_energy=ship.energy,
             enemy_shields=ship.shields,
+            enemy_behavior=ship.behavior_trait if ship.behavior_trait else 'neutral',
             player_position=(self.player_ship.position.x, self.player_ship.position.y),
             player_damage=self.player_ship.damage,
+            player_reputation=self.player_ship.reputation,
             nearby_objects=nearby_objects,
             turn_count=self.turn_count
         )
@@ -467,11 +472,45 @@ class GameEngine:
                                player_in_range: bool, show_debug: bool) -> None:
         """Fallback basic AI for when LLM is unavailable. Only ONE action per turn."""
         action_desc = None
+        behavior = ship.behavior_trait if ship.behavior_trait else 'neutral'
+        player_rep = self.player_ship.reputation
         
         if player_in_range:
-            # Player detected! Decide to attack or evade based on damage
-            if ship.damage >= 50.0:
-                # Heavily damaged - evade the player (MOVEMENT ONLY)
+            # Determine if enemy should attack based on behavior trait
+            should_attack = False
+            should_flee = False
+            
+            # Check attack conditions based on behavior trait
+            if behavior == 'aggressive':
+                # Aggressive: attack if player reputation < 70
+                if player_rep < 70:
+                    should_attack = True
+                # Flee only if own damage > 80%
+                if ship.damage > 80.0:
+                    should_flee = True
+                    should_attack = False
+            
+            elif behavior == 'neutral':
+                # Neutral: attack only if provoked or player reputation < 50
+                # For now, consider "provoked" if player has attacked (damage > 0)
+                if ship.damage > 0 or player_rep < 50:
+                    should_attack = True
+                # Flee if own damage > 50%
+                if ship.damage > 50.0:
+                    should_flee = True
+                    should_attack = False
+            
+            elif behavior == 'timid':
+                # Timid: attack only if provoked or player reputation < 25
+                if ship.damage > 0 or player_rep < 25:
+                    should_attack = True
+                # Flee if own damage > 30%, unless player reputation < 10
+                if ship.damage > 30.0 and player_rep >= 10:
+                    should_flee = True
+                    should_attack = False
+            
+            # Execute flee behavior
+            if should_flee:
                 dx = ship.position.x - self.player_ship.position.x
                 dy = ship.position.y - self.player_ship.position.y
                 
@@ -482,11 +521,12 @@ class GameEngine:
                     
                     ship.set_heading(escape_heading)
                     ship.set_warp_speed(8.0)
-                    action_desc = f"evading player (damaged {ship.damage:.0f}%) at {distance_to_player:.1f} AU"
+                    action_desc = f"fleeing ({behavior}, damage {ship.damage:.0f}%) at {distance_to_player:.1f} AU"
                     if show_debug:
                         self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
-            else:
-                # Not too damaged - decide between attacking or closing in
+            
+            # Execute attack behavior
+            elif should_attack:
                 # Priority: Fire phasers if very close (30% chance)
                 if distance_to_player < 15 and random.random() < 0.3:
                     ship.weapons.phaser_locked_target = self.player_ship.id
@@ -496,14 +536,14 @@ class GameEngine:
                         damage_type = result.get('damage_type', 'unknown')
                         self.messages.append(f"{ship.id} fires phasers at you! Hit for {damage:.1f}% {damage_type} damage!")
                         if show_debug:
-                            self.messages.append(f"[DEBUG] {ship.id}: phaser attack")
+                            self.messages.append(f"[DEBUG] {ship.id}: phaser attack ({behavior})")
                 # Or fire torpedoes if in range (20% chance)
                 elif distance_to_player < 50 and distance_to_player > 15 and random.random() < 0.2 and ship.weapons.torpedos > 0:
                     result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
                     if result:  # result is now a dict
                         self.messages.append(f"{ship.id} launches a torpedo!")
                         if show_debug:
-                            self.messages.append(f"[DEBUG] {ship.id}: torpedo attack")
+                            self.messages.append(f"[DEBUG] {ship.id}: torpedo attack ({behavior})")
                 # Otherwise move to close in
                 else:
                     dx = self.player_ship.position.x - ship.position.x
@@ -516,9 +556,19 @@ class GameEngine:
                         
                         ship.set_heading(attack_heading)
                         ship.set_warp_speed(6.0)
-                        action_desc = f"closing in to attack at {distance_to_player:.1f} AU"
+                        action_desc = f"closing in to attack ({behavior}) at {distance_to_player:.1f} AU"
                         if show_debug:
                             self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
+            else:
+                # Not attacking or fleeing - patrol or maintain distance
+                if random.random() < 0.3:
+                    random_heading = random.uniform(0, 359)
+                    random_speed = random.choice([2, 4])
+                    ship.set_heading(random_heading)
+                    ship.set_warp_speed(float(random_speed))
+                    action_desc = f"patrolling ({behavior}) heading {random_heading:.0f}° at warp {random_speed}"
+                    if show_debug:
+                        self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
         else:
             # Player not in sensor range - random patrol behavior
             if random.random() < 0.25:
@@ -526,7 +576,7 @@ class GameEngine:
                 random_speed = random.choice([2, 4, 6, 8])
                 ship.set_heading(random_heading)
                 ship.set_warp_speed(float(random_speed))
-                action_desc = f"patrolling heading {random_heading:.0f}° at warp {random_speed}"
+                action_desc = f"patrolling ({behavior}) heading {random_heading:.0f}° at warp {random_speed}"
                 if show_debug:
                     self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
     
@@ -564,9 +614,10 @@ class GameEngine:
                         # For ships, show more detailed information
                         status = "destroyed" if target_obj.is_destroyed else "operational"
                         shields_status = "up" if target_obj.shields_active else "down"
+                        behavior = f", Behavior: {target_obj.behavior_trait}" if target_obj.behavior_trait else ""
                         self.messages.append(f"Scan of {target_id}: Ship at {distance:.1f} AU")
                         self.messages.append(f"  Status: {status}, Damage: {target_obj.damage:.1f}%, Energy: {target_obj.energy:.1f}%")
-                        self.messages.append(f"  Shields: {shields_status} ({target_obj.shields:.1f}%), Crew: {target_obj.crew}")
+                        self.messages.append(f"  Shields: {shields_status} ({target_obj.shields:.1f}%), Crew: {target_obj.crew}{behavior}")
                         self.messages.append(f"  Speed: {target_obj.propulsion.current_speed:.1f} AU/turn, Heading: {target_obj.propulsion.current_heading:.0f}°")
                     else:
                         # For universe objects

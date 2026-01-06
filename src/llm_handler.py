@@ -49,8 +49,10 @@ class LLMHandler:
                           enemy_damage: float,
                           enemy_energy: float,
                           enemy_shields: float,
+                          enemy_behavior: str,
                           player_position: tuple,
                           player_damage: float,
+                          player_reputation: int,
                           nearby_objects: list,
                           turn_count: int) -> Dict[str, Any]:
         """
@@ -62,8 +64,10 @@ class LLMHandler:
             enemy_damage: Damage percentage of enemy ship (0-100)
             enemy_energy: Energy percentage of enemy ship (0-100)
             enemy_shields: Shield percentage of enemy ship (0-100)
+            enemy_behavior: Behavior trait ('aggressive', 'neutral', 'timid')
             player_position: (x, y) position of player ship
             player_damage: Damage percentage of player ship (0-100)
+            player_reputation: Player's reputation (0-100)
             nearby_objects: List of nearby objects with their positions
             turn_count: Current turn number
         
@@ -88,8 +92,8 @@ class LLMHandler:
             
             prompt = self._build_decision_prompt(
                 enemy_ship_id, enemy_position, enemy_damage, enemy_energy,
-                enemy_shields, player_position, player_damage, distance_to_player,
-                nearby_objects, turn_count
+                enemy_shields, enemy_behavior, player_position, player_damage, 
+                player_reputation, distance_to_player, nearby_objects, turn_count
             )
             
             # Prepare request data for logging
@@ -155,8 +159,10 @@ class LLMHandler:
                                enemy_damage: float,
                                enemy_energy: float,
                                enemy_shields: float,
+                               enemy_behavior: str,
                                player_position: tuple,
                                player_damage: float,
+                               player_reputation: int,
                                distance_to_player: float,
                                nearby_objects: list,
                                turn_count: int) -> str:
@@ -167,7 +173,33 @@ class LLMHandler:
             obj_id, obj_type, distance, direction = obj
             nearby_desc += f"  - {obj_id} ({obj_type}) at {distance:.1f} AU, heading {direction:.0f}°\n"
         
+        # Define behavior-specific attack and flee thresholds
+        if enemy_behavior == 'aggressive':
+            attack_rep_threshold = 70
+            flee_damage_threshold = 80
+            behavior_desc = """You are an AGGRESSIVE captain. Your behavior:
+- Attack any ship with reputation < 70
+- Only withdraw from combat if your ship damage > 80%
+- Prefer direct confrontation and offensive maneuvers"""
+        elif enemy_behavior == 'timid':
+            attack_rep_threshold = 25
+            flee_damage_threshold = 30
+            behavior_desc = """You are a TIMID captain. Your behavior:
+- Only attack if provoked (have taken damage) or target reputation < 25
+- Flee if your ship damage > 30% (unless target reputation < 10)
+- Prefer evasive tactics and cautious approaches"""
+        else:  # neutral
+            attack_rep_threshold = 50
+            flee_damage_threshold = 50
+            behavior_desc = """You are a NEUTRAL captain. Your behavior:
+- Attack only if provoked (have taken damage) or target reputation < 50
+- Engage in combat until your ship damage > 50%
+- Balance between offense and defense"""
+        
         prompt = f"""You are commanding enemy spacecraft {enemy_ship_id} in a space combat scenario.
+
+CAPTAIN PERSONALITY: {enemy_behavior.upper()}
+{behavior_desc}
 
 CURRENT SITUATION (Turn {turn_count}):
 Your Ship Status:
@@ -175,11 +207,13 @@ Your Ship Status:
 - Damage: {enemy_damage:.1f}%
 - Energy: {enemy_energy:.1f}%
 - Shields: {enemy_shields:.1f}%
+- Behavior Type: {enemy_behavior}
 
 Enemy Ship (PLAYER):
 - Position: ({player_position[0]:.1f}, {player_position[1]:.1f})
 - Distance: {distance_to_player:.1f} AU
 - Damage: {player_damage:.1f}%
+- Reputation: {player_reputation}/100
 
 Nearby Objects:
 {nearby_desc if nearby_desc else "  None"}
@@ -191,7 +225,12 @@ TACTICAL CONTEXT:
 - Warp range: 2-20 AU/turn
 - Impulse range: 1 AU/turn
 
-Make a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):
+BEHAVIOR-SPECIFIC RULES:
+- Attack threshold: Player reputation < {attack_rep_threshold} OR you have been provoked (damage > 0%)
+- Flee threshold: Your damage > {flee_damage_threshold}%
+{f"- Special rule: Continue attacking even when damaged if player reputation < 10" if enemy_behavior == 'timid' else ""}
+
+Make a tactical decision based on your {enemy_behavior} personality. Return ONLY valid JSON (no markdown, no code blocks):
 {{
     "action": "attack"|"evade"|"patrol"|"dock",
     "heading": <0-359>,
@@ -201,18 +240,11 @@ Make a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):
     "reason": "brief tactical explanation"
 }}
 
-Priorities:
-1. If player is in phaser range (10 AU) and you're healthy, attack with phasers
-2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage
-3. If heavily damaged ({90 if enemy_damage >= 50 else 100}% damage), evade or seek repairs
-4. If shields low, reposition or evade
-5. Otherwise patrol the area
-
-Weapons Strategy:
-- Use phasers for close-range combat (< 10 AU)
-- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower
-- Fire both phasers AND torpedos when player is in range and you have ammo
-- Coordinate heading to keep approaching player while firing
+Decision priorities based on personality:
+1. Check if you should flee based on damage threshold ({flee_damage_threshold}%)
+2. Check if you should attack based on reputation threshold ({attack_rep_threshold}) or if provoked
+3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)
+4. If not attacking or fleeing: patrol the area
 """
         return prompt
     

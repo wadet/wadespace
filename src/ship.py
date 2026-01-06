@@ -71,6 +71,9 @@ class Ship:
         self.cash = random.randint(1000, 5000)
         self.reputation = random.randint(0, 100)  # 0-100, randomly assigned
         
+        # Behavior trait for enemy ships (aggressive, neutral, timid)
+        self.behavior_trait = None  # Only assigned for enemy ships
+        
         # Systems
         self.weapons = ShipWeaponSystem()
         self.propulsion = ShipPropulsionSystem()

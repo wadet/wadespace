@@ -520,8 +520,8 @@ class GameUI:
         # Get ship data
         ship = self.engine.player_ship
         
-        # Draw title
-        title = self.font_title.render(f"Ship {ship.id}", True, Colors.CYAN)
+        # Draw title with reputation
+        title = self.font_title.render(f"Ship {ship.id}  Reputation: {ship.reputation}", True, Colors.CYAN)
         self.screen.blit(title, (self.status_rect.left + 10, self.status_rect.top + 10))
         
         # Draw vital statistics as horizontal bars
