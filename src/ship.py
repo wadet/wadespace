@@ -197,6 +197,10 @@ class Ship:
         else:
             # Direct ship damage
             self.damage += damage
+        
+        # Check if destroyed
+        if self.damage >= 100.0:
+            self.is_destroyed = True
     
     def fire_phaser(self, target_ship: 'Ship') -> dict:
         """

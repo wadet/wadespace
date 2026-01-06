@@ -100,6 +100,33 @@ class GameEngine:
         enemy_ship.behavior_trait = random.choice(['aggressive', 'neutral', 'timid'])
         self.enemy_ships[enemy_id] = enemy_ship
     
+    def _handle_ship_destruction(self, destroyer: Ship, destroyed: Ship, destroyed_id: str) -> None:
+        """
+        Handle reputation changes when one ship destroys another.
+        
+        Args:
+            destroyer: The ship that destroyed the other
+            destroyed: The ship that was destroyed
+            destroyed_id: The ID of the destroyed ship
+        """
+        # Only apply reputation changes if destroyer is the player
+        if not destroyer.is_player:
+            return
+        
+        old_reputation = destroyer.reputation
+        
+        # Decrease reputation if destroyed ship was timid OR had reputation > 70
+        if destroyed.behavior_trait == 'timid' or destroyed.reputation > 70:
+            destroyer.reputation = max(0, destroyer.reputation - 10)
+            if destroyer.reputation != old_reputation:
+                self.messages.append(f"Reputation changed to {destroyer.reputation} (destroyed {destroyed_id})")
+        
+        # Increase reputation if destroyed ship was aggressive OR had reputation < 30
+        elif destroyed.behavior_trait == 'aggressive' or destroyed.reputation < 30:
+            destroyer.reputation = min(100, destroyer.reputation + 10)
+            if destroyer.reputation != old_reputation:
+                self.messages.append(f"Reputation changed to {destroyer.reputation} (destroyed {destroyed_id})")
+    
     def get_objects_in_range(self, position: Position, range_au: float) -> List[tuple]:
         """
         Get all universe objects within range of a position.
@@ -676,6 +703,10 @@ class GameEngine:
             damage = result.get('damage', 0)
             damage_type = result.get('damage_type', 'unknown')
             self.messages.append(f"Phaser fired at {target_id}! Hit for {damage:.1f}% {damage_type} damage!")
+            
+            # Check if target destroyed and apply reputation changes
+            if target_ship.is_destroyed:
+                self._handle_ship_destruction(ship, target_ship, target_id)
     
     def _execute_torpedo(self, ship: Ship, target_id: Optional[str] = None) -> None:
         """Execute torpedo fire."""
@@ -1213,6 +1244,9 @@ class GameEngine:
                                 if hit_obj.damage >= 100.0:
                                     hit_obj.is_destroyed = True
                                     self.messages.append(f"{hit_id} destroyed!")
+                                    
+                                    # Handle ship destruction and reputation changes
+                                    self._handle_ship_destruction(self.player_ship, hit_obj, hit_id)
                                     
                                     # Transfer cash from destroyed enemy ship
                                     cash_received = hit_obj.cash
