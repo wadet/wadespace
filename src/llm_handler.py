@@ -228,6 +228,88 @@ Weapons Strategy:
             print(f"[ERROR] Failed to get enemy response: {e}")
             return f"[{enemy_ship_id}]: *no response*"
     
+    def get_enemy_taunt(self, enemy_ship_id: str, context: Dict[str, Any]) -> str:
+        """
+        Generate a context-aware taunt from an enemy ship captain.
+        
+        Args:
+            enemy_ship_id: ID of the enemy ship
+            context: Dictionary with combat context:
+                - player_message: The message sent by the player
+                - distance: Distance between ships in AU
+                - player_damage: Player ship damage percentage (0-100)
+                - enemy_damage: Enemy ship damage percentage (0-100)
+                - player_shields: Player shield strength (0-100)
+                - enemy_shields: Enemy shield strength (0-100)
+                - turn_count: Current game turn
+        
+        Returns:
+            String with enemy captain's taunt/response
+        """
+        if not self.enabled or not self.client:
+            return f"[{enemy_ship_id}]: *no response*"
+        
+        try:
+            # Build a rich prompt with combat context
+            player_message = context.get('player_message', '')
+            distance = context.get('distance', 0)
+            player_damage = context.get('player_damage', 0)
+            enemy_damage = context.get('enemy_damage', 0)
+            player_shields = context.get('player_shields', 0)
+            enemy_shields = context.get('enemy_shields', 0)
+            
+            # Determine tactical situation
+            situation_notes = []
+            if enemy_damage < 30:
+                situation_notes.append("your ship is in excellent condition")
+            elif enemy_damage < 60:
+                situation_notes.append("your ship has taken some damage")
+            else:
+                situation_notes.append("your ship is badly damaged")
+            
+            if player_damage > 60:
+                situation_notes.append("the player's ship is crippled")
+            elif player_damage > 30:
+                situation_notes.append("the player's ship is damaged")
+            else:
+                situation_notes.append("the player's ship is still strong")
+            
+            if distance < 5:
+                situation_notes.append("you are very close (in weapons range)")
+            elif distance < 15:
+                situation_notes.append("you are at medium range")
+            else:
+                situation_notes.append("you are far apart")
+            
+            system_prompt = f"""You are the captain of hostile spacecraft {enemy_ship_id} engaged in space combat.
+Tactical situation: {', '.join(situation_notes)}.
+Your damage: {enemy_damage:.0f}%, shields: {enemy_shields:.0f}%
+Enemy damage: {player_damage:.0f}%, shields: {player_shields:.0f}%
+Distance: {distance:.1f} AU
+
+The player says: "{player_message}"
+
+Respond as a fierce, confident enemy captain. Be taunting, threatening, or defiant depending on the situation.
+- If winning: be arrogant and mocking
+- If losing: be defiant and threatening revenge
+- If evenly matched: be cocky and challenging
+Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
+            
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": player_message}
+                ],
+                temperature=0.9,  # Higher temperature for more varied/creative taunts
+                max_tokens=100
+            )
+            
+            return f"[{enemy_ship_id}]: {response.choices[0].message.content}"
+        except Exception as e:
+            print(f"[ERROR] Failed to generate enemy taunt: {e}")
+            return f"[{enemy_ship_id}]: *static*"
+    
     def answer_player_question(self, question: str, universe_data: Dict[str, Any]) -> str:
         """
         Use GPT-4o to answer player questions about the universe.

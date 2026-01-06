@@ -282,7 +282,7 @@ class GameEngine:
         elif cmd == 'tell':
             target_id = command.get('target_id')
             message = command.get('message', '')
-            self.messages.append(f"Message to {target_id}: {message}")
+            self._execute_tell(ship, target_id, message)
         
         elif cmd == 'hal':
             question = command.get('question', '')
@@ -754,6 +754,50 @@ class GameEngine:
             self.messages.append("  - 'how many enemies left', 'where am i'")
             self.messages.append("  - 'distance to <id>', 'nearby objects'")
             self.messages.append("  - 'what is <id>', 'how many stars'")
+    
+    def _execute_tell(self, ship: Ship, target_id: str, message: str) -> None:
+        """Execute tell command - send message to enemy ship and get LLM-generated response."""
+        # Check if target is an enemy ship
+        if target_id not in self.enemy_ships:
+            self.messages.append(f"Cannot send message: {target_id} is not an enemy ship.")
+            return
+        
+        enemy_ship = self.enemy_ships[target_id]
+        
+        # Check if enemy ship is destroyed
+        if enemy_ship.is_destroyed:
+            self.messages.append(f"Cannot send message: {target_id} has been destroyed.")
+            return
+        
+        # Calculate distance to enemy
+        distance = ship.position.distance_to(enemy_ship.position)
+        
+        # Display player's message
+        self.messages.append(f"You to {target_id}: {message}")
+        
+        # Generate LLM response with combat context
+        if self.llm_handler.enabled:
+            # Build context for the enemy captain
+            player_damage = ship.damage
+            enemy_damage = enemy_ship.damage
+            
+            context = {
+                'player_message': message,
+                'distance': distance,
+                'player_damage': player_damage,
+                'enemy_damage': enemy_damage,
+                'player_shields': ship.shields,
+                'enemy_shields': enemy_ship.shields,
+                'turn_count': self.turn_count
+            }
+            
+            response = self.llm_handler.get_enemy_taunt(target_id, context)
+        else:
+            # Fallback response if LLM is not available
+            response = f"[{target_id}]: *Static interference*"
+        
+        self.messages.append(response)
+
     
     def _query_nearest_enemy(self, ship: Ship) -> None:
         """Find and report the nearest enemy ship."""
