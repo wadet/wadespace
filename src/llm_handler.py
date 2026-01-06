@@ -5,6 +5,8 @@ Integrates OpenAI's GPT-4o for enemy ship AI decision making.
 """
 
 import os
+import json
+import datetime
 from typing import Optional, Dict, Any
 from dotenv import load_dotenv
 
@@ -26,6 +28,7 @@ class LLMHandler:
         self.enabled = OPENAI_AVAILABLE
         self.client = None
         self.api_key = os.getenv('OPENAI_API_KEY')
+        self.log_file = 'llm-queries.log'
         
         if not self.api_key:
             self.enabled = False
@@ -89,6 +92,22 @@ class LLMHandler:
                 nearby_objects, turn_count
             )
             
+            # Prepare request data for logging
+            request_data = {
+                'model': 'gpt-4o-mini',
+                'messages': [
+                    {"role": "system", "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."},
+                    {"role": "user", "content": prompt}
+                ],
+                'temperature': 0.7,
+                'max_tokens': 300,
+                'response_format': {"type": "json_object"},
+                'headers': {
+                    'Authorization': f'Bearer {self.api_key[:10]}...{self.api_key[-4:]}',  # Masked API key
+                    'Content-Type': 'application/json'
+                }
+            }
+            
             # Call GPT-4o
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",  # Using mini for faster/cheaper inference
@@ -101,12 +120,33 @@ class LLMHandler:
                 response_format={"type": "json_object"}
             )
             
+            # Log the API call
+            response_data = {
+                'id': response.id,
+                'model': response.model,
+                'choices': [{
+                    'message': {
+                        'role': response.choices[0].message.role,
+                        'content': response.choices[0].message.content
+                    },
+                    'finish_reason': response.choices[0].finish_reason
+                }],
+                'usage': {
+                    'prompt_tokens': response.usage.prompt_tokens,
+                    'completion_tokens': response.usage.completion_tokens,
+                    'total_tokens': response.usage.total_tokens
+                }
+            }
+            self._log_api_call('get_enemy_decision', request_data, response_data)
+            
             # Parse response
             decision = self._parse_gpt_response(response.choices[0].message.content)
             return decision
             
         except Exception as e:
             print(f"[ERROR] LLM decision failed: {e}")
+            # Log the error
+            self._log_api_call('get_enemy_decision', request_data if 'request_data' in locals() else {}, None, str(e))
             return self._default_decision()
     
     def _build_decision_prompt(self, 
@@ -207,12 +247,57 @@ Weapons Strategy:
             'reason': 'LLM unavailable, using default patrol'
         }
     
+    def _log_api_call(self, method_name: str, request_data: Dict[str, Any], response_data: Any, error: Optional[str] = None):
+        """Log API request and response to file."""
+        try:
+            timestamp = datetime.datetime.now().isoformat()
+            
+            log_entry = {
+                'timestamp': timestamp,
+                'method': method_name,
+                'request': request_data,
+                'response': response_data,
+                'error': error
+            }
+            
+            with open(self.log_file, 'a') as f:
+                f.write('=' * 80 + '\n')
+                f.write(f'TIMESTAMP: {timestamp}\n')
+                f.write(f'METHOD: {method_name}\n')
+                f.write('-' * 80 + '\n')
+                f.write('REQUEST:\n')
+                f.write(json.dumps(request_data, indent=2))
+                f.write('\n' + '-' * 80 + '\n')
+                if error:
+                    f.write(f'ERROR: {error}\n')
+                else:
+                    f.write('RESPONSE:\n')
+                    f.write(json.dumps(response_data, indent=2))
+                f.write('\n' + '=' * 80 + '\n\n')
+        except Exception as e:
+            print(f"[WARNING] Failed to log API call: {e}")
+    
     def get_enemy_response(self, enemy_ship_id: str, player_message: str) -> str:
         """Get a conversational response from enemy ship captain."""
         if not self.enabled or not self.client:
             return f"[{enemy_ship_id}]: No response."
         
         try:
+            # Prepare request data for logging
+            request_data = {
+                'model': 'gpt-4o-mini',
+                'messages': [
+                    {"role": "system", "content": f"You are the captain of hostile spacecraft {enemy_ship_id} in space combat. Respond in character, briefly (1-2 sentences)."},
+                    {"role": "user", "content": player_message}
+                ],
+                'temperature': 0.8,
+                'max_tokens': 100,
+                'headers': {
+                    'Authorization': f'Bearer {self.api_key[:10]}...{self.api_key[-4:]}',
+                    'Content-Type': 'application/json'
+                }
+            }
+            
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
@@ -223,9 +308,29 @@ Weapons Strategy:
                 max_tokens=100
             )
             
+            # Log the API call
+            response_data = {
+                'id': response.id,
+                'model': response.model,
+                'choices': [{
+                    'message': {
+                        'role': response.choices[0].message.role,
+                        'content': response.choices[0].message.content
+                    },
+                    'finish_reason': response.choices[0].finish_reason
+                }],
+                'usage': {
+                    'prompt_tokens': response.usage.prompt_tokens,
+                    'completion_tokens': response.usage.completion_tokens,
+                    'total_tokens': response.usage.total_tokens
+                }
+            }
+            self._log_api_call('get_enemy_response', request_data, response_data)
+            
             return f"[{enemy_ship_id}]: {response.choices[0].message.content}"
         except Exception as e:
             print(f"[ERROR] Failed to get enemy response: {e}")
+            self._log_api_call('get_enemy_response', request_data if 'request_data' in locals() else {}, None, str(e))
             return f"[{enemy_ship_id}]: *no response*"
     
     def get_enemy_taunt(self, enemy_ship_id: str, context: Dict[str, Any]) -> str:
@@ -321,6 +426,21 @@ The player says: "{player_message}"
 {personality}
 Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
             
+            # Prepare request data for logging
+            request_data = {
+                'model': 'gpt-4o-mini',
+                'messages': [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": player_message}
+                ],
+                'temperature': 0.9,
+                'max_tokens': 100,
+                'headers': {
+                    'Authorization': f'Bearer {self.api_key[:10]}...{self.api_key[-4:]}',
+                    'Content-Type': 'application/json'
+                }
+            }
+            
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
@@ -331,9 +451,29 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
                 max_tokens=100
             )
             
+            # Log the API call
+            response_data = {
+                'id': response.id,
+                'model': response.model,
+                'choices': [{
+                    'message': {
+                        'role': response.choices[0].message.role,
+                        'content': response.choices[0].message.content
+                    },
+                    'finish_reason': response.choices[0].finish_reason
+                }],
+                'usage': {
+                    'prompt_tokens': response.usage.prompt_tokens,
+                    'completion_tokens': response.usage.completion_tokens,
+                    'total_tokens': response.usage.total_tokens
+                }
+            }
+            self._log_api_call('get_enemy_taunt', request_data, response_data)
+            
             return f"[{enemy_ship_id}]: {response.choices[0].message.content}"
         except Exception as e:
             print(f"[ERROR] Failed to generate enemy taunt: {e}")
+            self._log_api_call('get_enemy_taunt', request_data if 'request_data' in locals() else {}, None, str(e))
             return f"[{enemy_ship_id}]: *static*"
     
     def answer_player_question(self, question: str, universe_data: Dict[str, Any]) -> str:
@@ -358,6 +498,21 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
             # Build context for the AI
             prompt = self._build_question_prompt(question, universe_data)
             
+            # Prepare request data for logging
+            request_data = {
+                'model': 'gpt-4o-mini',
+                'messages': [
+                    {"role": "system", "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."},
+                    {"role": "user", "content": prompt}
+                ],
+                'temperature': 0.3,
+                'max_tokens': 500,
+                'headers': {
+                    'Authorization': f'Bearer {self.api_key[:10]}...{self.api_key[-4:]}',
+                    'Content-Type': 'application/json'
+                }
+            }
+            
             # Call GPT-4o
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -369,9 +524,29 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
                 max_tokens=500
             )
             
+            # Log the API call
+            response_data = {
+                'id': response.id,
+                'model': response.model,
+                'choices': [{
+                    'message': {
+                        'role': response.choices[0].message.role,
+                        'content': response.choices[0].message.content
+                    },
+                    'finish_reason': response.choices[0].finish_reason
+                }],
+                'usage': {
+                    'prompt_tokens': response.usage.prompt_tokens,
+                    'completion_tokens': response.usage.completion_tokens,
+                    'total_tokens': response.usage.total_tokens
+                }
+            }
+            self._log_api_call('answer_player_question', request_data, response_data)
+            
             return response.choices[0].message.content
         except Exception as e:
             print(f"[ERROR] Failed to answer question: {e}")
+            self._log_api_call('answer_player_question', request_data if 'request_data' in locals() else {}, None, str(e))
             return f"Error processing question: {str(e)}"
     
     def _build_question_prompt(self, question: str, universe_data: Dict[str, Any]) -> str:

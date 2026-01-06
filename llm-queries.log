@@ -1,0 +1,386 @@
+================================================================================
+TIMESTAMP: 2026-01-05T19:10:45.313412
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s8054 in a space combat scenario.\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (1462.5, 2852.0)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1476.0, 2850.8)\n- Distance: 13.6 AU\n- Damage: 0.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CurkxZ5ntiRSSlDLPE8iRUNnvb1Ud",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 15,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship is within torpedo range (13.6 AU), allowing for a long-range attack while maintaining a close approach.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 71,
+    "total_tokens": 505
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:10:47.865448
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s423 in a space combat scenario.\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (1464.1, 2837.5)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1476.0, 2850.8)\n- Distance: 17.8 AU\n- Damage: 0.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CurkzA74IK8DuDDrKXxi9rWliUZVd",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 36,\n    \"speed\": 17,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy is within torpedo range (17.8 AU), and I will fire torpedos while moving closer to engage in phaser range next turn.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 433,
+    "completion_tokens": 77,
+    "total_tokens": 510
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:11:03.373056
+METHOD: get_enemy_taunt
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the captain of hostile spacecraft s423 engaged in space combat.\nTactical situation: your ship is in excellent condition, the player's ship is still strong, they are far away.\nYour damage: 0%, shields: 100%\nEnemy damage: 0%, shields: 100%\nDistance: 17.4 AU\n\nThe player says: \"go away, you're wasting my time!\"\n\nRespond as a fierce, confident enemy captain. Be taunting, threatening, or defiant depending on the situation.\n- If winning: be arrogant and mocking\n- If losing: be defiant and threatening revenge\n- If evenly matched: be cocky and challenging\nKeep your response to 1-2 sentences maximum. Make it punchy and dramatic."
+    },
+    {
+      "role": "user",
+      "content": "go away, you're wasting my time!"
+    }
+  ],
+  "temperature": 0.9,
+  "max_tokens": 100,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CurlGgSBGZMGt9p68YMa3xNO3Cw4A",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "Wasting your time? Hardly! I\u2019m here to make this a day you\u2019ll never forget, and I plan to enjoy every second of our dance, captain!"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 171,
+    "completion_tokens": 34,
+    "total_tokens": 205
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:11:05.109959
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s8054 in a space combat scenario.\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (1462.5, 2852.0)\n- Damage: 0.0%\n- Energy: 99.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1480.6, 2843.0)\n- Distance: 20.3 AU\n- Damage: 0.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CurlHgNAn10NZmXMf6PhrgAuSp4BG",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 345,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy is within torpedo range (20.3 AU) and I can fire torpedos for maximum damage while closing in.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 72,
+    "total_tokens": 506
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:11:06.538121
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s423 in a space combat scenario.\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (1464.1, 2837.5)\n- Damage: 0.0%\n- Energy: 99.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1480.6, 2843.0)\n- Distance: 17.4 AU\n- Damage: 0.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CurlJdblPeeaAzCIP9zDKhnGkVIZW",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 45,\n    \"speed\": 10,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"Enemy is within torpedo range (17.4 AU) and I have the energy and health to attack.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 433,
+    "completion_tokens": 67,
+    "total_tokens": 500
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:11:20.494853
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"where is the nearest wormhole?\"\n\nCURRENT SITUATION:\nYour Ship Position: (1485.3, 2835.3)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - wh3175 (WormHole): Position (1718.7, 2901.8), Distance 242.8 AU\n  - wh2312 (WormHole): Position (2709.0, 4953.8), Distance 2446.5 AU\n  - wh569 (WormHole): Position (3985.6, 2023.4), Distance 2628.8 AU\n  - wh1577 (WormHole): Position (3151.8, 4920.2), Distance 2669.1 AU\n  - wh8315 (WormHole): Position (2470.9, 354.2), Distance 2669.7 AU\n  - wh2244 (WormHole): Position (2335.0, 274.5), Distance 2698.2 AU\n  - wh9680 (WormHole): Position (4373.6, 3347.2), Distance 2933.3 AU\n  - wh9622 (WormHole): Position (175.8, 5492.8), Distance 2962.6 AU\n  - wh7286 (WormHole): Position (4490.4, 3928.4), Distance 3197.7 AU\n  - wh8479 (WormHole): Position (3974.3, 4868.0), Distance 3213.5 AU\n  - wh3229 (WormHole): Position (5226.1, 882.6), Distance 4219.9 AU\n  - wh3129 (WormHole): Position (5426.6, 1115.4), Distance 4300.3 AU\n  - wh6935 (WormHole): Position (2605.9, 7120.1), Distance 4428.9 AU\n  - wh6548 (WormHole): Position (5939.2, 3228.6), Distance 4471.2 AU\n  - wh9540 (WormHole): Position (4997.1, 5971.3), Distance 4708.2 AU\n  - wh5632 (WormHole): Position (5971.4, 5223.3), Distance 5082.1 AU\n  - wh5699 (WormHole): Position (3667.7, 7564.0), Distance 5208.0 AU\n  - wh7353 (WormHole): Position (6693.7, 2411.1), Distance 5225.7 AU\n  - wh723 (WormHole): Position (2348.1, 8109.0), Distance 5343.8 AU\n  - wh8676 (WormHole): Position (1668.1, 8510.9), Distance 5678.5 AU\n  - wh6291 (WormHole): Position (6013.5, 6628.6), Distance 5907.1 AU\n  - wh3860 (WormHole): Position (7739.9, 2316.4), Distance 6276.2 AU\n  - wh8596 (WormHole): Position (3418.2, 8934.7), Distance 6398.3 AU\n  - wh1397 (WormHole): Position (7897.9, 3177.9), Distance 6421.8 AU\n  - wh485 (WormHole): Position (7599.9, 272.0), Distance 6630.2 AU\n  - wh4099 (WormHole): Position (8070.0, 3911.4), Distance 6672.1 AU\n  - wh1862 (WormHole): Position (5449.5, 8338.4), Distance 6782.3 AU\n  - wh2330 (WormHole): Position (7392.8, 6491.0), Distance 6947.2 AU\n  - wh6605 (WormHole): Position (8435.3, 2425.8), Distance 6962.1 AU\n  - wh5743 (WormHole): Position (4528.6, 9210.3), Distance 7064.1 AU\n  - wh8607 (WormHole): Position (6724.1, 7640.2), Distance 7108.6 AU\n  - wh2399 (WormHole): Position (8210.0, 329.5), Distance 7176.5 AU\n  - wh1984 (WormHole): Position (8481.0, 432.8), Distance 7396.8 AU\n  - wh7017 (WormHole): Position (5253.0, 9220.0), Distance 7413.5 AU\n  - wh6293 (WormHole): Position (9471.3, 1711.9), Distance 8064.6 AU\n  - wh8082 (WormHole): Position (9721.9, 1892.4), Distance 8290.4 AU\n  - wh618 (WormHole): Position (9769.8, 4365.5), Distance 8424.6 AU\n  - wh4407 (WormHole): Position (9607.5, 5085.0), Distance 8428.0 AU\n  - wh2165 (WormHole): Position (7736.5, 9556.3), Distance 9178.8 AU\n  - wh1771 (WormHole): Position (8547.7, 9077.4), Distance 9425.6 AU\n  - pl3224 (Planet): Position (1486.9, 2824.0), Distance 11.4 AU\n  - pl232 (Planet): Position (1474.2, 2829.5), Distance 12.5 AU\n  - pl2067 (Planet): Position (1497.4, 2828.7), Distance 13.8 AU\n  - pl2407 (Planet): Position (1470.9, 2837.6), Distance 14.5 AU\n  - pl6117 (Planet): Position (1473.3, 2823.8), Distance 16.6 AU\n  - st757 (Star): Position (1460.4, 2827.5), Distance 26.1 AU\n  - pl7981 (Planet): Position (1499.1, 2812.2), Distance 27.0 AU\n  - pl272 (Planet): Position (1452.8, 2829.4), Distance 33.0 AU\n  - pl3153 (Planet): Position (1481.4, 2802.1), Distance 33.5 AU\n  - pl4972 (Planet): Position (1440.7, 2791.0), Distance 62.8 AU\n  - pl7637 (Planet): Position (1516.0, 2954.2), Distance 122.8 AU\n  - pl7656 (Planet): Position (1501.1, 2967.8), Distance 133.4 AU\n  - pl3188 (Planet): Position (1454.7, 2967.1), Distance 135.3 AU\n  - pl779 (Planet): Position (1463.1, 2980.2), Distance 146.6 AU\n  - st3234 (Star): Position (1495.8, 2981.6), Distance 146.7 AU\n  - pl5556 (Planet): Position (1523.8, 2992.0), Distance 161.3 AU\n  - pl8220 (Planet): Position (1486.6, 3006.5), Distance 171.2 AU\n  - pl3032 (Planet): Position (1485.1, 3010.4), Distance 175.1 AU\n  - pl7918 (Planet): Position (1530.5, 3007.6), Distance 178.1 AU\n  - pl6310 (Planet): Position (1479.2, 3019.9), Distance 184.7 AU\n  - pl5242 (Planet): Position (1415.5, 2662.1), Distance 186.7 AU\n  - pl925 (Planet): Position (1391.2, 2664.1), Distance 195.4 AU\n  - pl8947 (Planet): Position (1477.7, 3030.8), Distance 195.6 AU\n  - pl233 (Planet): Position (1347.4, 2694.0), Distance 197.5 AU\n  - pl5440 (Planet): Position (1491.4, 3039.4), Distance 204.2 AU\n  - pl4726 (Planet): Position (1392.2, 2646.9), Distance 210.2 AU\n  - st4546 (Star): Position (1373.3, 2657.0), Distance 210.6 AU\n  - pl5024 (Planet): Position (1688.2, 2906.5), Distance 215.1 AU\n  - pl6572 (Planet): Position (1695.1, 2896.5), Distance 218.6 AU\n  - pl9389 (Planet): Position (1412.4, 2628.0), Distance 219.7 AU\n  - pl148 (Planet): Position (1370.2, 2646.1), Distance 221.5 AU\n  - pl154 (Planet): Position (1692.7, 2913.1), Distance 221.5 AU\n  - pl4484 (Planet): Position (1706.2, 2859.9), Distance 222.2 AU\n  - pl1247 (Planet): Position (1706.0, 2871.5), Distance 223.7 AU\n  - pl180 (Planet): Position (1490.9, 3060.1), Distance 224.9 AU\n  - pl2597 (Planet): Position (1510.8, 3060.0), Distance 226.1 AU\n  - st2184 (Star): Position (1500.8, 3061.8), Distance 227.0 AU\n  - pl808 (Planet): Position (1699.3, 2919.9), Distance 230.2 AU\n  - pl2273 (Planet): Position (1339.9, 2654.6), Distance 232.0 AU\n  - pl1118 (Planet): Position (1488.9, 3067.5), Distance 232.2 AU\n  - pl7109 (Planet): Position (1508.1, 3066.5), Distance 232.4 AU\n  - pl4828 (Planet): Position (1713.0, 2882.4), Distance 232.5 AU\n  - pl2343 (Planet): Position (1479.0, 3070.9), Distance 235.6 AU\n  - pl7326 (Planet): Position (1363.6, 2632.0), Distance 237.0 AU\n  - pl1202 (Planet): Position (1329.4, 2651.9), Distance 240.7 AU\n  - st9166 (Star): Position (1717.1, 2906.5), Distance 242.5 AU\n  - pl5594 (Planet): Position (1719.7, 2899.0), Distance 243.0 AU\n  - pl6154 (Planet): Position (1727.6, 2927.7), Distance 259.3 AU\n  - pl1152 (Planet): Position (1483.3, 3096.8), Distance 261.5 AU\n  - pl2342 (Planet): Position (1475.7, 3098.4), Distance 263.3 AU\n  - pl1383 (Planet): Position (1212.0, 2785.6), Distance 277.8 AU\n  - pl5034 (Planet): Position (1228.5, 2681.3), Distance 299.4 AU\n  - pl850 (Planet): Position (1214.9, 2696.3), Distance 304.0 AU\n  - pl7694 (Planet): Position (1182.6, 2800.5), Distance 304.6 AU\n  - st5249 (Star): Position (1216.6, 2689.6), Distance 305.7 AU\n  - pl3228 (Planet): Position (1629.6, 2564.3), Distance 307.0 AU\n  - pl9 (Planet): Position (1219.9, 2679.3), Distance 307.9 AU\n  - st616 (Star): Position (1185.9, 2758.9), Distance 308.9 AU\n  - pl6343 (Planet): Position (1209.8, 2694.2), Distance 309.5 AU\n  - pl690 (Planet): Position (1200.5, 2700.2), Distance 315.2 AU\n\n\nENEMY SHIPS:\n  - s8054: Position (1462.5, 2852.0), Distance 28.2 AU, Health 100.0%, Shields 100.0%\n  - s423: Position (1464.1, 2837.5), Distance 21.2 AU, Health 100.0%, Shields 100.0%\n  - s5313: Position (9913.1, 5005.6), Distance 8702.8 AU, Health 100.0%, Shields 100.0%\n  - s5228: Position (9036.0, 7665.5), Distance 8963.5 AU, Health 100.0%, Shields 100.0%\n  - s7236: Position (9883.4, 7033.1), Distance 9388.8 AU, Health 100.0%, Shields 100.0%\n  - s6930: Position (8963.7, 3012.2), Distance 7480.6 AU, Health 100.0%, Shields 100.0%\n  - s2603: Position (120.0, 4230.5), Distance 1952.0 AU, Health 100.0%, Shields 100.0%\n  - s7451: Position (2737.4, 5891.9), Distance 3303.1 AU, Health 100.0%, Shields 100.0%\n  - s3772: Position (2654.3, 774.9), Distance 2368.9 AU, Health 100.0%, Shields 100.0%\n  - s2510: Position (8093.1, 7321.5), Distance 7986.8 AU, Health 100.0%, Shields 100.0%\n  - s8608: Position (7272.0, 5404.1), Distance 6331.3 AU, Health 100.0%, Shields 100.0%\n  - s8661: Position (5980.2, 7381.1), Distance 6392.8 AU, Health 100.0%, Shields 100.0%\n  - s8683: Position (3142.8, 4300.1), Distance 2212.0 AU, Health 100.0%, Shields 100.0%\n  - s1736: Position (6210.1, 6015.8), Distance 5695.5 AU, Health 100.0%, Shields 100.0%\n  - s8040: Position (8491.1, 973.5), Distance 7249.0 AU, Health 100.0%, Shields 100.0%\n  - s2261: Position (8139.5, 9492.4), Distance 9412.5 AU, Health 100.0%, Shields 100.0%\n  - s944: Position (9128.0, 7996.3), Distance 9222.1 AU, Health 100.0%, Shields 100.0%\n  - s1280: Position (7025.2, 361.9), Distance 6067.0 AU, Health 100.0%, Shields 100.0%\n  - s587: Position (4481.2, 773.9), Distance 3636.6 AU, Health 100.0%, Shields 100.0%\n  - s3945: Position (9702.4, 65.7), Distance 8671.3 AU, Health 100.0%, Shields 100.0%\n  - s2269: Position (1187.8, 1761.2), Distance 1114.6 AU, Health 100.0%, Shields 100.0%\n  - s6634: Position (9499.1, 5883.6), Distance 8574.1 AU, Health 100.0%, Shields 100.0%\n  - s6529: Position (9083.7, 2850.9), Distance 7598.5 AU, Health 100.0%, Shields 100.0%\n  - s840: Position (4683.6, 7941.4), Distance 6025.1 AU, Health 100.0%, Shields 100.0%\n  - s1327: Position (5771.5, 8157.0), Distance 6833.1 AU, Health 100.0%, Shields 100.0%\n  - s8048: Position (9528.7, 5338.3), Distance 8423.9 AU, Health 100.0%, Shields 100.0%\n  - s9492: Position (8545.7, 5871.6), Distance 7685.6 AU, Health 100.0%, Shields 100.0%\n  - s9352: Position (4802.4, 4053.7), Distance 3533.8 AU, Health 100.0%, Shields 100.0%\n  - s8294: Position (3187.4, 5856.8), Distance 3467.9 AU, Health 100.0%, Shields 100.0%\n  - s8265: Position (7649.3, 6635.2), Distance 7241.1 AU, Health 100.0%, Shields 100.0%\n  - s6827: Position (856.7, 3291.5), Distance 776.6 AU, Health 100.0%, Shields 100.0%\n  - s6792: Position (8186.8, 2381.7), Distance 6716.9 AU, Health 100.0%, Shields 100.0%\n  - s6101: Position (9229.2, 747.5), Distance 8020.5 AU, Health 100.0%, Shields 100.0%\n  - s966: Position (9049.8, 6183.4), Distance 8272.4 AU, Health 100.0%, Shields 100.0%\n  - s9090: Position (6020.4, 7109.2), Distance 6231.7 AU, Health 100.0%, Shields 100.0%\n  - s8700: Position (2979.7, 5549.2), Distance 3098.2 AU, Health 100.0%, Shields 100.0%\n  - s8765: Position (70.5, 593.1), Distance 2651.3 AU, Health 100.0%, Shields 100.0%\n  - s7120: Position (6041.7, 9454.9), Distance 8036.2 AU, Health 100.0%, Shields 100.0%\n  - s4266: Position (5769.8, 6452.1), Distance 5607.0 AU, Health 100.0%, Shields 100.0%\n  - s8616: Position (9995.0, 2826.2), Distance 8509.7 AU, Health 100.0%, Shields 100.0%\n  - s8218: Position (3639.4, 1123.8), Distance 2751.2 AU, Health 100.0%, Shields 100.0%\n  - s9970: Position (7896.4, 779.1), Distance 6732.9 AU, Health 100.0%, Shields 100.0%\n  - s2015: Position (5688.1, 9437.7), Distance 7826.6 AU, Health 100.0%, Shields 100.0%\n  - s3204: Position (1865.9, 8651.9), Distance 5829.0 AU, Health 100.0%, Shields 100.0%\n  - s8179: Position (4991.6, 4635.3), Distance 3941.4 AU, Health 100.0%, Shields 100.0%\n  - s2507: Position (9581.9, 0.5), Distance 8578.6 AU, Health 100.0%, Shields 100.0%\n  - s7968: Position (3687.1, 3047.4), Distance 2212.0 AU, Health 100.0%, Shields 100.0%\n  - s7935: Position (9643.0, 6568.0), Distance 8971.1 AU, Health 100.0%, Shields 100.0%\n  - s2960: Position (7977.8, 1321.9), Distance 6666.6 AU, Health 100.0%, Shields 100.0%\n  - s9895: Position (5795.5, 9359.4), Distance 7819.3 AU, Health 100.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. NOTE: Half are FRIENDLY to you, half are HOSTILE/ENEMY bases!\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- Enemy Ships (s####): Hostile vessels\n\nIMPORTANT NOTES:\n- When asked about \"enemy base\" or \"hostile base\", look for Starbase objects marked as HOSTILE/ENEMY (not friendly).\n- When asked about \"friendly base\", look for Starbase objects marked as FRIENDLY.\n- Starbases can be either friendly or enemy - check the status in the objects list.\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor enemy bases/starbases, ONLY report starbases that are marked as HOSTILE/ENEMY.\nFor friendly bases, ONLY report starbases that are marked as FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CurlXUw4aWrGl9ZA1cdX8npSqq99L",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "**Nearest Wormhole:**\n\n- **Object ID:** wh3175  \n- **Position:** (1718.7, 2901.8)  \n- **Distance:** 242.8 AU"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5342,
+    "completion_tokens": 41,
+    "total_tokens": 5383
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:11:22.622703
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s8054 in a space combat scenario.\n\nCURRENT SITUATION (Turn 3):\nYour Ship Status:\n- Position: (1462.5, 2852.0)\n- Damage: 0.0%\n- Energy: 98.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1485.3, 2835.3)\n- Distance: 28.2 AU\n- Damage: 0.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CurlYkrlLsFzqiR9GfyepLxo126H5",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 210,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy is within torpedo range (28.2 AU) and I have sufficient energy and shields to launch an attack.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 434,
+    "completion_tokens": 70,
+    "total_tokens": 504
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-05T19:11:23.959681
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s423 in a space combat scenario.\n\nCURRENT SITUATION (Turn 3):\nYour Ship Status:\n- Position: (1464.1, 2837.5)\n- Damage: 0.0%\n- Energy: 98.0%\n- Shields: 100.0%\n\nEnemy Ship (PLAYER):\n- Position: (1485.3, 2835.3)\n- Distance: 21.2 AU\n- Damage: 0.0%\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nMake a tactical decision. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nPriorities:\n1. If player is in phaser range (10 AU) and you're healthy, attack with phasers\n2. If player is in torpedo range (50 AU) and you're healthy, fire torpedos for additional damage\n3. If heavily damaged (100% damage), evade or seek repairs\n4. If shields low, reposition or evade\n5. Otherwise patrol the area\n\nWeapons Strategy:\n- Use phasers for close-range combat (< 10 AU)\n- Use torpedos for medium-range attacks (10-50 AU) and as additional firepower\n- Fire both phasers AND torpedos when player is in range and you have ammo\n- Coordinate heading to keep approaching player while firing\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CurlaWbBwYXDWFNplG1allWIMLamA",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"heading\": 1,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The enemy ship is within torpedo range (21.2 AU) and I can fire torpedos while closing in on their position.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 433,
+    "completion_tokens": 73,
+    "total_tokens": 506
+  }
+}
+================================================================================
+
