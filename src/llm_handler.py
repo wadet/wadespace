@@ -54,6 +54,7 @@ class LLMHandler:
                           player_damage: float,
                           player_reputation: int,
                           nearby_objects: list,
+                          nearby_enemy_ships: list,
                           turn_count: int) -> Dict[str, Any]:
         """
         Use GPT-4o to determine enemy ship behavior.
@@ -69,11 +70,13 @@ class LLMHandler:
             player_damage: Damage percentage of player ship (0-100)
             player_reputation: Player's reputation (0-100)
             nearby_objects: List of nearby objects with their positions
+            nearby_enemy_ships: List of nearby enemy ships (id, position, damage, distance)
             turn_count: Current turn number
         
         Returns:
             Dictionary with decision keys:
             - action: 'attack', 'evade', 'patrol', 'dock'
+            - target_id: ship ID to target (player or enemy ship)
             - heading: 0-359 degrees
             - speed: 0-20 AU/turn
             - fire_phasers: True/False
@@ -93,7 +96,7 @@ class LLMHandler:
             prompt = self._build_decision_prompt(
                 enemy_ship_id, enemy_position, enemy_damage, enemy_energy,
                 enemy_shields, enemy_behavior, player_position, player_damage, 
-                player_reputation, distance_to_player, nearby_objects, turn_count
+                player_reputation, distance_to_player, nearby_objects, nearby_enemy_ships, turn_count
             )
             
             # Prepare request data for logging
@@ -165,6 +168,7 @@ class LLMHandler:
                                player_reputation: int,
                                distance_to_player: float,
                                nearby_objects: list,
+                               nearby_enemy_ships: list,
                                turn_count: int) -> str:
         """Build a prompt for GPT-4o decision making."""
         
@@ -172,6 +176,12 @@ class LLMHandler:
         for i, obj in enumerate(nearby_objects[:5]):  # Limit to 5 nearest objects
             obj_id, obj_type, distance, direction = obj
             nearby_desc += f"  - {obj_id} ({obj_type}) at {distance:.1f} AU, heading {direction:.0f}°\n"
+        
+        # Format nearby enemy ships
+        nearby_enemies_desc = ""
+        for i, enemy_data in enumerate(nearby_enemy_ships[:5]):  # Limit to 5 nearest enemy ships
+            enemy_id, pos, damage, dist = enemy_data
+            nearby_enemies_desc += f"  - {enemy_id} at {dist:.1f} AU, Damage: {damage:.1f}%, Position: ({pos[0]:.1f}, {pos[1]:.1f})\n"
         
         # Define behavior-specific attack and flee thresholds
         if enemy_behavior == 'aggressive':
@@ -209,11 +219,15 @@ Your Ship Status:
 - Shields: {enemy_shields:.1f}%
 - Behavior Type: {enemy_behavior}
 
-Enemy Ship (PLAYER):
+Player Ship:
+- ID: PLAYER
 - Position: ({player_position[0]:.1f}, {player_position[1]:.1f})
 - Distance: {distance_to_player:.1f} AU
 - Damage: {player_damage:.1f}%
 - Reputation: {player_reputation}/100
+
+Nearby Enemy Ships (potential targets or threats):
+{nearby_enemies_desc if nearby_enemies_desc else "  None"}
 
 Nearby Objects:
 {nearby_desc if nearby_desc else "  None"}
@@ -225,14 +239,26 @@ TACTICAL CONTEXT:
 - Warp range: 2-20 AU/turn
 - Impulse range: 1 AU/turn
 
+TARGET SELECTION:
+- You can attack the PLAYER or any nearby enemy ships
+- PRIORITIZE opportunistic targets: damaged enemy ships are easier kills and less risky
+- Consider these factors when choosing targets:
+  * Distance: Closer targets are easier to engage
+  * Damage: Enemies with >30% damage are vulnerable and good targets
+  * Threat level: Who poses the biggest immediate threat?
+- Attack damaged nearby enemies BEFORE the player if they're easier targets
+- Heavily damaged enemies (>50% damage) should be prioritized for quick kills
+- If multiple threats exist, attack the weakest/closest first
+
 BEHAVIOR-SPECIFIC RULES:
-- Attack threshold: Player reputation < {attack_rep_threshold} OR you have been provoked (damage > 0%)
+- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)
 - Flee threshold: Your damage > {flee_damage_threshold}%
-{f"- Special rule: Continue attacking even when damaged if player reputation < 10" if enemy_behavior == 'timid' else ""}
+{f"- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)" if enemy_behavior == 'timid' else ""}
 
 Make a tactical decision based on your {enemy_behavior} personality. Return ONLY valid JSON (no markdown, no code blocks):
 {{
     "action": "attack"|"evade"|"patrol"|"dock",
+    "target_id": "PLAYER"|"<enemy_ship_id>"|null,
     "heading": <0-359>,
     "speed": <0-20>,
     "fire_phasers": true|false,
@@ -242,9 +268,9 @@ Make a tactical decision based on your {enemy_behavior} personality. Return ONLY
 
 Decision priorities based on personality:
 1. Check if you should flee based on damage threshold ({flee_damage_threshold}%)
-2. Check if you should attack based on reputation threshold ({attack_rep_threshold}) or if provoked
+2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)
 3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)
-4. If fleeing/evading: Move away from enemy BUT also return fire if in weapon range (phasers < 10 AU, torpedos < 50 AU)
+4. If fleeing/evading: Move away from threats BUT also return fire if in weapon range
 5. If not attacking or fleeing: patrol the area
 """
         return prompt
@@ -260,6 +286,7 @@ Decision priorities based on personality:
             decision['heading'] = max(0, min(359, int(decision.get('heading', 0))))
             decision['speed'] = max(0, min(20, float(decision.get('speed', 0))))
             decision['action'] = decision.get('action', 'patrol').lower()
+            decision['target_id'] = decision.get('target_id', 'PLAYER')  # Default to player
             decision['fire_phasers'] = bool(decision.get('fire_phasers', False))
             decision['fire_torpedos'] = bool(decision.get('fire_torpedos', False))
             decision['reason'] = str(decision.get('reason', 'tactical decision'))
@@ -273,6 +300,7 @@ Decision priorities based on personality:
         """Return a safe default decision."""
         return {
             'action': 'patrol',
+            'target_id': 'PLAYER',
             'heading': 0,
             'speed': 0,
             'fire_phasers': False,

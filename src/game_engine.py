@@ -439,6 +439,19 @@ class GameEngine:
         
         nearby_objects.sort(key=lambda x: x[2])  # Sort by distance
         
+        # Get nearby enemy ships for targeting decisions
+        nearby_enemy_ships = []
+        for enemy_id, enemy_ship in self.enemy_ships.items():
+            if enemy_id != ship.id and not enemy_ship.is_destroyed:  # Exclude self and destroyed ships
+                dist = ship.position.distance_to(enemy_ship.position)
+                if dist < 50:  # Within sensor range
+                    nearby_enemy_ships.append(
+                        (enemy_id, (enemy_ship.position.x, enemy_ship.position.y), 
+                         enemy_ship.damage, dist)
+                    )
+        
+        nearby_enemy_ships.sort(key=lambda x: x[3])  # Sort by distance
+        
         # Request decision from LLM
         decision = self.llm_handler.get_enemy_decision(
             enemy_ship_id=ship.id,
@@ -451,6 +464,7 @@ class GameEngine:
             player_damage=self.player_ship.damage,
             player_reputation=self.player_ship.reputation,
             nearby_objects=nearby_objects,
+            nearby_enemy_ships=nearby_enemy_ships,
             turn_count=self.turn_count
         )
         
@@ -461,27 +475,47 @@ class GameEngine:
         """Execute the decision from LLM. Only ONE action per turn."""
         action_taken = None
         
+        # Determine target from decision
+        target_id = decision.get('target_id', 'PLAYER')
+        target_ship = None
+        target_distance = distance_to_player
+        
+        if target_id == 'PLAYER':
+            target_ship = self.player_ship
+            target_distance = distance_to_player
+        elif target_id in self.enemy_ships:
+            target_ship = self.enemy_ships[target_id]
+            target_distance = ship.position.distance_to(target_ship.position)
+            if target_ship.is_destroyed:
+                target_ship = self.player_ship  # Fallback to player if target destroyed
+                target_distance = distance_to_player
+        else:
+            target_ship = self.player_ship  # Default to player if invalid target
+            target_distance = distance_to_player
+        
         # Priority 1: Fire phasers if requested and in range
-        if decision['fire_phasers'] and distance_to_player < 10:
-            ship.weapons.phaser_locked_target = self.player_ship.id
-            result = ship.fire_phaser(self.player_ship)
+        if decision['fire_phasers'] and target_distance < 10:
+            ship.weapons.phaser_locked_target = target_ship.id
+            result = ship.fire_phaser(target_ship)
             if result:  # result is now a dict
                 damage = result.get('damage', 0)
                 damage_type = result.get('damage_type', 'unknown')
-                self.messages.append(f"{ship.id} fires phasers at you! Hit for {damage:.1f}% {damage_type} damage!")
+                target_name = "you" if target_ship == self.player_ship else target_ship.id
+                self.messages.append(f"{ship.id} fires phasers at {target_name}! Hit for {damage:.1f}% {damage_type} damage!")
                 action_taken = "fire_phasers"
                 if show_debug:
-                    self.messages.append(f"[DEBUG] {ship.id}: phaser attack - {decision['reason']}")
+                    self.messages.append(f"[DEBUG] {ship.id}: phaser attack on {target_name} - {decision['reason']}")
         
         # Priority 2: Fire torpedoes if no other action and requested
-        elif decision['fire_torpedos'] and distance_to_player < 50 and ship.weapons.torpedos > 0:
-            result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
+        elif decision['fire_torpedos'] and target_distance < 50 and ship.weapons.torpedos > 0:
+            result = ship.fire_torpedo(target_ship.position, target_ship)
             if result:  # result is now a dict
-                target_id = result.get('target_id', 'unknown')
-                self.messages.append(f"{ship.id} launches a torpedo at {target_id}!")
+                result_target_id = result.get('target_id', 'unknown')
+                target_name = "you" if result_target_id == self.player_ship.id else result_target_id
+                self.messages.append(f"{ship.id} launches a torpedo at {target_name}!")
                 action_taken = "fire_torpedo"
                 if show_debug:
-                    self.messages.append(f"[DEBUG] {ship.id}: torpedo attack")
+                    self.messages.append(f"[DEBUG] {ship.id}: torpedo attack on {target_name}")
         
         # Priority 3: Movement if no weapons fired
         else:
@@ -491,26 +525,29 @@ class GameEngine:
             
             # If fleeing, also return fire if in weapon range
             if decision['action'] == 'evade':
-                # Lock on to player for potential return fire
-                ship.lock_phasers(self.player_ship.id)
+                # Lock on to target for potential return fire
+                ship.lock_phasers(target_ship.id)
                 
                 # Try phasers first if in range (< 10 AU)
-                if distance_to_player < 10 and ship.weapons.phaser_operational:
-                    result = ship.fire_phaser(self.player_ship)
+                if target_distance < 10 and ship.weapons.phaser_operational:
+                    result = ship.fire_phaser(target_ship)
                     if result:
-                        self.messages.append(f"[{ship.id}] Return fire while fleeing! Phaser hit on {result['target_id']}: {result['damage']:.1f}% {result['damage_type']} damage")
+                        target_name = "you" if result['target_id'] == self.player_ship.id else result['target_id']
+                        self.messages.append(f"[{ship.id}] Return fire while fleeing! Phaser hit on {target_name}: {result['damage']:.1f}% {result['damage_type']} damage")
                 # Otherwise try torpedos if in range (< 50 AU) and have ammo
-                elif distance_to_player < 50 and ship.weapons.torpedos > 0:
-                    result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
+                elif target_distance < 50 and ship.weapons.torpedos > 0:
+                    result = ship.fire_torpedo(target_ship.position, target_ship)
                     if result:
-                        self.messages.append(f"[{ship.id}] Return fire while fleeing! Torpedo launched at {result['target_id']}")
+                        target_name = "you" if result['target_id'] == self.player_ship.id else result['target_id']
+                        self.messages.append(f"[{ship.id}] Return fire while fleeing! Torpedo launched at {target_name}")
             
             if show_debug:
                 action = decision['action']
                 heading = decision['heading']
                 speed = decision['speed']
+                target_name = "PLAYER" if target_ship == self.player_ship else target_ship.id
                 self.messages.append(
-                    f"[DEBUG] {ship.id}: {action} @ heading {heading}° warp {speed} - {decision['reason']}"
+                    f"[DEBUG] {ship.id}: {action} @ heading {heading}° warp {speed} targeting {target_name} - {decision['reason']}"
                 )
     
     def _execute_basic_enemy_ai(self, ship: Ship, distance_to_player: float, 
@@ -520,15 +557,77 @@ class GameEngine:
         behavior = ship.behavior_trait if ship.behavior_trait else 'neutral'
         player_rep = self.player_ship.reputation
         
-        if player_in_range:
+        # Find nearby enemy ships as potential targets
+        nearby_enemies = []
+        for enemy_id, enemy_ship in self.enemy_ships.items():
+            if enemy_id != ship.id and not enemy_ship.is_destroyed:
+                dist = ship.position.distance_to(enemy_ship.position)
+                if dist < 50:  # Within sensor range
+                    nearby_enemies.append((enemy_id, enemy_ship, dist))
+        
+        # Sort by distance
+        nearby_enemies.sort(key=lambda x: x[2])
+        
+        # Determine best target (player or another enemy)
+        target_ship = self.player_ship
+        target_distance = distance_to_player
+        target_is_player = True
+        
+        # Consider attacking nearby enemy ships based on behavior and tactical situation
+        if nearby_enemies:
+            # Aggressive enemies are opportunistic - attack any nearby damaged enemy
+            if behavior == 'aggressive':
+                for enemy_id, enemy_ship, dist in nearby_enemies[:5]:  # Check 5 closest
+                    # Target damaged enemies that are close
+                    if enemy_ship.damage > 30 and dist < 25:
+                        target_ship = enemy_ship
+                        target_distance = dist
+                        target_is_player = False
+                        if show_debug:
+                            self.messages.append(f"[DEBUG] {ship.id}: Targeting damaged enemy {enemy_id} ({enemy_ship.damage:.1f}% dmg, {dist:.1f} AU)")
+                        break
+                    # Or target very close enemies even if not damaged
+                    elif dist < 10 and enemy_ship.damage > 0:
+                        target_ship = enemy_ship
+                        target_distance = dist
+                        target_is_player = False
+                        if show_debug:
+                            self.messages.append(f"[DEBUG] {ship.id}: Targeting close enemy {enemy_id} ({dist:.1f} AU)")
+                        break
+            
+            # Neutral enemies target damaged nearby enemies if they're easier than player
+            elif behavior == 'neutral':
+                for enemy_id, enemy_ship, dist in nearby_enemies[:3]:
+                    # Target heavily damaged enemies that are closer
+                    if enemy_ship.damage > 40 and dist < distance_to_player * 0.8:
+                        target_ship = enemy_ship
+                        target_distance = dist
+                        target_is_player = False
+                        if show_debug:
+                            self.messages.append(f"[DEBUG] {ship.id}: Targeting damaged enemy {enemy_id} ({enemy_ship.damage:.1f}% dmg)")
+                        break
+            
+            # Timid enemies only attack very damaged enemies or if cornered
+            elif behavior == 'timid':
+                for enemy_id, enemy_ship, dist in nearby_enemies[:2]:
+                    # Only target very damaged enemies
+                    if enemy_ship.damage > 60 and dist < 20:
+                        target_ship = enemy_ship
+                        target_distance = dist
+                        target_is_player = False
+                        if show_debug:
+                            self.messages.append(f"[DEBUG] {ship.id}: Targeting very damaged enemy {enemy_id} ({enemy_ship.damage:.1f}% dmg)")
+                        break
+        
+        if player_in_range or target_distance < 50:
             # Determine if enemy should attack based on behavior trait
             should_attack = False
             should_flee = False
             
             # Check attack conditions based on behavior trait
             if behavior == 'aggressive':
-                # Aggressive: attack if player reputation < 70
-                if player_rep < 70:
+                # Aggressive: attack if player reputation < 70 or targeting any damaged enemy
+                if (target_is_player and player_rep < 70) or (not target_is_player and target_ship.damage > 20):
                     should_attack = True
                 # Flee only if own damage > 80%
                 if ship.damage > 80.0:
@@ -536,9 +635,9 @@ class GameEngine:
                     should_attack = False
             
             elif behavior == 'neutral':
-                # Neutral: attack only if provoked or player reputation < 50
+                # Neutral: attack only if provoked or player reputation < 50, or targeting damaged enemy
                 # For now, consider "provoked" if player has attacked (damage > 0)
-                if ship.damage > 0 or player_rep < 50:
+                if (ship.damage > 0 or (target_is_player and player_rep < 50)) or (not target_is_player and target_ship.damage > 30):
                     should_attack = True
                 # Flee if own damage > 50%
                 if ship.damage > 50.0:
@@ -546,8 +645,8 @@ class GameEngine:
                     should_attack = False
             
             elif behavior == 'timid':
-                # Timid: attack only if provoked or player reputation < 25
-                if ship.damage > 0 or player_rep < 25:
+                # Timid: attack only if provoked or player reputation < 25, or very damaged enemy
+                if (ship.damage > 0 or (target_is_player and player_rep < 25)) or (not target_is_player and target_ship.damage > 50):
                     should_attack = True
                 # Flee if own damage > 30%, unless player reputation < 10
                 if ship.damage > 30.0 and player_rep >= 10:
@@ -556,8 +655,8 @@ class GameEngine:
             
             # Execute flee behavior
             if should_flee:
-                dx = ship.position.x - self.player_ship.position.x
-                dy = ship.position.y - self.player_ship.position.y
+                dx = ship.position.x - target_ship.position.x
+                dy = ship.position.y - target_ship.position.y
                 
                 if dx != 0 or dy != 0:
                     escape_heading = math.atan2(dy, dx) * 180 / math.pi
@@ -566,21 +665,24 @@ class GameEngine:
                     
                     ship.set_heading(escape_heading)
                     ship.set_warp_speed(8.0)
-                    action_desc = f"fleeing ({behavior}, damage {ship.damage:.0f}%) at {distance_to_player:.1f} AU"
+                    target_name = "player" if target_is_player else target_ship.id
+                    action_desc = f"fleeing from {target_name} ({behavior}, damage {ship.damage:.0f}%) at {target_distance:.1f} AU"
                     
                     # Return fire while fleeing if in weapon range
-                    ship.lock_phasers(self.player_ship.id)
+                    ship.lock_phasers(target_ship.id)
                     
                     # Try phasers first if in range (< 10 AU)
-                    if distance_to_player < 10 and ship.weapons.phaser_operational:
-                        result = ship.fire_phaser(self.player_ship)
+                    if target_distance < 10 and ship.weapons.phaser_operational:
+                        result = ship.fire_phaser(target_ship)
                         if result:
-                            self.messages.append(f"[{ship.id}] Return fire while fleeing! Phaser hit on {result['target_id']}: {result['damage']:.1f}% {result['damage_type']} damage")
+                            result_name = "you" if result['target_id'] == self.player_ship.id else result['target_id']
+                            self.messages.append(f"[{ship.id}] Return fire while fleeing! Phaser hit on {result_name}: {result['damage']:.1f}% {result['damage_type']} damage")
                     # Otherwise try torpedos if in range (< 50 AU) and have ammo
-                    elif distance_to_player < 50 and ship.weapons.torpedos > 0:
-                        result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
+                    elif target_distance < 50 and ship.weapons.torpedos > 0:
+                        result = ship.fire_torpedo(target_ship.position, target_ship)
                         if result:
-                            self.messages.append(f"[{ship.id}] Return fire while fleeing! Torpedo launched at {result['target_id']}")
+                            result_name = "you" if result['target_id'] == self.player_ship.id else result['target_id']
+                            self.messages.append(f"[{ship.id}] Return fire while fleeing! Torpedo launched at {result_name}")
                     
                     if show_debug:
                         self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
@@ -588,27 +690,29 @@ class GameEngine:
             # Execute attack behavior
             elif should_attack:
                 # Priority: Fire phasers if very close (30% chance)
-                if distance_to_player < 15 and random.random() < 0.3:
-                    ship.weapons.phaser_locked_target = self.player_ship.id
-                    result = ship.fire_phaser(self.player_ship)
+                if target_distance < 15 and random.random() < 0.3:
+                    ship.weapons.phaser_locked_target = target_ship.id
+                    result = ship.fire_phaser(target_ship)
                     if result:  # result is now a dict
                         damage = result.get('damage', 0)
                         damage_type = result.get('damage_type', 'unknown')
-                        self.messages.append(f"{ship.id} fires phasers at you! Hit for {damage:.1f}% {damage_type} damage!")
+                        target_name = "you" if result['target_id'] == self.player_ship.id else result['target_id']
+                        self.messages.append(f"{ship.id} fires phasers at {target_name}! Hit for {damage:.1f}% {damage_type} damage!")
                         if show_debug:
-                            self.messages.append(f"[DEBUG] {ship.id}: phaser attack ({behavior})")
+                            self.messages.append(f"[DEBUG] {ship.id}: phaser attack on {target_name} ({behavior})")
                 # Or fire torpedoes if in range (20% chance)
-                elif distance_to_player < 50 and distance_to_player > 15 and random.random() < 0.2 and ship.weapons.torpedos > 0:
-                    result = ship.fire_torpedo(self.player_ship.position, self.player_ship)
+                elif target_distance < 50 and target_distance > 15 and random.random() < 0.2 and ship.weapons.torpedos > 0:
+                    result = ship.fire_torpedo(target_ship.position, target_ship)
                     if result:  # result is now a dict
-                        target_id = result.get('target_id', 'unknown')
-                        self.messages.append(f"{ship.id} launches a torpedo at {target_id}!")
+                        result_target_id = result.get('target_id', 'unknown')
+                        target_name = "you" if result_target_id == self.player_ship.id else result_target_id
+                        self.messages.append(f"{ship.id} launches a torpedo at {target_name}!")
                         if show_debug:
-                            self.messages.append(f"[DEBUG] {ship.id}: torpedo attack ({behavior})")
+                            self.messages.append(f"[DEBUG] {ship.id}: torpedo attack on {target_name} ({behavior})")
                 # Otherwise move to close in
                 else:
-                    dx = self.player_ship.position.x - ship.position.x
-                    dy = self.player_ship.position.y - ship.position.y
+                    dx = target_ship.position.x - ship.position.x
+                    dy = target_ship.position.y - ship.position.y
                     
                     if dx != 0 or dy != 0:
                         attack_heading = math.atan2(dy, dx) * 180 / math.pi
@@ -617,7 +721,8 @@ class GameEngine:
                         
                         ship.set_heading(attack_heading)
                         ship.set_warp_speed(6.0)
-                        action_desc = f"closing in to attack ({behavior}) at {distance_to_player:.1f} AU"
+                        target_name = "player" if target_is_player else target_ship.id
+                        action_desc = f"closing in to attack {target_name} ({behavior}) at {target_distance:.1f} AU"
                         if show_debug:
                             self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
             else:
@@ -1311,10 +1416,14 @@ class GameEngine:
                         else:
                             self.messages.append("Torpedo target missed")
                     else:
-                        # Enemy torpedo - check if hit player
+                        # Enemy torpedo - check if hit player or other enemy ships
+                        hit_something = False
+                        
+                        # First check if it hit the player
                         dist_to_player = self.player_ship.position.distance_to(torpedo['current_pos'])
                         if dist_to_player < 2.0:
                             # Hit the player!
+                            hit_something = True
                             damage = 10.0  # 10% damage per torpedo hit (as per requirements)
                             
                             # Apply damage to shields first, then ship
@@ -1342,9 +1451,60 @@ class GameEngine:
                             if self.player_ship.damage >= 100.0:
                                 self.player_ship.is_destroyed = True
                                 self.messages.append("YOUR SHIP HAS BEEN DESTROYED!")
-                        else:
-                            # Missed the player
-                            self.messages.append(f"{ship.id} torpedo missed")
+                        
+                        # If didn't hit player, check other enemy ships
+                        if not hit_something:
+                            for enemy_id, enemy_ship in self.enemy_ships.items():
+                                if enemy_id != torpedo['source_ship_id']:  # Don't hit yourself
+                                    dist_to_enemy = enemy_ship.position.distance_to(torpedo['current_pos'])
+                                    if dist_to_enemy < 2.0 and not enemy_ship.is_destroyed:
+                                        # Hit another enemy ship!
+                                        hit_something = True
+                                        damage = 10.0  # 10% damage per torpedo hit
+                                        
+                                        # Apply damage to shields first, then ship
+                                        if enemy_ship.shields_active and enemy_ship.shields > 0:
+                                            shield_damage = min(damage, enemy_ship.shields)
+                                            enemy_ship.shields -= shield_damage
+                                            remaining_damage = damage - shield_damage
+                                            
+                                            if remaining_damage > 0:
+                                                enemy_ship.damage = min(100.0, enemy_ship.damage + remaining_damage)
+                                                self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {enemy_id}! {remaining_damage:.1f}% damage!")
+                                            else:
+                                                self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {enemy_id}'s shields for {shield_damage:.1f}%!")
+                                        else:
+                                            enemy_ship.damage = min(100.0, enemy_ship.damage + damage)
+                                            self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {enemy_id}! {damage:.1f}% damage!")
+                                        
+                                        # 1% chance to damage warp core
+                                        if random.random() < 0.01:
+                                            enemy_ship.propulsion.warp_core_temp = min(100.0,
+                                                enemy_ship.propulsion.warp_core_temp + 50.0)
+                                            self.messages.append(f"CRITICAL: {enemy_id}'s warp core damaged!")
+                                        
+                                        # Check if destroyed
+                                        if enemy_ship.damage >= 100.0:
+                                            enemy_ship.is_destroyed = True
+                                            self.messages.append(f"{enemy_id} destroyed by {torpedo['source_ship_id']}!")
+                                            
+                                            # Clear weapon lock if this was the locked target
+                                            if self.player_ship.weapons.phaser_locked_target == enemy_id:
+                                                self.player_ship.weapons.phaser_locked_target = None
+                                            
+                                            # Remove destroyed ship and spawn replacement
+                                            if enemy_id in self.enemy_ships:
+                                                del self.enemy_ships[enemy_id]
+                                                self._spawn_single_enemy()
+                                                new_enemy_id = list(self.enemy_ships.keys())[-1]
+                                                new_enemy = self.enemy_ships[new_enemy_id]
+                                                self.messages.append(f"New enemy ship {new_enemy_id} spawned at ({new_enemy.position.x:.0f}, {new_enemy.position.y:.0f})")
+                                        
+                                        break  # Only hit one ship
+                        
+                        if not hit_something:
+                            # Missed everything
+                            self.messages.append(f"{torpedo['source_ship_id']} torpedo missed")
             else:
                 # Already at target
                 torpedos_to_remove.append(torpedo)
