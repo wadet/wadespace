@@ -69,7 +69,8 @@ class Ship:
         self.shields_active = False
         self.crew = 1000
         self.cash = random.randint(1000, 5000)
-        self.reputation = random.randint(0, 100)  # 0-100, randomly assigned
+        # Player starts with reputation 70-100, enemies get 0-100
+        self.reputation = random.randint(70, 100) if is_player else random.randint(0, 100)
         
         # Behavior trait for enemy ships (aggressive, neutral, timid)
         self.behavior_trait = None  # Only assigned for enemy ships
