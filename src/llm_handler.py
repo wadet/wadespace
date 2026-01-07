@@ -270,7 +270,7 @@ Decision priorities based on personality:
 1. Check if you should flee based on damage threshold ({flee_damage_threshold}%)
 2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)
 3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)
-4. If fleeing/evading: Move away from threats BUT also return fire if in weapon range
+4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)
 5. If not attacking or fleeing: patrol the area
 """
         return prompt

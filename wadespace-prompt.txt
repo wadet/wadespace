@@ -145,6 +145,7 @@ ENEMY SHIPS:
 * Enemy ships strategize to destroy the player's ship
 * If the player's ship is within the enemy's sensor range, the enemy ship should close in to attack the player's ship if the enemy ship is not too damaged and still able to attack
 * If the enemy ship is heavily damaged, the enemy ship should evade the player's ship
+* Ships that are fleeing must not attack the ship that they are fleeing from unless the fleeing ship has already been fired upon
 * Enemy ships can communicate with one another to coordinate an attack on the player's ship
 * The player uses the enemy ship identifier when targeting the enemy ship using weapons or sensors
 * When an enemy ship is destroyed, it should be removed from the universe and a new enemy ship generated to take its place and placed in a random location in the universe

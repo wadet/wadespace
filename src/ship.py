@@ -75,6 +75,9 @@ class Ship:
         # Behavior trait for enemy ships (aggressive, neutral, timid)
         self.behavior_trait = None  # Only assigned for enemy ships
         
+        # Track ships that have fired upon this ship (for return fire logic)
+        self.fired_upon_by = set()  # Set of ship IDs that have fired upon this ship
+        
         # Systems
         self.weapons = ShipWeaponSystem()
         self.propulsion = ShipPropulsionSystem()
@@ -241,6 +244,9 @@ class Ship:
             damage_type = 'warp core'
         else:
             damage = self.weapons.phaser_damage
+        
+        # Record that this ship fired upon the target
+        target_ship.fired_upon_by.add(self.id)
         
         # Record shield status before damage
         shields_before = target_ship.shields

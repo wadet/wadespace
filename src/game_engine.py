@@ -523,23 +523,25 @@ class GameEngine:
             ship.set_warp_speed(decision['speed'])
             action_taken = "movement"
             
-            # If fleeing, also return fire if in weapon range
+            # If fleeing, only return fire if already fired upon by the target
             if decision['action'] == 'evade':
-                # Lock on to target for potential return fire
-                ship.lock_phasers(target_ship.id)
-                
-                # Try phasers first if in range (< 10 AU)
-                if target_distance < 10 and ship.weapons.phaser_operational:
-                    result = ship.fire_phaser(target_ship)
-                    if result:
-                        target_name = "you" if result['target_id'] == self.player_ship.id else result['target_id']
-                        self.messages.append(f"[{ship.id}] Return fire while fleeing! Phaser hit on {target_name}: {result['damage']:.1f}% {result['damage_type']} damage")
-                # Otherwise try torpedos if in range (< 50 AU) and have ammo
-                elif target_distance < 50 and ship.weapons.torpedos > 0:
-                    result = ship.fire_torpedo(target_ship.position, target_ship)
-                    if result:
-                        target_name = "you" if result['target_id'] == self.player_ship.id else result['target_id']
-                        self.messages.append(f"[{ship.id}] Return fire while fleeing! Torpedo launched at {target_name}")
+                # Only return fire if this ship has been fired upon by the target
+                if target_ship.id in ship.fired_upon_by:
+                    # Lock on to target for potential return fire
+                    ship.lock_phasers(target_ship.id)
+                    
+                    # Try phasers first if in range (< 10 AU)
+                    if target_distance < 10 and ship.weapons.phaser_operational:
+                        result = ship.fire_phaser(target_ship)
+                        if result:
+                            target_name = "you" if result['target_id'] == self.player_ship.id else result['target_id']
+                            self.messages.append(f"[{ship.id}] Return fire while fleeing! Phaser hit on {target_name}: {result['damage']:.1f}% {result['damage_type']} damage")
+                    # Otherwise try torpedos if in range (< 50 AU) and have ammo
+                    elif target_distance < 50 and ship.weapons.torpedos > 0:
+                        result = ship.fire_torpedo(target_ship.position, target_ship)
+                        if result:
+                            target_name = "you" if result['target_id'] == self.player_ship.id else result['target_id']
+                            self.messages.append(f"[{ship.id}] Return fire while fleeing! Torpedo launched at {target_name}")
             
             if show_debug:
                 action = decision['action']
@@ -668,7 +670,8 @@ class GameEngine:
                     target_name = "player" if target_is_player else target_ship.id
                     action_desc = f"fleeing from {target_name} ({behavior}, damage {ship.damage:.0f}%) at {target_distance:.1f} AU"
                     
-                    # Return fire while fleeing if in weapon range
+# Only return fire if already fired upon by the target
+                if target_ship.id in ship.fired_upon_by:
                     ship.lock_phasers(target_ship.id)
                     
                     # Try phasers first if in range (< 10 AU)
@@ -1373,6 +1376,10 @@ class GameEngine:
                             hit_type, hit_id, hit_obj = hit_target
                             if hit_type == 'enemy':
                                 damage = 25.0  # Torpedo damage
+                                
+                                # Record that player fired upon this enemy
+                                hit_obj.fired_upon_by.add(torpedo['source_ship_id'])
+                                
                                 hit_obj.damage = min(100.0, hit_obj.damage + damage)
                                 self.messages.append(f"Torpedo hit {hit_id}! Damage: {damage:.0f}%")
                                 
@@ -1426,6 +1433,9 @@ class GameEngine:
                             hit_something = True
                             damage = 10.0  # 10% damage per torpedo hit (as per requirements)
                             
+                            # Record that this ship fired upon the player
+                            self.player_ship.fired_upon_by.add(torpedo['source_ship_id'])
+                            
                             # Apply damage to shields first, then ship
                             if self.player_ship.shields_active and self.player_ship.shields > 0:
                                 shield_damage = min(damage, self.player_ship.shields)
@@ -1461,6 +1471,9 @@ class GameEngine:
                                         # Hit another enemy ship!
                                         hit_something = True
                                         damage = 10.0  # 10% damage per torpedo hit
+                                        
+                                        # Record that this ship fired upon the enemy
+                                        enemy_ship.fired_upon_by.add(torpedo['source_ship_id'])
                                         
                                         # Apply damage to shields first, then ship
                                         if enemy_ship.shields_active and enemy_ship.shields > 0:
