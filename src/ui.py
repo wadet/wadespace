@@ -561,6 +561,7 @@ class GameUI:
             f"Cash: ${ship.cash}",
             f"Torpedos: {ship.weapons.torpedos}",
             f"Speed: {ship.propulsion.current_speed:.1f} AU/turn",
+            f"Energy Consumption: {ship.get_current_energy_consumption():.2f}%/turn",
             f"Heading: {ship.propulsion.current_heading:.0f}°",
         ]
         

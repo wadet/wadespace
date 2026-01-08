@@ -115,7 +115,7 @@ SHIP PROPULSION:
 * Warp drive and impulse cannot be used simultaneously
 * Each ship has an warp core and is governed by the core's temperature
 * The ship will not be able to move if the warp core's temperature is at 100 percent
-* Warp drives consume 0.5 percent of the ship's energy each turn when it is active
+* Warp drives consume between 0.1 and 0.3 percent of the ship's energy per turn proportional to the speed the ship is travelling. For example, at half maximum warp (4.5 AU), the energy consumed should be 0.2 percent. For speeds beyond maximum warp (9 AU), the energy consumed is 0.3 + (speed - 9) / 100 percent
 * Impulse drives consume 1 percent of the ship's energy each turn when it is active
 * Ships should not be able to move at all once the amount of energy reaches zero percent
 * If the ship is operating its warp drives or impulse drive within normal ranges, the warp core temperature will not rise

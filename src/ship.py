@@ -42,7 +42,8 @@ class ShipPropulsionSystem:
     warp_core_max_temp: float = 100.0
     
     impulse_energy_cost: float = 1.0  # % per turn
-    warp_energy_cost: float = 0.5  # % per turn
+    # Warp energy cost is now calculated dynamically based on speed
+    max_normal_warp: float = 9.0  # AU per turn
 
 
 @dataclass
@@ -117,6 +118,40 @@ class Ship:
         """Activate or deactivate shields."""
         self.shields_active = active
     
+    def get_current_energy_consumption(self) -> float:
+        """Calculate and return current energy consumption per turn."""
+        energy_drain = 0.0
+        
+        # Shield drain
+        if self.shields_active:
+            energy_drain += 2.0
+        
+        # Propulsion drain
+        if self.propulsion.warp_active:
+            if self.propulsion.current_speed <= self.propulsion.max_normal_warp:
+                # Linear interpolation: 0.1% at minimum warp (2 AU), 0.3% at max warp (9 AU)
+                min_warp = 2.0
+                max_warp = self.propulsion.max_normal_warp
+                min_energy = 0.1
+                max_energy = 0.3
+                
+                if self.propulsion.current_speed >= min_warp:
+                    speed_ratio = (self.propulsion.current_speed - min_warp) / (max_warp - min_warp)
+                    warp_energy_cost = min_energy + (speed_ratio * (max_energy - min_energy))
+                else:
+                    warp_energy_cost = min_energy
+                
+                energy_drain += warp_energy_cost
+            else:
+                # Beyond maximum warp: 0.3% + (speed - max_warp) / 100
+                excess_speed = self.propulsion.current_speed - self.propulsion.max_normal_warp
+                max_energy = 0.3
+                energy_drain += max_energy + (excess_speed / 100.0)
+        elif self.propulsion.impulse_active:
+            energy_drain += self.propulsion.impulse_energy_cost
+        
+        return energy_drain
+    
     def update_energy(self) -> None:
         """Update energy based on active systems."""
         energy_drain = 0.0
@@ -127,10 +162,30 @@ class Ship:
         
         # Propulsion drain
         if self.propulsion.warp_active:
-            energy_drain += self.propulsion.warp_energy_cost
-            # Calculate additional drain for speeds over 9 AU/turn
-            if self.propulsion.current_speed > 9.0:
-                excess_speed = self.propulsion.current_speed - 9.0
+            # Calculate warp energy consumption proportional to speed
+            # Between 0.1% and 0.3% for speeds 2-9 AU (linear scaling)
+            # Beyond 9 AU: 0.3% + (speed - 9) / 100
+            if self.propulsion.current_speed <= self.propulsion.max_normal_warp:
+                # Linear interpolation: 0.1% at minimum warp (2 AU), 0.3% at max warp (9 AU)
+                min_warp = 2.0
+                max_warp = self.propulsion.max_normal_warp
+                min_energy = 0.1
+                max_energy = 0.3
+                
+                # Calculate proportional energy cost
+                if self.propulsion.current_speed >= min_warp:
+                    speed_ratio = (self.propulsion.current_speed - min_warp) / (max_warp - min_warp)
+                    warp_energy_cost = min_energy + (speed_ratio * (max_energy - min_energy))
+                else:
+                    warp_energy_cost = min_energy
+                
+                energy_drain += warp_energy_cost
+            else:
+                # Beyond maximum warp: 0.3% + (speed - max_warp) / 100
+                excess_speed = self.propulsion.current_speed - self.propulsion.max_normal_warp
+                max_energy = 0.3  # Base energy at max warp
+                energy_drain += max_energy + (excess_speed / 100.0)
+                # Also increase warp core temperature for excess speed
                 self.propulsion.warp_core_temp += excess_speed
         elif self.propulsion.impulse_active:
             energy_drain += self.propulsion.impulse_energy_cost

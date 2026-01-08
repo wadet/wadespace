@@ -17421,3 +17421,444 @@ RESPONSE:
 }
 ================================================================================
 
+================================================================================
+TIMESTAMP: 2026-01-07T20:14:57.687308
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5071 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (625.5, 856.6)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (652.9, 846.3)\n- Distance: 29.3 AU\n- Damage: 0.0%\n- Reputation: 98/100\n\nNearby Enemy Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby enemy ships\n- PRIORITIZE opportunistic targets: damaged enemy ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<enemy_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CvbiCZfal6xMepXL4OfT1k3eLeU7K",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 2,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"The PLAYER has a high reputation and poses a significant threat. As a timid captain, I will patrol to maintain distance and avoid confrontation.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 689,
+    "completion_tokens": 80,
+    "total_tokens": 769
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-07T20:14:59.444437
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s7335 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (696.2, 844.4)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (652.9, 846.3)\n- Distance: 43.4 AU\n- Damage: 0.0%\n- Reputation: 98/100\n\nNearby Enemy Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby enemy ships\n- PRIORITIZE opportunistic targets: damaged enemy ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<enemy_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CvbiECxg0LT3N9lOI8umpteXC19Uu",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"No immediate threats; player has high reputation and I am not damaged. Patrol for safety.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 689,
+    "completion_tokens": 71,
+    "total_tokens": 760
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-07T20:15:05.340970
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5071 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (627.5, 856.6)\n- Damage: 0.0%\n- Energy: 99.9%\n- Shields: 100.0%\n- Behavior Type: timid\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (645.9, 840.6)\n- Distance: 24.4 AU\n- Damage: 0.0%\n- Reputation: 98/100\n\nNearby Enemy Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby enemy ships\n- PRIORITIZE opportunistic targets: damaged enemy ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<enemy_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CvbiJnMovR9fT9rsujJY8Q065Mwzu",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 2,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"The player has high reputation and no immediate threats are present. I will cautiously patrol the area to avoid confrontation.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 689,
+    "completion_tokens": 75,
+    "total_tokens": 764
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-07T20:19:30.880745
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s7563 in a space combat scenario.\n\nCAPTAIN PERSONALITY: NEUTRAL\nYou are a NEUTRAL captain. Your behavior:\n- Attack only if provoked (have taken damage) or target reputation < 50\n- Engage in combat until your ship damage > 50%\n- Balance between offense and defense\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (2603.5, 1071.5)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: neutral\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (2569.9, 1051.3)\n- Distance: 39.2 AU\n- Damage: 0.0%\n- Reputation: 99/100\n\nNearby Enemy Ships (potential targets or threats):\n  - s5568 at 41.3 AU, Damage: 0.0%, Position: (2562.6, 1076.7)\n\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby enemy ships\n- PRIORITIZE opportunistic targets: damaged enemy ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 50%\n\n\nMake a tactical decision based on your neutral personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<enemy_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (50%)\n2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CvbmbzTy01ZcJuK2XaEAXYHnlXG2r",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 5,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"No immediate threats or provocation; maintaining a neutral stance while monitoring the area.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 697,
+    "completion_tokens": 69,
+    "total_tokens": 766
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-07T20:19:32.996551
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5739 in a space combat scenario.\n\nCAPTAIN PERSONALITY: NEUTRAL\nYou are a NEUTRAL captain. Your behavior:\n- Attack only if provoked (have taken damage) or target reputation < 50\n- Engage in combat until your ship damage > 50%\n- Balance between offense and defense\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (2540.7, 1091.5)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: neutral\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (2569.9, 1051.3)\n- Distance: 49.7 AU\n- Damage: 0.0%\n- Reputation: 99/100\n\nNearby Enemy Ships (potential targets or threats):\n  - s5568 at 26.5 AU, Damage: 0.0%, Position: (2562.6, 1076.7)\n\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby enemy ships\n- PRIORITIZE opportunistic targets: damaged enemy ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 50%\n\n\nMake a tactical decision based on your neutral personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<enemy_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (50%)\n2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CvbmdrM4m73NGEW7Stoo3kKfBxGta",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"Current conditions do not warrant an attack; both my ship and the player ship are undamaged and the player has a high reputation, so I will patrol the area.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 697,
+    "completion_tokens": 86,
+    "total_tokens": 783
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-07T20:19:34.854025
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5568 in a space combat scenario.\n\nCAPTAIN PERSONALITY: NEUTRAL\nYou are a NEUTRAL captain. Your behavior:\n- Attack only if provoked (have taken damage) or target reputation < 50\n- Engage in combat until your ship damage > 50%\n- Balance between offense and defense\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (2562.6, 1076.7)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: neutral\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (2569.9, 1051.3)\n- Distance: 26.4 AU\n- Damage: 0.0%\n- Reputation: 99/100\n\nNearby Enemy Ships (potential targets or threats):\n  - s5739 at 26.5 AU, Damage: 0.0%, Position: (2540.7, 1091.5)\n  - s7563 at 41.3 AU, Damage: 0.0%, Position: (2603.5, 1071.5)\n\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby enemy ships\n- PRIORITIZE opportunistic targets: damaged enemy ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 50%\n\n\nMake a tactical decision based on your neutral personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<enemy_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (50%)\n2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CvbmfExnp9aytmxk85iXtCbivzVXB",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 5,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"No immediate threats detected; maintaining current status while monitoring surroundings.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 730,
+    "completion_tokens": 65,
+    "total_tokens": 795
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-07T20:19:56.993111
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s7563 in a space combat scenario.\n\nCAPTAIN PERSONALITY: NEUTRAL\nYou are a NEUTRAL captain. Your behavior:\n- Attack only if provoked (have taken damage) or target reputation < 50\n- Engage in combat until your ship damage > 50%\n- Balance between offense and defense\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (2608.5, 1071.5)\n- Damage: 0.0%\n- Energy: 99.8%\n- Shields: 100.0%\n- Behavior Type: neutral\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (2568.6, 1042.4)\n- Distance: 49.4 AU\n- Damage: 0.0%\n- Reputation: 99/100\n\nNearby Enemy Ships (potential targets or threats):\n  - s5568 at 41.3 AU, Damage: 0.0%, Position: (2567.6, 1076.7)\n\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby enemy ships\n- PRIORITIZE opportunistic targets: damaged enemy ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 50%\n\n\nMake a tactical decision based on your neutral personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<enemy_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (50%)\n2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvbn10vmBOtffakl64ZVaQmhzzqEJ",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"No immediate threats present; ship damage is at 0%. Maintain position and observe for potential threats.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 697,
+    "completion_tokens": 73,
+    "total_tokens": 770
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-07T20:19:59.074166
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5568 in a space combat scenario.\n\nCAPTAIN PERSONALITY: NEUTRAL\nYou are a NEUTRAL captain. Your behavior:\n- Attack only if provoked (have taken damage) or target reputation < 50\n- Engage in combat until your ship damage > 50%\n- Balance between offense and defense\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (2567.6, 1076.7)\n- Damage: 0.0%\n- Energy: 99.8%\n- Shields: 100.0%\n- Behavior Type: neutral\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (2568.6, 1042.4)\n- Distance: 34.3 AU\n- Damage: 0.0%\n- Reputation: 99/100\n\nNearby Enemy Ships (potential targets or threats):\n  - s5739 at 30.7 AU, Damage: 0.0%, Position: (2540.7, 1091.5)\n  - s7563 at 41.3 AU, Damage: 0.0%, Position: (2608.5, 1071.5)\n\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby enemy ships\n- PRIORITIZE opportunistic targets: damaged enemy ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 50%\n\n\nMake a tactical decision based on your neutral personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<enemy_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (50%)\n2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvbn3mU5Ka0J0s5ozqvjuuIT87tbp",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 10,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"Current situation indicates no provocation or immediate threats. Engaging in patrol to maintain position and assess the situation.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 730,
+    "completion_tokens": 75,
+    "total_tokens": 805
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-07T20:20:04.742215
+METHOD: get_enemy_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding enemy spacecraft s5568 in a space combat scenario.\n\nCAPTAIN PERSONALITY: NEUTRAL\nYou are a NEUTRAL captain. Your behavior:\n- Attack only if provoked (have taken damage) or target reputation < 50\n- Engage in combat until your ship damage > 50%\n- Balance between offense and defense\n\nCURRENT SITUATION (Turn 3):\nYour Ship Status:\n- Position: (2577.6, 1076.7)\n- Damage: 0.0%\n- Energy: 99.5%\n- Shields: 100.0%\n- Behavior Type: neutral\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (2567.3, 1033.5)\n- Distance: 44.4 AU\n- Damage: 0.0%\n- Reputation: 99/100\n\nNearby Enemy Ships (potential targets or threats):\n  - s7563 at 36.3 AU, Damage: 0.0%, Position: (2613.5, 1071.5)\n  - s5739 at 39.8 AU, Damage: 0.0%, Position: (2540.7, 1091.5)\n\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby enemy ships\n- PRIORITIZE opportunistic targets: damaged enemy ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 50%\n\n\nMake a tactical decision based on your neutral personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<enemy_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (50%)\n2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvbn8RWjDgoxTptituZnHcNT77Tty",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 10,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"Both the PLAYER and nearby enemy ships are undamaged and not posing an immediate threat. Maintaining position and monitoring the area is prudent.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 730,
+    "completion_tokens": 79,
+    "total_tokens": 809
+  }
+}
+================================================================================
+
