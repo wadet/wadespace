@@ -178,12 +178,12 @@ class GameUI:
             obj = obj_tuple[1]  # Extract object from (id, obj, distance) tuple
             self._draw_map_object(obj, player_pos)
         
-        # Draw enemy ships
-        for enemy_id, enemy_ship in self.engine.enemy_ships.items():
-            rel_x = enemy_ship.position.x - player_pos.x
-            rel_y = enemy_ship.position.y - player_pos.y
+        # Draw npc ships
+        for npc_id, npc_ship in self.engine.npc_ships.items():
+            rel_x = npc_ship.position.x - player_pos.x
+            rel_y = npc_ship.position.y - player_pos.y
             
-            # Check if enemy is in viewport
+            # Check if npc is in viewport
             if abs(rel_x) <= self.VIEWPORT_SIZE / 2 and abs(rel_y) <= self.VIEWPORT_SIZE / 2:
                 pixels_per_au_x = self.map_area_width / self.VIEWPORT_SIZE
                 pixels_per_au_y = self.map_area_height / self.VIEWPORT_SIZE
@@ -191,7 +191,7 @@ class GameUI:
                 screen_x = self.map_rect.centerx + rel_x * pixels_per_au_x
                 screen_y = self.map_rect.centery + rel_y * pixels_per_au_y
                 
-                # Draw enemy ship as Klingon Bird of Prey (top-down view)
+                # Draw npc ship as Klingon Bird of Prey (top-down view)
                 # Circular bridge/command pod at front
                 bridge_radius = 4
                 pygame.draw.circle(self.screen, Colors.RED, (int(screen_x), int(screen_y - 6)), bridge_radius)
@@ -232,12 +232,12 @@ class GameUI:
                 pygame.draw.polygon(self.screen, Colors.RED, right_wing)
                 pygame.draw.polygon(self.screen, (139, 0, 0), right_wing, 1)
                 
-                # Draw enemy label with info
-                label = f"{enemy_id}"
-                if hasattr(enemy_ship, 'energy'):
-                    label += f" E:{enemy_ship.energy:.0f}%"
-                if hasattr(enemy_ship, 'shields'):
-                    label += f" S:{enemy_ship.shields:.0f}%"
+                # Draw npc label with info
+                label = f"{npc_id}"
+                if hasattr(npc_ship, 'energy'):
+                    label += f" E:{npc_ship.energy:.0f}%"
+                if hasattr(npc_ship, 'shields'):
+                    label += f" S:{npc_ship.shields:.0f}%"
                 
                 text_surface = self.font_small.render(label, True, Colors.RED)
                 self.screen.blit(text_surface, (screen_x + 15, screen_y - 5))
@@ -260,9 +260,9 @@ class GameUI:
                 pygame.draw.circle(self.screen, Colors.GREEN, (int(screen_x), int(screen_y)), torpedo_radius)
                 pygame.draw.circle(self.screen, Colors.GREEN, (int(screen_x), int(screen_y)), torpedo_radius, 1)
         
-        # Draw active torpedos from enemy ships
-        for enemy_id, enemy_ship in self.engine.enemy_ships.items():
-            for torpedo in enemy_ship.weapons.active_torpedos:
+        # Draw active torpedos from npc ships
+        for npc_id, npc_ship in self.engine.npc_ships.items():
+            for torpedo in npc_ship.weapons.active_torpedos:
                 rel_x = torpedo['current_pos'].x - player_pos.x
                 rel_y = torpedo['current_pos'].y - player_pos.y
                 
@@ -274,7 +274,7 @@ class GameUI:
                     screen_x = self.map_rect.centerx + rel_x * pixels_per_au_x
                     screen_y = self.map_rect.centery + rel_y * pixels_per_au_y
                     
-                    # Draw torpedo as small red circle (matching enemy ship color)
+                    # Draw torpedo as small red circle (matching npc ship color)
                     torpedo_radius = 2
                     pygame.draw.circle(self.screen, Colors.RED, (int(screen_x), int(screen_y)), torpedo_radius)
                     pygame.draw.circle(self.screen, Colors.RED, (int(screen_x), int(screen_y)), torpedo_radius, 1)
@@ -350,7 +350,7 @@ class GameUI:
         elif isinstance(obj, WormHole):
             return "◎", Colors.CYAN
         elif isinstance(obj, Starbase):
-            # Friendly or enemy based on some flag
+            # Friendly or npc based on some flag
             return "⊕", Colors.GREEN
         elif isinstance(obj, AsteroidField):
             return "✕", Colors.GRAY
@@ -575,7 +575,7 @@ class GameUI:
             # Calculate distance to target
             target_obj = self.engine.universe_objects.get(ship.auto_nav_target_id)
             if not target_obj:
-                target_obj = self.engine.enemy_ships.get(ship.auto_nav_target_id)
+                target_obj = self.engine.npc_ships.get(ship.auto_nav_target_id)
             
             if target_obj:
                 distance = ship.position.distance_to(target_obj.position)
@@ -709,17 +709,17 @@ class GameUI:
                 # Store for label positioning
                 positions_and_sizes.append((screen_x, screen_y, obj.id))
         
-        # Draw enemy ships on minimap
-        for enemy_id, enemy_ship in self.engine.enemy_ships.items():
-            rel_x = enemy_ship.position.x - player_pos.x
-            rel_y = enemy_ship.position.y - player_pos.y
+        # Draw npc ships on minimap
+        for npc_id, npc_ship in self.engine.npc_ships.items():
+            rel_x = npc_ship.position.x - player_pos.x
+            rel_y = npc_ship.position.y - player_pos.y
             
             screen_x = self.minimap_rect.centerx + rel_x * pixels_per_au_x
             screen_y = self.minimap_rect.centery + rel_y * pixels_per_au_y
             
             if (self.minimap_rect.left <= screen_x <= self.minimap_rect.right and
                 self.minimap_rect.top <= screen_y <= self.minimap_rect.bottom):
-                # Draw enemy ship as red triangle (same size as player ship)
+                # Draw npc ship as red triangle (same size as player ship)
                 size = 5
                 points = [
                     (screen_x, screen_y - size),  # Top point
@@ -729,18 +729,18 @@ class GameUI:
                 pygame.draw.polygon(self.screen, Colors.RED, points)
                 
                 # Draw yellow circle if this is the navigation target
-                if self.nav_target_id == enemy_id:
+                if self.nav_target_id == npc_id:
                     pygame.draw.circle(self.screen, Colors.YELLOW, (int(screen_x), int(screen_y)), 10, 2)
                 
                 # Store for click detection
-                self.minimap_objects.append((screen_x, screen_y, enemy_id, hover_radius))
+                self.minimap_objects.append((screen_x, screen_y, npc_id, hover_radius))
                 
-                # Check if mouse is hovering over this enemy ship
+                # Check if mouse is hovering over this npc ship
                 mouse_x, mouse_y = self.mouse_pos
                 distance_to_mouse = ((screen_x - mouse_x) ** 2 + (screen_y - mouse_y) ** 2) ** 0.5
                 if distance_to_mouse <= hover_radius:
-                    hovered_object = enemy_ship
-                    hovered_object.id = enemy_id  # Ensure enemy has ID for display
+                    hovered_object = npc_ship
+                    hovered_object.id = npc_id  # Ensure npc has ID for display
                     hovered_position = (screen_x, screen_y)
         
         # Draw player ship as green triangle at center
@@ -813,8 +813,8 @@ class GameUI:
             (Colors.MAGENTA, "Pulsar", "circle"),
             (Colors.ORANGE, "Asteroid", "circle"),
             (Colors.GREEN, "Friendly Base", "square"),
-            (Colors.RED, "Enemy Base", "square"),
-            (Colors.RED, "Enemy Ship", "triangle"),
+            (Colors.RED, "NPC Base", "square"),
+            (Colors.RED, "NPC Ship", "triangle"),
         ]
         
         legend_x = self.minimap_rect.left + 10
@@ -830,7 +830,7 @@ class GameUI:
         for color, label, shape in legend_items:
             # Draw colored symbol based on shape
             if shape == "triangle":
-                # Draw red triangle for enemy ships
+                # Draw red triangle for npc ships
                 size = 3
                 center_x = legend_x + 3
                 center_y = legend_y + 2

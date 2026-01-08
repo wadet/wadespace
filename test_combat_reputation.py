@@ -24,31 +24,31 @@ def test_combat_reputation():
     
     # Test 1: Destroy with phasers
     print("\n" + "=" * 80)
-    print("Test 1: Destroy enemy with PHASERS")
+    print("Test 1: Destroy npc with PHASERS")
     print("=" * 80)
     
-    # Find an aggressive enemy (should increase reputation)
+    # Find an aggressive npc (should increase reputation)
     aggressive_id = None
-    for enemy_id, enemy in game.enemy_ships.items():
-        if enemy.behavior_trait == 'aggressive':
-            aggressive_id = enemy_id
+    for npc_id, npc in game.npc_ships.items():
+        if npc.behavior_trait == 'aggressive':
+            aggressive_id = npc_id
             break
     
     if not aggressive_id:
-        aggressive_id = list(game.enemy_ships.keys())[0]
-        game.enemy_ships[aggressive_id].behavior_trait = 'aggressive'
+        aggressive_id = list(game.npc_ships.keys())[0]
+        game.npc_ships[aggressive_id].behavior_trait = 'aggressive'
     
-    enemy = game.enemy_ships[aggressive_id]
-    enemy.position = Position(5005, 5000)  # 5 AU away (within phaser range)
-    enemy.shields = 0  # Disable shields for faster kill
-    enemy.shields_active = False
-    enemy.damage = 96  # Almost destroyed
+    npc = game.npc_ships[aggressive_id]
+    npc.position = Position(5005, 5000)  # 5 AU away (within phaser range)
+    npc.shields = 0  # Disable shields for faster kill
+    npc.shields_active = False
+    npc.damage = 96  # Almost destroyed
     
     print(f"Target: {aggressive_id}")
-    print(f"  Behavior: {enemy.behavior_trait}")
-    print(f"  Reputation: {enemy.reputation}")
-    print(f"  Damage: {enemy.damage}%")
-    print(f"  Distance: {game.player_ship.position.distance_to(enemy.position):.1f} AU")
+    print(f"  Behavior: {npc.behavior_trait}")
+    print(f"  Reputation: {npc.reputation}")
+    print(f"  Damage: {npc.damage}%")
+    print(f"  Distance: {game.player_ship.position.distance_to(npc.position):.1f} AU")
     
     # Lock and fire phasers
     game.player_ship.weapons.phaser_locked_target = aggressive_id
@@ -64,18 +64,18 @@ def test_combat_reputation():
     
     after_rep = game.player_ship.reputation
     print(f"Player reputation after: {after_rep}")
-    print(f"Enemy destroyed: {enemy.is_destroyed}")
+    print(f"NPC destroyed: {npc.is_destroyed}")
     
-    if enemy.is_destroyed and after_rep > before_rep:
-        print("✓ PASSED: Enemy destroyed by phasers and reputation increased")
-    elif enemy.is_destroyed:
-        print(f"✓ Enemy destroyed but reputation change unexpected: {after_rep - before_rep}")
+    if npc.is_destroyed and after_rep > before_rep:
+        print("✓ PASSED: NPC destroyed by phasers and reputation increased")
+    elif npc.is_destroyed:
+        print(f"✓ NPC destroyed but reputation change unexpected: {after_rep - before_rep}")
     else:
-        print("⚠ Enemy not destroyed, finishing off...")
+        print("⚠ NPC not destroyed, finishing off...")
         # Fire again if needed
-        while not enemy.is_destroyed and enemy.damage < 100:
+        while not npc.is_destroyed and npc.damage < 100:
             game._execute_fire(game.player_ship)
-            if enemy.is_destroyed:
+            if npc.is_destroyed:
                 after_rep = game.player_ship.reputation
                 print(f"Player reputation after: {after_rep}")
                 print(f"Change: {after_rep - before_rep}")
@@ -83,25 +83,25 @@ def test_combat_reputation():
     
     # Test 2: Destroy with torpedoes
     print("\n" + "=" * 80)
-    print("Test 2: Destroy enemy with TORPEDOES")
+    print("Test 2: Destroy npc with TORPEDOES")
     print("=" * 80)
     
-    # Find a timid enemy (should decrease reputation)
+    # Find a timid npc (should decrease reputation)
     timid_id = None
-    for enemy_id, enemy in game.enemy_ships.items():
-        if enemy.behavior_trait == 'timid' and not enemy.is_destroyed:
-            timid_id = enemy_id
+    for npc_id, npc in game.npc_ships.items():
+        if npc.behavior_trait == 'timid' and not npc.is_destroyed:
+            timid_id = npc_id
             break
     
     if not timid_id:
-        # Find any available enemy
-        for enemy_id, enemy in game.enemy_ships.items():
-            if not enemy.is_destroyed:
-                timid_id = enemy_id
-                game.enemy_ships[timid_id].behavior_trait = 'timid'
+        # Find any available npc
+        for npc_id, npc in game.npc_ships.items():
+            if not npc.is_destroyed:
+                timid_id = npc_id
+                game.npc_ships[timid_id].behavior_trait = 'timid'
                 break
     
-    enemy2 = game.enemy_ships[timid_id]
+    enemy2 = game.npc_ships[timid_id]
     enemy2.position = Position(5020, 5000)  # 20 AU away
     enemy2.damage = 76  # Torpedo does 25% damage, so this will destroy it
     
@@ -127,14 +127,14 @@ def test_combat_reputation():
     
     after_rep = game.player_ship.reputation
     print(f"Player reputation after: {after_rep}")
-    print(f"Enemy destroyed: {enemy2.is_destroyed}")
+    print(f"NPC destroyed: {enemy2.is_destroyed}")
     
     if enemy2.is_destroyed and after_rep < before_rep:
-        print("✓ PASSED: Enemy destroyed by torpedo and reputation decreased")
+        print("✓ PASSED: NPC destroyed by torpedo and reputation decreased")
     elif enemy2.is_destroyed:
-        print(f"✓ Enemy destroyed but reputation change unexpected: {after_rep - before_rep}")
+        print(f"✓ NPC destroyed but reputation change unexpected: {after_rep - before_rep}")
     else:
-        print("⚠ Enemy not destroyed by torpedo")
+        print("⚠ NPC not destroyed by torpedo")
     
     print("\n" + "=" * 80)
     print("Combat integration tests complete!")

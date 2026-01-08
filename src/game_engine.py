@@ -22,7 +22,7 @@ class GameEngine:
         self.universe_seed = universe_seed
         self.id_generator = ObjectIdentifier()
         
-        # Initialize LLM handler for enemy AI
+        # Initialize LLM handler for npc AI
         self.llm_handler = LLMHandler()
         
         # Generate universe
@@ -34,9 +34,9 @@ class GameEngine:
         player_id = self.id_generator.generate('ship')
         self.player_ship = Ship(player_id, player_start_pos, is_player=True)
         
-        # Create enemy ships
-        self.enemy_ships: Dict[str, Ship] = {}
-        self._spawn_initial_enemies()
+        # Create npc ships
+        self.npc_ships: Dict[str, Ship] = {}
+        self._spawn_initial_npcs()
         
         # Active projectiles
         self.active_phasers: List[dict] = []
@@ -59,9 +59,9 @@ class GameEngine:
         else:
             return Position(5000, 5000)
     
-    def _spawn_initial_enemies(self) -> None:
-        """Spawn initial enemy ships, with 1-3 near player start position."""
-        # Place 1-3 enemy ships near player's starting position
+    def _spawn_initial_npcs(self) -> None:
+        """Spawn initial npc ships, with 1-3 near player start position."""
+        # Place 1-3 npc ships near player's starting position
         nearby_count = random.randint(1, 3)
         for _ in range(nearby_count):
             # Place within 50 AU of player start position
@@ -75,30 +75,30 @@ class GameEngine:
             pos.x = max(0, min(10000, pos.x))
             pos.y = max(0, min(10000, pos.y))
             
-            enemy_id = self.id_generator.generate('ship')
-            enemy_ship = Ship(enemy_id, pos, is_player=False)
-            enemy_ship.cash = random.randint(500, 2000)
-            enemy_ship.behavior_trait = random.choice(['aggressive', 'neutral', 'timid'])
-            self.enemy_ships[enemy_id] = enemy_ship
+            npc_id = self.id_generator.generate('ship')
+            npc_ship = Ship(npc_id, pos, is_player=False)
+            npc_ship.cash = random.randint(500, 2000)
+            npc_ship.behavior_trait = random.choice(['aggressive', 'neutral', 'timid'])
+            self.npc_ships[npc_id] = npc_ship
         
-        # Place remaining 47-49 enemy ships randomly across universe
+        # Place remaining 47-49 npc ships randomly across universe
         remaining_count = 50 - nearby_count
         for _ in range(remaining_count):
             pos = Position(random.uniform(0, 10000), random.uniform(0, 10000))
-            enemy_id = self.id_generator.generate('ship')
-            enemy_ship = Ship(enemy_id, pos, is_player=False)
-            enemy_ship.cash = random.randint(500, 2000)
-            enemy_ship.behavior_trait = random.choice(['aggressive', 'neutral', 'timid'])
-            self.enemy_ships[enemy_id] = enemy_ship
+            npc_id = self.id_generator.generate('ship')
+            npc_ship = Ship(npc_id, pos, is_player=False)
+            npc_ship.cash = random.randint(500, 2000)
+            npc_ship.behavior_trait = random.choice(['aggressive', 'neutral', 'timid'])
+            self.npc_ships[npc_id] = npc_ship
     
-    def _spawn_single_enemy(self) -> None:
-        """Spawn a single new enemy ship at a random location in the universe."""
+    def _spawn_single_npc(self) -> None:
+        """Spawn a single new npc ship at a random location in the universe."""
         pos = Position(random.uniform(0, 10000), random.uniform(0, 10000))
-        enemy_id = self.id_generator.generate('ship')
-        enemy_ship = Ship(enemy_id, pos, is_player=False)
-        enemy_ship.cash = random.randint(500, 2000)
-        enemy_ship.behavior_trait = random.choice(['aggressive', 'neutral', 'timid'])
-        self.enemy_ships[enemy_id] = enemy_ship
+        npc_id = self.id_generator.generate('ship')
+        npc_ship = Ship(npc_id, pos, is_player=False)
+        npc_ship.cash = random.randint(500, 2000)
+        npc_ship.behavior_trait = random.choice(['aggressive', 'neutral', 'timid'])
+        self.npc_ships[npc_id] = npc_ship
     
     def _handle_ship_destruction(self, destroyer: Ship, destroyed: Ship, destroyed_id: str) -> None:
         """
@@ -155,11 +155,11 @@ class GameEngine:
         if distance <= range_au and (exclude_ship is None or self.player_ship.id != exclude_ship):
             ships.append((self.player_ship.id, self.player_ship, distance))
         
-        # Check enemy ships
-        for enemy_id, enemy in self.enemy_ships.items():
-            distance = position.distance_to(enemy.position)
-            if distance <= range_au and (exclude_ship is None or enemy_id != exclude_ship):
-                ships.append((enemy_id, enemy, distance))
+        # Check npc ships
+        for npc_id, npc in self.npc_ships.items():
+            distance = position.distance_to(npc.position)
+            if distance <= range_au and (exclude_ship is None or npc_id != exclude_ship):
+                ships.append((npc_id, npc, distance))
         
         return sorted(ships, key=lambda x: x[2])
     
@@ -179,19 +179,19 @@ class GameEngine:
         # Process auto-navigation for player ship
         self._process_auto_nav(self.player_ship)
         
-        # Get 5 closest enemy ships for debug mode
-        closest_enemies = set()
-        if self.debug_mode and self.enemy_ships:
-            enemy_distances = [
-                (enemy_id, enemy_ship.position.distance_to(self.player_ship.position))
-                for enemy_id, enemy_ship in self.enemy_ships.items()
+        # Get 5 closest npc ships for debug mode
+        closest_npcs = set()
+        if self.debug_mode and self.npc_ships:
+            npc_distances = [
+                (npc_id, npc_ship.position.distance_to(self.player_ship.position))
+                for npc_id, npc_ship in self.npc_ships.items()
             ]
-            enemy_distances.sort(key=lambda x: x[1])
-            closest_enemies = {enemy_id for enemy_id, _ in enemy_distances[:5]}
+            npc_distances.sort(key=lambda x: x[1])
+            closest_npcs = {npc_id for npc_id, _ in npc_distances[:5]}
         
-        # Generate and execute enemy commands (simplified for now)
-        for enemy_id, enemy_ship in list(self.enemy_ships.items()):
-            self._execute_enemy_command(enemy_ship, show_debug=(enemy_id in closest_enemies))
+        # Generate and execute npc commands (simplified for now)
+        for npc_id, npc_ship in list(self.npc_ships.items()):
+            self._execute_npc_command(npc_ship, show_debug=(npc_id in closest_npcs))
         
         # Update all objects
         self._update_all_objects()
@@ -292,16 +292,16 @@ class GameEngine:
         elif cmd == 'nav':
             target_id = command.get('target_id')
             if target_id:
-                # Check if target exists in universe or is an enemy ship
+                # Check if target exists in universe or is an npc ship
                 target_obj = self.universe_objects.get(target_id)
-                is_enemy = False
+                is_npc = False
                 if not target_obj:
-                    target_obj = self.enemy_ships.get(target_id)
-                    is_enemy = True
+                    target_obj = self.npc_ships.get(target_id)
+                    is_npc = True
                 
                 if target_obj:
                     distance = ship.position.distance_to(target_obj.position)
-                    target_type = "Enemy Ship" if is_enemy else "Object"
+                    target_type = "Enemy Ship" if is_npc else "Object"
                     ship.auto_nav_target_id = target_id
                     self.messages.append(f"Auto-navigation engaged to {target_type} {target_id} ({distance:.1f} AU away)")
                 else:
@@ -335,11 +335,11 @@ class GameEngine:
         if not ship.auto_nav_target_id:
             return
         
-        # Get target object (check universe objects first, then enemy ships)
+        # Get target object (check universe objects first, then npc ships)
         target_obj = self.universe_objects.get(ship.auto_nav_target_id)
         if not target_obj:
-            # Check if it's an enemy ship
-            target_obj = self.enemy_ships.get(ship.auto_nav_target_id)
+            # Check if it's an npc ship
+            target_obj = self.npc_ships.get(ship.auto_nav_target_id)
         
         if not target_obj:
             self.messages.append(f"Auto-nav: Target {ship.auto_nav_target_id} not found")
@@ -409,8 +409,8 @@ class GameEngine:
             ship.propulsion.impulse_active = True
             ship.propulsion.current_speed = min(speed, safe_speed)
     
-    def _execute_enemy_command(self, ship: Ship, show_debug: bool = False) -> None:
-        """Execute a command for an enemy ship using GPT-4o LLM when in sensor range."""
+    def _execute_npc_command(self, ship: Ship, show_debug: bool = False) -> None:
+        """Execute a command for an npc ship using GPT-4o LLM when in sensor range."""
         if ship.is_destroyed or ship.is_disabled:
             return
         
@@ -423,7 +423,7 @@ class GameEngine:
             self._execute_llm_decision(ship, decision, distance_to_player, show_debug)
         else:
             # Fallback to basic AI if LLM unavailable or player not in range
-            self._execute_basic_enemy_ai(ship, distance_to_player, player_in_range, show_debug)
+            self._execute_basic_npc_ai(ship, distance_to_player, player_in_range, show_debug)
     
     def _get_llm_decision(self, ship: Ship, distance_to_player: float) -> Dict:
         """Get tactical decision from GPT-4o."""
@@ -443,32 +443,32 @@ class GameEngine:
         
         nearby_objects.sort(key=lambda x: x[2])  # Sort by distance
         
-        # Get nearby enemy ships for targeting decisions
-        nearby_enemy_ships = []
-        for enemy_id, enemy_ship in self.enemy_ships.items():
-            if enemy_id != ship.id and not enemy_ship.is_destroyed:  # Exclude self and destroyed ships
-                dist = ship.position.distance_to(enemy_ship.position)
+        # Get nearby npc ships for targeting decisions
+        nearby_npc_ships = []
+        for npc_id, npc_ship in self.npc_ships.items():
+            if npc_id != ship.id and not npc_ship.is_destroyed:  # Exclude self and destroyed ships
+                dist = ship.position.distance_to(npc_ship.position)
                 if dist < 50:  # Within sensor range
-                    nearby_enemy_ships.append(
-                        (enemy_id, (enemy_ship.position.x, enemy_ship.position.y), 
-                         enemy_ship.damage, dist)
+                    nearby_npc_ships.append(
+                        (npc_id, (npc_ship.position.x, npc_ship.position.y), 
+                         npc_ship.damage, dist)
                     )
         
-        nearby_enemy_ships.sort(key=lambda x: x[3])  # Sort by distance
+        nearby_npc_ships.sort(key=lambda x: x[3])  # Sort by distance
         
         # Request decision from LLM
-        decision = self.llm_handler.get_enemy_decision(
-            enemy_ship_id=ship.id,
-            enemy_position=(ship.position.x, ship.position.y),
-            enemy_damage=ship.damage,
-            enemy_energy=ship.energy,
-            enemy_shields=ship.shields,
-            enemy_behavior=ship.behavior_trait if ship.behavior_trait else 'neutral',
+        decision = self.llm_handler.get_npc_decision(
+            npc_ship_id=ship.id,
+            npc_position=(ship.position.x, ship.position.y),
+            npc_damage=ship.damage,
+            npc_energy=ship.energy,
+            npc_shields=ship.shields,
+            npc_behavior=ship.behavior_trait if ship.behavior_trait else 'neutral',
             player_position=(self.player_ship.position.x, self.player_ship.position.y),
             player_damage=self.player_ship.damage,
             player_reputation=self.player_ship.reputation,
             nearby_objects=nearby_objects,
-            nearby_enemy_ships=nearby_enemy_ships,
+            nearby_npc_ships=nearby_npc_ships,
             turn_count=self.turn_count
         )
         
@@ -487,8 +487,8 @@ class GameEngine:
         if target_id == 'PLAYER':
             target_ship = self.player_ship
             target_distance = distance_to_player
-        elif target_id in self.enemy_ships:
-            target_ship = self.enemy_ships[target_id]
+        elif target_id in self.npc_ships:
+            target_ship = self.npc_ships[target_id]
             target_distance = ship.position.distance_to(target_ship.position)
             if target_ship.is_destroyed:
                 target_ship = self.player_ship  # Fallback to player if target destroyed
@@ -556,83 +556,83 @@ class GameEngine:
                     f"[DEBUG] {ship.id}: {action} @ heading {heading}° warp {speed} targeting {target_name} - {decision['reason']}"
                 )
     
-    def _execute_basic_enemy_ai(self, ship: Ship, distance_to_player: float, 
+    def _execute_basic_npc_ai(self, ship: Ship, distance_to_player: float, 
                                player_in_range: bool, show_debug: bool) -> None:
         """Fallback basic AI for when LLM is unavailable. Only ONE action per turn."""
         action_desc = None
         behavior = ship.behavior_trait if ship.behavior_trait else 'neutral'
         player_rep = self.player_ship.reputation
         
-        # Find nearby enemy ships as potential targets
+        # Find nearby npc ships as potential targets
         nearby_enemies = []
-        for enemy_id, enemy_ship in self.enemy_ships.items():
-            if enemy_id != ship.id and not enemy_ship.is_destroyed:
-                dist = ship.position.distance_to(enemy_ship.position)
+        for npc_id, npc_ship in self.npc_ships.items():
+            if npc_id != ship.id and not npc_ship.is_destroyed:
+                dist = ship.position.distance_to(npc_ship.position)
                 if dist < 50:  # Within sensor range
-                    nearby_enemies.append((enemy_id, enemy_ship, dist))
+                    nearby_enemies.append((npc_id, npc_ship, dist))
         
         # Sort by distance
         nearby_enemies.sort(key=lambda x: x[2])
         
-        # Determine best target (player or another enemy)
+        # Determine best target (player or another npc)
         target_ship = self.player_ship
         target_distance = distance_to_player
         target_is_player = True
         
-        # Consider attacking nearby enemy ships based on behavior and tactical situation
+        # Consider attacking nearby npc ships based on behavior and tactical situation
         if nearby_enemies:
-            # Aggressive enemies are opportunistic - attack any nearby damaged enemy
+            # Aggressive enemies are opportunistic - attack any nearby damaged npc
             if behavior == 'aggressive':
-                for enemy_id, enemy_ship, dist in nearby_enemies[:5]:  # Check 5 closest
+                for npc_id, npc_ship, dist in nearby_enemies[:5]:  # Check 5 closest
                     # Target damaged enemies that are close
-                    if enemy_ship.damage > 30 and dist < 25:
-                        target_ship = enemy_ship
+                    if npc_ship.damage > 30 and dist < 25:
+                        target_ship = npc_ship
                         target_distance = dist
                         target_is_player = False
                         if show_debug:
-                            self.messages.append(f"[DEBUG] {ship.id}: Targeting damaged enemy {enemy_id} ({enemy_ship.damage:.1f}% dmg, {dist:.1f} AU)")
+                            self.messages.append(f"[DEBUG] {ship.id}: Targeting damaged npc {npc_id} ({npc_ship.damage:.1f}% dmg, {dist:.1f} AU)")
                         break
                     # Or target very close enemies even if not damaged
-                    elif dist < 10 and enemy_ship.damage > 0:
-                        target_ship = enemy_ship
+                    elif dist < 10 and npc_ship.damage > 0:
+                        target_ship = npc_ship
                         target_distance = dist
                         target_is_player = False
                         if show_debug:
-                            self.messages.append(f"[DEBUG] {ship.id}: Targeting close enemy {enemy_id} ({dist:.1f} AU)")
+                            self.messages.append(f"[DEBUG] {ship.id}: Targeting close npc {npc_id} ({dist:.1f} AU)")
                         break
             
             # Neutral enemies target damaged nearby enemies if they're easier than player
             elif behavior == 'neutral':
-                for enemy_id, enemy_ship, dist in nearby_enemies[:3]:
+                for npc_id, npc_ship, dist in nearby_enemies[:3]:
                     # Target heavily damaged enemies that are closer
-                    if enemy_ship.damage > 40 and dist < distance_to_player * 0.8:
-                        target_ship = enemy_ship
+                    if npc_ship.damage > 40 and dist < distance_to_player * 0.8:
+                        target_ship = npc_ship
                         target_distance = dist
                         target_is_player = False
                         if show_debug:
-                            self.messages.append(f"[DEBUG] {ship.id}: Targeting damaged enemy {enemy_id} ({enemy_ship.damage:.1f}% dmg)")
+                            self.messages.append(f"[DEBUG] {ship.id}: Targeting damaged npc {npc_id} ({npc_ship.damage:.1f}% dmg)")
                         break
             
             # Timid enemies only attack very damaged enemies or if cornered
             elif behavior == 'timid':
-                for enemy_id, enemy_ship, dist in nearby_enemies[:2]:
+                for npc_id, npc_ship, dist in nearby_enemies[:2]:
                     # Only target very damaged enemies
-                    if enemy_ship.damage > 60 and dist < 20:
-                        target_ship = enemy_ship
+                    if npc_ship.damage > 60 and dist < 20:
+                        target_ship = npc_ship
                         target_distance = dist
                         target_is_player = False
                         if show_debug:
-                            self.messages.append(f"[DEBUG] {ship.id}: Targeting very damaged enemy {enemy_id} ({enemy_ship.damage:.1f}% dmg)")
+                            self.messages.append(f"[DEBUG] {ship.id}: Targeting very damaged npc {npc_id} ({npc_ship.damage:.1f}% dmg)")
                         break
         
         if player_in_range or target_distance < 50:
-            # Determine if enemy should attack based on behavior trait
+            # Determine if npc should attack based on behavior trait
             should_attack = False
             should_flee = False
             
             # Check attack conditions based on behavior trait
             if behavior == 'aggressive':
-                # Aggressive: attack if player reputation < 70 or targeting any damaged enemy
+                # Aggressive: attack if player reputation < 70 or targeting any damaged npc
                 if (target_is_player and player_rep < 70) or (not target_is_player and target_ship.damage > 20):
                     should_attack = True
                 # Flee only if own damage > 80%
@@ -641,7 +641,7 @@ class GameEngine:
                     should_attack = False
             
             elif behavior == 'neutral':
-                # Neutral: attack only if provoked or player reputation < 50, or targeting damaged enemy
+                # Neutral: attack only if provoked or player reputation < 50, or targeting damaged npc
                 # For now, consider "provoked" if player has attacked (damage > 0)
                 if (ship.damage > 0 or (target_is_player and player_rep < 50)) or (not target_is_player and target_ship.damage > 30):
                     should_attack = True
@@ -651,7 +651,7 @@ class GameEngine:
                     should_attack = False
             
             elif behavior == 'timid':
-                # Timid: attack only if provoked or player reputation < 25, or very damaged enemy
+                # Timid: attack only if provoked or player reputation < 25, or very damaged npc
                 if (ship.damage > 0 or (target_is_player and player_rep < 25)) or (not target_is_player and target_ship.damage > 50):
                     should_attack = True
                 # Flee if own damage > 30%, unless player reputation < 10
@@ -773,9 +773,9 @@ class GameEngine:
             elif target_id == self.player_ship.id:
                 target_obj = self.player_ship
                 distance = ship.position.distance_to(self.player_ship.position)
-            # Check if it's an enemy ship
-            elif target_id in self.enemy_ships:
-                target_obj = self.enemy_ships[target_id]
+            # Check if it's an npc ship
+            elif target_id in self.npc_ships:
+                target_obj = self.npc_ships[target_id]
                 distance = ship.position.distance_to(target_obj.position)
             
             if target_obj:
@@ -832,7 +832,7 @@ class GameEngine:
         if target_id == self.player_ship.id:
             target_ship = self.player_ship
         else:
-            target_ship = self.enemy_ships.get(target_id)
+            target_ship = self.npc_ships.get(target_id)
         
         if not target_ship:
             self.messages.append(f"Target {target_id} not found")
@@ -867,8 +867,8 @@ class GameEngine:
         if target_id == self.player_ship.id:
             target_ship = self.player_ship
             target_pos = target_ship.position
-        elif target_id in self.enemy_ships:
-            target_ship = self.enemy_ships[target_id]
+        elif target_id in self.npc_ships:
+            target_ship = self.npc_ships[target_id]
             target_pos = target_ship.position
         elif target_id in self.universe_objects:
             obj = self.universe_objects[target_id]
@@ -919,12 +919,12 @@ class GameEngine:
         # Fallback: Use hardcoded pattern matching
         lower_q = question.lower()
         
-        # Query: Nearest enemy ship
-        if any(keyword in lower_q for keyword in ['nearest enemy', 'closest enemy', 'nearest hostile', 'closest hostile']):
-            self._query_nearest_enemy(ship)
+        # Query: Nearest npc ship
+        if any(keyword in lower_q for keyword in ['nearest npc', 'closest npc', 'nearest hostile', 'closest hostile']):
+            self._query_nearest_npc(ship)
         
         # Query: Nearest starbase (check before star to avoid partial match)
-        elif any(keyword in lower_q for keyword in ['nearest starbase', 'closest starbase', 'nearest base', 'closest base', 'nearest enemy base', 'closest enemy base']):
+        elif any(keyword in lower_q for keyword in ['nearest starbase', 'closest starbase', 'nearest base', 'closest base', 'nearest npc base', 'closest npc base']):
             self._query_nearest_object(ship, 'sb', 'starbase')
         
         # Query: Nearest star
@@ -956,9 +956,9 @@ class GameEngine:
             self._query_object_count(lower_q)
         
         # Query: Enemy count
-        elif 'enemies left' in lower_q or 'enemy count' in lower_q:
-            active_enemies = len([e for e in self.enemy_ships.values() if not e.is_destroyed])
-            self.messages.append(f"Active enemy ships: {active_enemies}/{len(self.enemy_ships)}")
+        elif 'enemies left' in lower_q or 'npc count' in lower_q:
+            active_enemies = len([e for e in self.npc_ships.values() if not e.is_destroyed])
+            self.messages.append(f"Active npc ships: {active_enemies}/{len(self.npc_ships)}")
         
         # Query: Where am I
         elif 'where am i' in lower_q or 'my location' in lower_q or 'my position' in lower_q:
@@ -978,27 +978,27 @@ class GameEngine:
         
         else:
             self.messages.append("I don't understand that question. Try asking:")
-            self.messages.append("  - 'nearest enemy', 'nearest starbase', 'nearest planet'")
+            self.messages.append("  - 'nearest npc', 'nearest starbase', 'nearest planet'")
             self.messages.append("  - 'how many enemies left', 'where am i'")
             self.messages.append("  - 'distance to <id>', 'nearby objects'")
             self.messages.append("  - 'what is <id>', 'how many stars'")
     
     def _execute_tell(self, ship: Ship, target_id: str, message: str) -> None:
-        """Execute tell command - send message to enemy ship or enemy starbase and get LLM-generated response."""
-        # Check if target is an enemy ship
+        """Execute tell command - send message to npc ship or npc starbase and get LLM-generated response."""
+        # Check if target is an npc ship
         target_entity = None
         entity_type = None
         
-        if target_id in self.enemy_ships:
-            target_entity = self.enemy_ships[target_id]
+        if target_id in self.npc_ships:
+            target_entity = self.npc_ships[target_id]
             entity_type = 'ship'
             
-            # Check if enemy ship is destroyed
+            # Check if npc ship is destroyed
             if target_entity.is_destroyed:
                 self.messages.append(f"Cannot send message: {target_id} has been destroyed.")
                 return
         
-        # Check if target is an enemy starbase
+        # Check if target is an npc starbase
         elif target_id in self.universe_objects:
             obj = self.universe_objects[target_id]
             if isinstance(obj, Starbase):
@@ -1023,7 +1023,7 @@ class GameEngine:
         
         # Generate LLM response with combat context
         if self.llm_handler.enabled:
-            # Build context for the enemy captain/commander
+            # Build context for the npc captain/commander
             player_damage = ship.damage
             target_damage = getattr(target_entity, 'damage', 0)
             
@@ -1031,14 +1031,14 @@ class GameEngine:
                 'player_message': message,
                 'distance': distance,
                 'player_damage': player_damage,
-                'enemy_damage': target_damage,
+                'npc_damage': target_damage,
                 'player_shields': ship.shields,
-                'enemy_shields': getattr(target_entity, 'shields', 100),
+                'npc_shields': getattr(target_entity, 'shields', 100),
                 'turn_count': self.turn_count,
                 'entity_type': entity_type
             }
             
-            response = self.llm_handler.get_enemy_taunt(target_id, context)
+            response = self.llm_handler.get_npc_taunt(target_id, context)
         else:
             # Fallback response if LLM is not available
             response = f"[{target_id}]: *Static interference*"
@@ -1046,32 +1046,32 @@ class GameEngine:
         self.messages.append(response)
 
     
-    def _query_nearest_enemy(self, ship: Ship) -> None:
-        """Find and report the nearest enemy ship."""
-        if not self.enemy_ships:
-            self.messages.append("No enemy ships detected in the universe.")
+    def _query_nearest_npc(self, ship: Ship) -> None:
+        """Find and report the nearest npc ship."""
+        if not self.npc_ships:
+            self.messages.append("No npc ships detected in the universe.")
             return
         
-        # Find nearest active enemy
-        nearest_enemy = None
+        # Find nearest active npc
+        nearest_npc = None
         nearest_distance = float('inf')
         
-        for enemy_id, enemy_ship in self.enemy_ships.items():
-            if not enemy_ship.is_destroyed:
-                distance = ship.position.distance_to(enemy_ship.position)
+        for npc_id, npc_ship in self.npc_ships.items():
+            if not npc_ship.is_destroyed:
+                distance = ship.position.distance_to(npc_ship.position)
                 if distance < nearest_distance:
                     nearest_distance = distance
-                    nearest_enemy = (enemy_id, enemy_ship)
+                    nearest_npc = (npc_id, npc_ship)
         
-        if nearest_enemy:
-            enemy_id, enemy_ship = nearest_enemy
-            health = 100.0 - enemy_ship.damage
-            self.messages.append(f"Nearest enemy: {enemy_id}")
-            self.messages.append(f"  Location: ({enemy_ship.position.x:.1f}, {enemy_ship.position.y:.1f})")
+        if nearest_npc:
+            npc_id, npc_ship = nearest_npc
+            health = 100.0 - npc_ship.damage
+            self.messages.append(f"Nearest npc: {npc_id}")
+            self.messages.append(f"  Location: ({npc_ship.position.x:.1f}, {npc_ship.position.y:.1f})")
             self.messages.append(f"  Distance: {nearest_distance:.1f} AU")
-            self.messages.append(f"  Health: {health:.1f}% | Shields: {enemy_ship.shields:.1f}%")
+            self.messages.append(f"  Health: {health:.1f}% | Shields: {npc_ship.shields:.1f}%")
         else:
-            self.messages.append("No active enemy ships detected.")
+            self.messages.append("No active npc ships detected.")
     
     def _query_nearest_object(self, ship: Ship, prefix: str, obj_name: str) -> None:
         """Find and report the nearest object of a given type."""
@@ -1103,12 +1103,12 @@ class GameEngine:
         elif 'asteroid' in query:
             count = len([obj for obj in self.universe_objects.values() if isinstance(obj, AsteroidField)])
             self.messages.append(f"Asteroid fields in universe: {count}")
-        elif 'enemy' in query or 'enemies' in query or 'hostile' in query:
-            count = len([e for e in self.enemy_ships.values() if not e.is_destroyed])
-            self.messages.append(f"Active enemy ships: {count}/{len(self.enemy_ships)}")
+        elif 'npc' in query or 'enemies' in query or 'hostile' in query:
+            count = len([e for e in self.npc_ships.values() if not e.is_destroyed])
+            self.messages.append(f"Active npc ships: {count}/{len(self.npc_ships)}")
         else:
             self.messages.append(f"Total objects in universe: {len(self.universe_objects)}")
-            self.messages.append(f"Active enemy ships: {len(self.enemy_ships)}")
+            self.messages.append(f"Active npc ships: {len(self.npc_ships)}")
     
     def _query_distance(self, ship: Ship, query: str) -> None:
         """Calculate distance to a specific object."""
@@ -1129,12 +1129,12 @@ class GameEngine:
             distance = ship.position.distance_to(obj.position)
             self.messages.append(f"Distance to {target_id}: {distance:.1f} AU")
             self.messages.append(f"  Location: ({obj.position.x:.1f}, {obj.position.y:.1f})")
-        # Check enemy ships
-        elif target_id in self.enemy_ships:
-            enemy = self.enemy_ships[target_id]
-            distance = ship.position.distance_to(enemy.position)
+        # Check npc ships
+        elif target_id in self.npc_ships:
+            npc = self.npc_ships[target_id]
+            distance = ship.position.distance_to(npc.position)
             self.messages.append(f"Distance to {target_id}: {distance:.1f} AU")
-            self.messages.append(f"  Location: ({enemy.position.x:.1f}, {enemy.position.y:.1f})")
+            self.messages.append(f"  Location: ({npc.position.x:.1f}, {npc.position.y:.1f})")
         else:
             self.messages.append(f"Object {target_id} not found.")
     
@@ -1176,16 +1176,16 @@ class GameEngine:
             self.messages.append(f"  Location: ({obj.position.x:.1f}, {obj.position.y:.1f})")
             distance = self.player_ship.position.distance_to(obj.position)
             self.messages.append(f"  Distance from you: {distance:.1f} AU")
-        # Check enemy ships
-        elif target_id in self.enemy_ships:
-            enemy = self.enemy_ships[target_id]
+        # Check npc ships
+        elif target_id in self.npc_ships:
+            npc = self.npc_ships[target_id]
             self.messages.append(f"Enemy ship {target_id}:")
-            self.messages.append(f"  Location: ({enemy.position.x:.1f}, {enemy.position.y:.1f})")
-            distance = self.player_ship.position.distance_to(enemy.position)
+            self.messages.append(f"  Location: ({npc.position.x:.1f}, {npc.position.y:.1f})")
+            distance = self.player_ship.position.distance_to(npc.position)
             self.messages.append(f"  Distance from you: {distance:.1f} AU")
-            self.messages.append(f"  Health: {100 - enemy.damage:.1f}%")
-            self.messages.append(f"  Shields: {enemy.shields:.1f}%")
-            self.messages.append(f"  Status: {'DESTROYED' if enemy.is_destroyed else 'ACTIVE'}")
+            self.messages.append(f"  Health: {100 - npc.damage:.1f}%")
+            self.messages.append(f"  Shields: {npc.shields:.1f}%")
+            self.messages.append(f"  Status: {'DESTROYED' if npc.is_destroyed else 'ACTIVE'}")
         else:
             self.messages.append(f"Object {target_id} not found.")
     
@@ -1221,57 +1221,57 @@ class GameEngine:
                 obj_data['friendly'] = obj.friendly_to_player
             nearby_formatted.append((obj_id, obj_data))
         
-        # Get all enemy ships data
-        enemy_ships_data = {}
-        for enemy_id, enemy_ship in self.enemy_ships.items():
-            distance = ship.position.distance_to(enemy_ship.position)
-            enemy_ships_data[enemy_id] = {
-                'position': (enemy_ship.position.x, enemy_ship.position.y),
+        # Get all npc ships data
+        npc_ships_data = {}
+        for npc_id, npc_ship in self.npc_ships.items():
+            distance = ship.position.distance_to(npc_ship.position)
+            npc_ships_data[npc_id] = {
+                'position': (npc_ship.position.x, npc_ship.position.y),
                 'distance': distance,
-                'damage': enemy_ship.damage,
-                'shields': enemy_ship.shields,
-                'energy': enemy_ship.energy,
-                'is_destroyed': enemy_ship.is_destroyed
+                'damage': npc_ship.damage,
+                'shields': npc_ship.shields,
+                'energy': npc_ship.energy,
+                'is_destroyed': npc_ship.is_destroyed
             }
         
         return {
             'player_position': (ship.position.x, ship.position.y),
             'nearby_objects': nearby_formatted,
-            'enemy_ships': enemy_ships_data,
+            'npc_ships': npc_ships_data,
             'sensor_range': ship.sensors.sensor_range,
             'search_entire_universe': search_entire_universe
         }
     
     def _execute_targets(self, ship: Ship) -> None:
-        """Display the 5 closest enemy ships to the player."""
-        if not self.enemy_ships:
-            self.messages.append("No enemy ships detected in the universe.")
+        """Display the 5 closest npc ships to the player."""
+        if not self.npc_ships:
+            self.messages.append("No npc ships detected in the universe.")
             return
         
         self.messages.append(f"=== CLOSEST ENEMY SHIPS ===")
         
-        # Sort enemy ships by distance from player
-        enemy_list = []
-        for enemy_id, enemy_ship in self.enemy_ships.items():
-            distance = ship.position.distance_to(enemy_ship.position)
-            status = "DESTROYED" if enemy_ship.is_destroyed else ("DISABLED" if enemy_ship.is_disabled else "ACTIVE")
-            enemy_list.append((distance, enemy_id, enemy_ship, status))
+        # Sort npc ships by distance from player
+        npc_list = []
+        for npc_id, npc_ship in self.npc_ships.items():
+            distance = ship.position.distance_to(npc_ship.position)
+            status = "DESTROYED" if npc_ship.is_destroyed else ("DISABLED" if npc_ship.is_disabled else "ACTIVE")
+            npc_list.append((distance, npc_id, npc_ship, status))
         
         # Sort by distance (ascending)
-        enemy_list.sort(key=lambda x: x[0])
+        npc_list.sort(key=lambda x: x[0])
         
         # Display first 5 closest ships
-        for i, (distance, enemy_id, enemy_ship, status) in enumerate(enemy_list[:5]):
-            health = 100.0 - enemy_ship.damage
-            shield = enemy_ship.shields
-            energy = enemy_ship.energy
+        for i, (distance, npc_id, npc_ship, status) in enumerate(npc_list[:5]):
+            health = 100.0 - npc_ship.damage
+            shield = npc_ship.shields
+            energy = npc_ship.energy
             self.messages.append(
-                f"  {i+1}. {enemy_id}: {distance:7.1f} AU | "
+                f"  {i+1}. {npc_id}: {distance:7.1f} AU | "
                 f"HP:{health:5.1f}% SH:{shield:5.1f}% EN:{energy:5.1f}% [{status}]"
             )
         
         # Show total count
-        self.messages.append(f"Total enemy ships in universe: {len(self.enemy_ships)}")
+        self.messages.append(f"Total npc ships in universe: {len(self.npc_ships)}")
     
     def _execute_repair(self, ship: Ship, target_id: Optional[str] = None) -> None:
         """
@@ -1294,9 +1294,9 @@ class GameEngine:
             target_obj = None
             target_type = None
             
-            # Check enemy ships
-            if target_id in self.enemy_ships:
-                target_obj = self.enemy_ships[target_id]
+            # Check npc ships
+            if target_id in self.npc_ships:
+                target_obj = self.npc_ships[target_id]
                 target_type = 'ship'
             # Check player ship
             elif target_id == self.player_ship.id:
@@ -1338,7 +1338,7 @@ class GameEngine:
             elif target_type == 'starbase':
                 # Can only repair friendly starbases at 2% per turn
                 if not target_obj.friendly_to_player:
-                    self.messages.append(f"Repair error: Cannot repair enemy starbase {target_id}")
+                    self.messages.append(f"Repair error: Cannot repair npc starbase {target_id}")
                     return
                 repair_rate = 2.0
                 repair_amount = min(repair_rate, target_obj.damage)
@@ -1367,9 +1367,9 @@ class GameEngine:
         # Update player ship
         self._update_ship(self.player_ship)
         
-        # Update enemy ships
-        for enemy in self.enemy_ships.values():
-            self._update_ship(enemy)
+        # Update npc ships
+        for npc in self.npc_ships.values():
+            self._update_ship(npc)
         
         # Update torpedos
         self._update_torpedos()
@@ -1403,9 +1403,9 @@ class GameEngine:
         # Update player torpedos
         self._update_torpedos_for_ship(self.player_ship, is_player=True)
         
-        # Update enemy torpedos
-        for enemy_ship in self.enemy_ships.values():
-            self._update_torpedos_for_ship(enemy_ship, is_player=False)
+        # Update npc torpedos
+        for npc_ship in self.npc_ships.values():
+            self._update_torpedos_for_ship(npc_ship, is_player=False)
     
     def _update_torpedos_for_ship(self, ship: Ship, is_player: bool) -> None:
         """Update torpedos for a specific ship."""
@@ -1444,12 +1444,12 @@ class GameEngine:
                     torpedos_to_remove.append(torpedo)
                     
                     if is_player:
-                        # Player torpedo - check enemy ships first
+                        # Player torpedo - check npc ships first
                         hit_target = None
-                        for enemy_id, enemy_ship in self.enemy_ships.items():
-                            dist_to_enemy = enemy_ship.position.distance_to(torpedo['current_pos'])
-                            if dist_to_enemy < 2.0:
-                                hit_target = ('enemy', enemy_id, enemy_ship)
+                        for npc_id, npc_ship in self.npc_ships.items():
+                            dist_to_npc = npc_ship.position.distance_to(torpedo['current_pos'])
+                            if dist_to_npc < 2.0:
+                                hit_target = ('npc', npc_id, npc_ship)
                                 break
                         
                         # Check universe objects
@@ -1463,8 +1463,8 @@ class GameEngine:
                         # Apply damage if hit something
                         if hit_target:
                             hit_type, hit_id, hit_obj = hit_target
-                            if hit_type == 'enemy':
-                                # Record that player fired upon this enemy
+                            if hit_type == 'npc':
+                                # Record that player fired upon this npc
                                 hit_obj.fired_upon_by.add(torpedo['source_ship_id'])
                                 
                                 # Torpedo damages shields first (20%), then ship (10%)
@@ -1497,12 +1497,12 @@ class GameEngine:
                                     # Handle ship destruction and reputation changes
                                     self._handle_ship_destruction(self.player_ship, hit_obj, hit_id)
                                     
-                                    # Transfer cash from destroyed enemy ship
+                                    # Transfer cash from destroyed npc ship
                                     cash_received = hit_obj.cash
                                     self.player_ship.cash += cash_received
                                     self.messages.append(f"Salvaged ${cash_received} from {hit_id}")
                                     
-                                    # Track enemy destruction
+                                    # Track npc destruction
                                     self.player_ship.stats['enemies_destroyed'] += 1
                                     
                                     # Cancel auto-navigate if this was the target
@@ -1514,19 +1514,19 @@ class GameEngine:
                                     if self.player_ship.weapons.phaser_locked_target == hit_id:
                                         self.player_ship.weapons.phaser_locked_target = None
                                     
-                                    # Remove destroyed enemy ship and spawn a replacement
-                                    if hit_id in self.enemy_ships:
-                                        del self.enemy_ships[hit_id]
-                                        self._spawn_single_enemy()
-                                        new_enemy_id = list(self.enemy_ships.keys())[-1]
-                                        new_enemy = self.enemy_ships[new_enemy_id]
-                                        self.messages.append(f"New enemy ship {new_enemy_id} spawned at ({new_enemy.position.x:.0f}, {new_enemy.position.y:.0f})")
+                                    # Remove destroyed npc ship and spawn a replacement
+                                    if hit_id in self.npc_ships:
+                                        del self.npc_ships[hit_id]
+                                        self._spawn_single_npc()
+                                        new_npc_id = list(self.npc_ships.keys())[-1]
+                                        new_npc = self.npc_ships[new_npc_id]
+                                        self.messages.append(f"New npc ship {new_npc_id} spawned at ({new_npc.position.x:.0f}, {new_npc.position.y:.0f})")
                             else:
                                 self.messages.append(f"Torpedo impacted {hit_id}")
                         else:
                             self.messages.append("Torpedo target missed")
                     else:
-                        # Enemy torpedo - check if hit player or other enemy ships
+                        # Enemy torpedo - check if hit player or other npc ships
                         hit_something = False
                         
                         # First check if it hit the player
@@ -1568,59 +1568,59 @@ class GameEngine:
                                 self.player_ship.is_destroyed = True
                                 self.messages.append("YOUR SHIP HAS BEEN DESTROYED!")
                         
-                        # If didn't hit player, check other enemy ships
+                        # If didn't hit player, check other npc ships
                         if not hit_something:
-                            for enemy_id, enemy_ship in self.enemy_ships.items():
-                                if enemy_id != torpedo['source_ship_id']:  # Don't hit yourself
-                                    dist_to_enemy = enemy_ship.position.distance_to(torpedo['current_pos'])
-                                    if dist_to_enemy < 2.0 and not enemy_ship.is_destroyed:
-                                        # Hit another enemy ship!
+                            for npc_id, npc_ship in self.npc_ships.items():
+                                if npc_id != torpedo['source_ship_id']:  # Don't hit yourself
+                                    dist_to_npc = npc_ship.position.distance_to(torpedo['current_pos'])
+                                    if dist_to_npc < 2.0 and not npc_ship.is_destroyed:
+                                        # Hit another npc ship!
                                         hit_something = True
                                         
-                                        # Record that this ship fired upon the enemy
-                                        enemy_ship.fired_upon_by.add(torpedo['source_ship_id'])
+                                        # Record that this ship fired upon the npc
+                                        npc_ship.fired_upon_by.add(torpedo['source_ship_id'])
                                         
                                         # Torpedo damages shields first (20%), then ship (10%)
-                                        if enemy_ship.shields_active and enemy_ship.shields > 0:
-                                            shield_damage = min(20.0, enemy_ship.shields)
-                                            enemy_ship.shields -= shield_damage
+                                        if npc_ship.shields_active and npc_ship.shields > 0:
+                                            shield_damage = min(20.0, npc_ship.shields)
+                                            npc_ship.shields -= shield_damage
                                             
                                             if shield_damage >= 20.0:
-                                                self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {enemy_id}! Shields damaged by {shield_damage:.0f}%")
+                                                self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {npc_id}! Shields damaged by {shield_damage:.0f}%")
                                             else:
                                                 # Partial shield damage, rest goes to ship
                                                 remaining_damage = 20.0 - shield_damage
                                                 ship_damage = min(10.0, remaining_damage * 0.5)  # Convert remaining shield damage to ship damage proportionally
-                                                enemy_ship.damage = min(100.0, enemy_ship.damage + ship_damage)
-                                                self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {enemy_id}! Shields absorbed {shield_damage:.0f}%, ship took {ship_damage:.1f}% damage")
+                                                npc_ship.damage = min(100.0, npc_ship.damage + ship_damage)
+                                                self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {npc_id}! Shields absorbed {shield_damage:.0f}%, ship took {ship_damage:.1f}% damage")
                                         else:
                                             # Shields down or at 0%, damage ship directly
                                             damage = 10.0
-                                            enemy_ship.damage = min(100.0, enemy_ship.damage + damage)
-                                            self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {enemy_id}! {damage:.1f}% damage!")
+                                            npc_ship.damage = min(100.0, npc_ship.damage + damage)
+                                            self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {npc_id}! {damage:.1f}% damage!")
                                         
                                         # 1% chance to damage warp core
                                         if random.random() < 0.01:
-                                            enemy_ship.propulsion.warp_core_temp = min(100.0,
-                                                enemy_ship.propulsion.warp_core_temp + 50.0)
-                                            self.messages.append(f"CRITICAL: {enemy_id}'s warp core damaged!")
+                                            npc_ship.propulsion.warp_core_temp = min(100.0,
+                                                npc_ship.propulsion.warp_core_temp + 50.0)
+                                            self.messages.append(f"CRITICAL: {npc_id}'s warp core damaged!")
                                         
                                         # Check if destroyed
-                                        if enemy_ship.damage >= 100.0:
-                                            enemy_ship.is_destroyed = True
-                                            self.messages.append(f"{enemy_id} destroyed by {torpedo['source_ship_id']}!")
+                                        if npc_ship.damage >= 100.0:
+                                            npc_ship.is_destroyed = True
+                                            self.messages.append(f"{npc_id} destroyed by {torpedo['source_ship_id']}!")
                                             
                                             # Clear weapon lock if this was the locked target
-                                            if self.player_ship.weapons.phaser_locked_target == enemy_id:
+                                            if self.player_ship.weapons.phaser_locked_target == npc_id:
                                                 self.player_ship.weapons.phaser_locked_target = None
                                             
                                             # Remove destroyed ship and spawn replacement
-                                            if enemy_id in self.enemy_ships:
-                                                del self.enemy_ships[enemy_id]
-                                                self._spawn_single_enemy()
-                                                new_enemy_id = list(self.enemy_ships.keys())[-1]
-                                                new_enemy = self.enemy_ships[new_enemy_id]
-                                                self.messages.append(f"New enemy ship {new_enemy_id} spawned at ({new_enemy.position.x:.0f}, {new_enemy.position.y:.0f})")
+                                            if npc_id in self.npc_ships:
+                                                del self.npc_ships[npc_id]
+                                                self._spawn_single_npc()
+                                                new_npc_id = list(self.npc_ships.keys())[-1]
+                                                new_npc = self.npc_ships[new_npc_id]
+                                                self.messages.append(f"New npc ship {new_npc_id} spawned at ({new_npc.position.x:.0f}, {new_npc.position.y:.0f})")
                                         
                                         break  # Only hit one ship
                         
@@ -1724,12 +1724,12 @@ class GameEngine:
                 self.player_ship.is_destroyed = True
                 self.messages.append("SHIP DESTROYED: Captured by black hole!")
             
-            # Check enemy ships
-            for enemy_id, enemy in list(self.enemy_ships.items()):
-                if enemy.position.distance_to(bh.position) < 3.0:
-                    enemy.is_destroyed = True
+            # Check npc ships
+            for npc_id, npc in list(self.npc_ships.items()):
+                if npc.position.distance_to(bh.position) < 3.0:
+                    npc.is_destroyed = True
                     # Clear weapon lock if this was the locked target
-                    if self.player_ship.weapons.phaser_locked_target == enemy_id:
+                    if self.player_ship.weapons.phaser_locked_target == npc_id:
                         self.player_ship.weapons.phaser_locked_target = None
     
     def _check_game_over(self) -> None:

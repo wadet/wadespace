@@ -1,6 +1,6 @@
 # Wade Space Game
 
-A comprehensive 2D turn-based space game inspired by Star Trek, featuring a procedurally generated 10,000 x 10,000 AU universe with dynamic combat, intelligent enemies, and deep ship management mechanics.
+A comprehensive 2D turn-based space game inspired by Star Trek, featuring a procedurally generated 10,000 x 10,000 AU universe with dynamic combat, intelligent npcs, and deep ship management mechanics.
 
 ## Quick Start
 
@@ -52,7 +52,7 @@ Control a Federation starship with full Star Trek-inspired systems:
 **Resources**:
 - Crew (starts with 1,000, lost in combat, recruited from planets)
 - Energy (0-100%, consumed by all systems)
-- Cash (earned from mining and destroyed enemies)
+- Cash (earned from mining and destroyed npcs)
 - Photon torpedos (50 max, restocked at starbases)
 
 ### Gameplay Mechanics
@@ -100,7 +100,7 @@ Control a Federation starship with full Star Trek-inspired systems:
 - `ask what is nearest star` - Query system
 
 **Communication**:
-- `tell s1 cease fire` - Send message to enemy ship
+- `tell s1 cease fire` - Send message to npc ship
 - `skip` - End turn without action
 
 ## Architecture

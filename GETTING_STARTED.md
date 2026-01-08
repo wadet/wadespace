@@ -67,14 +67,14 @@ Torpedos: 50
 - **`ask which is nearest star`** - Query game system
 
 ### Combat
-- **`lock on s1`** - Lock phasers on enemy ship
+- **`lock on s1`** - Lock phasers on npc ship
 - **`fire`** - Fire locked phasers (instant hit)
 - **`tor s1`** - Fire photon torpedo at target
 - **`shields up`** - Raise shields (costs 2% energy/turn)
 - **`shields down`** - Lower shields
 
 ### Interaction
-- **`tell s1 stop attacking`** - Send message to enemy
+- **`tell s1 stop attacking`** - Send message to npc
 - **`skip`** - Skip turn without action
 
 ## Game Systems Explained
@@ -152,7 +152,7 @@ Your ship has 100% energy that powers all systems:
 - Repair for 25% damage per turn
 - Refuel at 10% energy per turn
 - Restock photon torpedos
-- Some are friendly (green), some enemy (red)
+- Some are friendly (green), some npc (red)
 - Must be within 1 AU
 - Player can only use friendly starbases
 
@@ -178,7 +178,7 @@ Your ship has 100% energy that powers all systems:
 - Randomizes object detection
 - Cannot be destroyed
 
-**Enemy Ships**:
+**NPC Ships**:
 - 50 total in universe at any time
 - Up to 3 in your local area
 - Can attack, pursue, or flee
@@ -196,11 +196,11 @@ Your ship has 100% energy that powers all systems:
 1. Locate nearby stars for energy management
 2. Find a friendly starbase for repairs
 3. Avoid black holes and pulsars
-4. Scan regularly to track enemy movement
+4. Scan regularly to track npc movement
 
 ### Combat
 1. Always lock phasers before firing
-2. Keep shields up when near enemies
+2. Keep shields up when near npcs
 3. Use cover of asteroids and planets
 4. Torpedos are more powerful but slower
 5. Manage energy carefully - can't fight if drained
@@ -221,7 +221,7 @@ Your ship has 100% energy that powers all systems:
 
 1. **Exploration First**: Scan the area, find resources
 2. **Strategic Refueling**: Plan routes through stars and starbases
-3. **Controlled Combat**: Engage enemies when advantageous
+3. **Controlled Combat**: Engage npcs when advantageous
 4. **Resource Gathering**: Mine asteroids, recruit crew
 5. **Evasion**: Use distance and maneuvering to avoid damage
 
@@ -307,7 +307,7 @@ ships = engine.get_ships_in_range(
 - Full Pygame graphical interface with 2D map
 - Minimap with zoom capability
 - Visual effects (explosions, phaser beams, torpedo trails)
-- GPT-4o AI for enemy ship captains
+- GPT-4o AI for npc ship captains
 - Enemy communication and coordination
 - Sound effects and music
 - High score tracking

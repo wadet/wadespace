@@ -1,7 +1,7 @@
 # Reputation System Update - Ship Destruction
 
 ## Summary
-Implemented a reputation change system that adjusts the player's reputation when destroying enemy ships based on the destroyed ship's behavior trait and reputation score.
+Implemented a reputation change system that adjusts the player's reputation when destroying npc ships based on the destroyed ship's behavior trait and reputation score.
 
 ## Changes Made
 
@@ -34,7 +34,7 @@ Implemented a reputation change system that adjusts the player's reputation when
 #### Updated torpedo hit handling
 - Location: lines ~1213-1246 (in `_update_torpedos()`)
 - Moved cash transfer and cleanup code after reputation handling
-- Calls `_handle_ship_destruction()` when enemy ship is destroyed by torpedo
+- Calls `_handle_ship_destruction()` when npc ship is destroyed by torpedo
 
 ## Rules Implemented
 
@@ -61,7 +61,7 @@ The reputation system evaluates conditions in order:
 **Note**: The first matching condition wins. Reputation > 70 is checked before aggressive trait, so a high-reputation aggressive ship will still decrease your reputation.
 
 - Reputation is always bounded: 0 ≤ reputation ≤ 100
-- Changes only apply when player destroys enemy ships
+- Changes only apply when player destroys npc ships
 - Player sees a message when reputation changes
 
 ## Testing
@@ -82,13 +82,13 @@ The reputation system evaluates conditions in order:
 ## Example Gameplay
 
 ```
-Player attacks enemy s1234 (timid, reputation 45)
+Player attacks npc s1234 (timid, reputation 45)
 > Torpedo hit s1234! Damage: 25%
 > s1234 destroyed!
 > Reputation decreased to 46 (destroyed s1234)
 > Salvaged $1500 from s1234
 
-Player attacks enemy s5678 (aggressive, reputation 20)
+Player attacks npc s5678 (aggressive, reputation 20)
 > Phaser fired at s5678! Hit for 5% damage!
 > s5678 destroyed!
 > Reputation increased to 56 (destroyed s5678)

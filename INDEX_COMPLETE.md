@@ -90,7 +90,7 @@ impulse on          Travel slow (1 AU/turn)
 heading 180         Set direction (0-359°)
 shields up          Raise shields
 scan                Find nearby objects
-lock on s1          Target enemy
+lock on s1          Target npc
 fire                Attack with phasers
 tor s1              Fire photon torpedo
 status              Check health
@@ -224,7 +224,7 @@ python -m src.main
 
 ### Phase 3: AI & Advanced Features (Planned)
 - 🔲 GPT-4o AI integration
-- 🔲 Advanced enemy tactics
+- 🔲 Advanced npc tactics
 - 🔲 Sound effects and music
 - 🔲 Save/load system
 - 🔲 Multiplayer support
@@ -387,7 +387,7 @@ Scroll:      Minimap zoom
 - ✅ Turn-based gameplay
 - ✅ Strategic depth
 - ✅ 12,340 universe objects
-- ✅ 50 enemy ships
+- ✅ 50 npc ships
 - ✅ Multiple game mechanics
 - ✅ Emergent gameplay
 

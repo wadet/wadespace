@@ -26,20 +26,20 @@ def test_torpedo_full_shields():
     
     engine = GameEngine()
     
-    # Create an enemy ship with full shields
+    # Create an npc ship with full shields
     enemy_pos = Position(engine.player_ship.position.x + 5.0, 
                         engine.player_ship.position.y)
-    enemy = Ship("s9999", enemy_pos)
-    enemy.shields = 100.0
-    enemy.shields_active = True
-    enemy.damage = 0.0
-    engine.enemy_ships["s9999"] = enemy
+    npc = Ship("s9999", enemy_pos)
+    npc.shields = 100.0
+    npc.shields_active = True
+    npc.damage = 0.0
+    engine.npc_ships["s9999"] = npc
     
     print(f"Initial state:")
-    print(f"  Enemy shields: {enemy.shields}%")
-    print(f"  Enemy damage: {enemy.damage}%")
+    print(f"  NPC shields: {npc.shields}%")
+    print(f"  NPC damage: {npc.damage}%")
     
-    # Fire a torpedo at the enemy
+    # Fire a torpedo at the npc
     engine.player_ship.weapons.phaser_locked_target = "s9999"
     engine._execute_torpedo(engine.player_ship, "s9999")
     
@@ -47,24 +47,24 @@ def test_torpedo_full_shields():
     if engine.player_ship.weapons.active_torpedos:
         torpedo = engine.player_ship.weapons.active_torpedos[0]
         # Move torpedo to within 1 AU of target (well within 2.0 AU hit range)
-        torpedo['current_pos'] = Position(enemy.position.x + 0.5, enemy.position.y)
+        torpedo['current_pos'] = Position(npc.position.x + 0.5, npc.position.y)
         torpedo['distance_traveled'] = 50.0  # Force it to be near target
         
         # Update torpedoes
         engine._update_torpedos()
     
     print(f"\nAfter torpedo hit:")
-    print(f"  Enemy shields: {enemy.shields}%")
-    print(f"  Enemy damage: {enemy.damage}%")
+    print(f"  NPC shields: {npc.shields}%")
+    print(f"  NPC damage: {npc.damage}%")
     
     # Validate
     expected_shields = 80.0  # 100 - 20
-    if abs(enemy.shields - expected_shields) < 0.1 and enemy.damage == 0.0:
+    if abs(npc.shields - expected_shields) < 0.1 and npc.damage == 0.0:
         print(f"\n✓ PASS: Shields reduced by 20% (100% -> 80%), no ship damage")
         return True
     else:
         print(f"\n✗ FAIL: Expected shields={expected_shields}%, damage=0%")
-        print(f"        Got shields={enemy.shields}%, damage={enemy.damage}%")
+        print(f"        Got shields={npc.shields}%, damage={npc.damage}%")
         return False
 
 
@@ -76,45 +76,45 @@ def test_torpedo_partial_shields():
     
     engine = GameEngine()
     
-    # Create an enemy ship with partial shields
+    # Create an npc ship with partial shields
     enemy_pos = Position(engine.player_ship.position.x + 5.0, 
                         engine.player_ship.position.y)
-    enemy = Ship("s9998", enemy_pos)
-    enemy.shields = 10.0
-    enemy.shields_active = True
-    enemy.damage = 0.0
-    engine.enemy_ships["s9998"] = enemy
+    npc = Ship("s9998", enemy_pos)
+    npc.shields = 10.0
+    npc.shields_active = True
+    npc.damage = 0.0
+    engine.npc_ships["s9998"] = npc
     
     # Ensure player has torpedoes and energy
     engine.player_ship.weapons.torpedos = 50
     engine.player_ship.energy = 100.0
     
     print(f"Initial state:")
-    print(f"  Enemy shields: {enemy.shields}%")
-    print(f"  Enemy damage: {enemy.damage}%")
+    print(f"  NPC shields: {npc.shields}%")
+    print(f"  NPC damage: {npc.damage}%")
     
-    # Fire a torpedo at the enemy
+    # Fire a torpedo at the npc
     engine.player_ship.weapons.phaser_locked_target = "s9998"
     engine._execute_torpedo(engine.player_ship, "s9998")
     
     # Process the torpedo hit
     if engine.player_ship.weapons.active_torpedos:
         torpedo = engine.player_ship.weapons.active_torpedos[0]
-        torpedo['current_pos'] = Position(enemy.position.x + 0.5, enemy.position.y)
+        torpedo['current_pos'] = Position(npc.position.x + 0.5, npc.position.y)
         torpedo['distance_traveled'] = 50.0
         engine._update_torpedos()
     
     print(f"\nAfter torpedo hit:")
-    print(f"  Enemy shields: {enemy.shields}%")
-    print(f"  Enemy damage: {enemy.damage}%")
+    print(f"  NPC shields: {npc.shields}%")
+    print(f"  NPC damage: {npc.damage}%")
     
     # Validate: shields should be depleted, some ship damage
-    if enemy.shields == 0.0 and enemy.damage > 0.0 and enemy.damage <= 10.0:
-        print(f"\n✓ PASS: Shields depleted, ship took {enemy.damage:.1f}% damage")
+    if npc.shields == 0.0 and npc.damage > 0.0 and npc.damage <= 10.0:
+        print(f"\n✓ PASS: Shields depleted, ship took {npc.damage:.1f}% damage")
         return True
     else:
         print(f"\n✗ FAIL: Expected shields=0%, damage between 0-10%")
-        print(f"        Got shields={enemy.shields}%, damage={enemy.damage}%")
+        print(f"        Got shields={npc.shields}%, damage={npc.damage}%")
         return False
 
 
@@ -126,20 +126,20 @@ def test_torpedo_no_shields():
     
     engine = GameEngine()
     
-    # Create an enemy ship with shields down
+    # Create an npc ship with shields down
     enemy_pos = Position(engine.player_ship.position.x + 5.0, 
                         engine.player_ship.position.y)
-    enemy = Ship("s9997", enemy_pos)
-    enemy.shields = 0.0
-    enemy.shields_active = False
-    enemy.damage = 0.0
-    engine.enemy_ships["s9997"] = enemy
+    npc = Ship("s9997", enemy_pos)
+    npc.shields = 0.0
+    npc.shields_active = False
+    npc.damage = 0.0
+    engine.npc_ships["s9997"] = npc
     
     print(f"Initial state:")
-    print(f"  Enemy shields: {enemy.shields}% (active: {enemy.shields_active})")
-    print(f"  Enemy damage: {enemy.damage}%")
+    print(f"  NPC shields: {npc.shields}% (active: {npc.shields_active})")
+    print(f"  NPC damage: {npc.damage}%")
     
-    # Fire a torpedo at the enemy
+    # Fire a torpedo at the npc
     engine.player_ship.weapons.phaser_locked_target = "s9997"
     engine._execute_torpedo(engine.player_ship, "s9997")
     
@@ -148,11 +148,11 @@ def test_torpedo_no_shields():
         torpedo = engine.player_ship.weapons.active_torpedos[0]
         print(f"  Before update - torpedo at: ({torpedo['current_pos'].x:.1f}, {torpedo['current_pos'].y:.1f})")
         print(f"  Before update - target at: ({torpedo['target_pos'].x:.1f}, {torpedo['target_pos'].y:.1f})")
-        print(f"  Before update - enemy in dict: {'s9997' in engine.enemy_ships}")
-        if 's9998' in engine.enemy_ships:
-            print(f"  Before update - enemy at: ({engine.enemy_ships['s9998'].position.x:.1f}, {engine.enemy_ships['s9998'].position.y:.1f})")
+        print(f"  Before update - npc in dict: {'s9997' in engine.npc_ships}")
+        if 's9998' in engine.npc_ships:
+            print(f"  Before update - npc at: ({engine.npc_ships['s9998'].position.x:.1f}, {engine.npc_ships['s9998'].position.y:.1f})")
         
-        torpedo['current_pos'] = Position(enemy.position.x + 0.5, enemy.position.y)
+        torpedo['current_pos'] = Position(npc.position.x + 0.5, npc.position.y)
         torpedo['distance_traveled'] = 50.0
         
         print(f"  After repositioning - torpedo at: ({torpedo['current_pos'].x:.1f}, {torpedo['current_pos'].y:.1f})")
@@ -164,17 +164,17 @@ def test_torpedo_no_shields():
         print(f"  WARNING: No active torpedoes to process!")
     
     print(f"\nAfter torpedo hit:")
-    print(f"  Enemy shields: {enemy.shields}%")
-    print(f"  Enemy damage: {enemy.damage}%")
+    print(f"  NPC shields: {npc.shields}%")
+    print(f"  NPC damage: {npc.damage}%")
     
     # Validate: 10% damage to ship
     expected_damage = 10.0
-    if abs(enemy.damage - expected_damage) < 0.1:
+    if abs(npc.damage - expected_damage) < 0.1:
         print(f"\n✓ PASS: Ship took 10% damage directly (no shields)")
         return True
     else:
         print(f"\n✗ FAIL: Expected damage=10%")
-        print(f"        Got damage={enemy.damage}%")
+        print(f"        Got damage={npc.damage}%")
         return False
 
 
@@ -186,18 +186,18 @@ def test_torpedo_multiple_hits():
     
     engine = GameEngine()
     
-    # Create an enemy ship with full shields
+    # Create an npc ship with full shields
     enemy_pos = Position(engine.player_ship.position.x + 5.0, 
                         engine.player_ship.position.y)
-    enemy = Ship("s9996", enemy_pos)
-    enemy.shields = 100.0
-    enemy.shields_active = True
-    enemy.damage = 0.0
-    engine.enemy_ships["s9996"] = enemy
+    npc = Ship("s9996", enemy_pos)
+    npc.shields = 100.0
+    npc.shields_active = True
+    npc.damage = 0.0
+    engine.npc_ships["s9996"] = npc
     
     print(f"Initial state:")
-    print(f"  Enemy shields: {enemy.shields}%")
-    print(f"  Enemy damage: {enemy.damage}%")
+    print(f"  NPC shields: {npc.shields}%")
+    print(f"  NPC damage: {npc.damage}%")
     
     # Fire 5 torpedoes (should deplete shields completely)
     for i in range(5):
@@ -206,21 +206,21 @@ def test_torpedo_multiple_hits():
         
         if engine.player_ship.weapons.active_torpedos:
             torpedo = engine.player_ship.weapons.active_torpedos[-1]
-            torpedo['current_pos'] = Position(enemy.position.x + 0.5, enemy.position.y)
+            torpedo['current_pos'] = Position(npc.position.x + 0.5, npc.position.y)
             torpedo['distance_traveled'] = 50.0
             engine._update_torpedos()
         
         print(f"\nAfter torpedo {i+1}:")
-        print(f"  Shields: {enemy.shields}%")
-        print(f"  Damage: {enemy.damage}%")
+        print(f"  Shields: {npc.shields}%")
+        print(f"  Damage: {npc.damage}%")
     
     # Validate: shields should be 0%, no ship damage yet
-    if enemy.shields == 0.0 and enemy.damage == 0.0:
+    if npc.shields == 0.0 and npc.damage == 0.0:
         print(f"\n✓ PASS: 5 torpedoes depleted shields (100% -> 0%), no ship damage")
         return True
     else:
         print(f"\n✗ FAIL: Expected shields=0%, damage=0%")
-        print(f"        Got shields={enemy.shields}%, damage={enemy.damage}%")
+        print(f"        Got shields={npc.shields}%, damage={npc.damage}%")
         return False
 
 
@@ -232,18 +232,18 @@ def test_torpedo_sixth_hit_damages_hull():
     
     engine = GameEngine()
     
-    # Create an enemy ship with depleted shields
+    # Create an npc ship with depleted shields
     enemy_pos = Position(engine.player_ship.position.x + 5.0, 
                         engine.player_ship.position.y)
-    enemy = Ship("s9995", enemy_pos)
-    enemy.shields = 0.0
-    enemy.shields_active = True  # Active but depleted
-    enemy.damage = 0.0
-    engine.enemy_ships["s9995"] = enemy
+    npc = Ship("s9995", enemy_pos)
+    npc.shields = 0.0
+    npc.shields_active = True  # Active but depleted
+    npc.damage = 0.0
+    engine.npc_ships["s9995"] = npc
     
     print(f"Initial state (shields already depleted):")
-    print(f"  Enemy shields: {enemy.shields}%")
-    print(f"  Enemy damage: {enemy.damage}%")
+    print(f"  NPC shields: {npc.shields}%")
+    print(f"  NPC damage: {npc.damage}%")
     
     # Fire another torpedo
     engine.player_ship.weapons.phaser_locked_target = "s9995"
@@ -251,28 +251,28 @@ def test_torpedo_sixth_hit_damages_hull():
     
     if engine.player_ship.weapons.active_torpedos:
         torpedo = engine.player_ship.weapons.active_torpedos[0]
-        torpedo['current_pos'] = Position(enemy.position.x + 0.5, enemy.position.y)
+        torpedo['current_pos'] = Position(npc.position.x + 0.5, npc.position.y)
         torpedo['distance_traveled'] = 50.0
         engine._update_torpedos()
     
     print(f"\nAfter torpedo hit:")
-    print(f"  Enemy shields: {enemy.shields}%")
-    print(f"  Enemy damage: {enemy.damage}%")
+    print(f"  NPC shields: {npc.shields}%")
+    print(f"  NPC damage: {npc.damage}%")
     
     # Validate: 10% damage to ship
-    if enemy.shields == 0.0 and abs(enemy.damage - 10.0) < 0.1:
+    if npc.shields == 0.0 and abs(npc.damage - 10.0) < 0.1:
         print(f"\n✓ PASS: Torpedo damaged hull by 10% (shields depleted)")
         return True
     else:
         print(f"\n✗ FAIL: Expected shields=0%, damage=10%")
-        print(f"        Got shields={enemy.shields}%, damage={enemy.damage}%")
+        print(f"        Got shields={npc.shields}%, damage={npc.damage}%")
         return False
 
 
 def test_enemy_torpedo_vs_player():
-    """Test enemy torpedo hitting player with shields."""
+    """Test npc torpedo hitting player with shields."""
     print("\n" + "=" * 60)
-    print("Test 6: Enemy Torpedo vs Player Shields")
+    print("Test 6: NPC Torpedo vs Player Shields")
     print("=" * 60)
     
     engine = GameEngine()
@@ -286,25 +286,25 @@ def test_enemy_torpedo_vs_player():
     print(f"  Player shields: {engine.player_ship.shields}%")
     print(f"  Player damage: {engine.player_ship.damage}%")
     
-    # Create an enemy ship nearby
+    # Create an npc ship nearby
     enemy_pos = Position(engine.player_ship.position.x + 5.0, 
                         engine.player_ship.position.y)
-    enemy = Ship("s9994", enemy_pos)
-    engine.enemy_ships["s9994"] = enemy
+    npc = Ship("s9994", enemy_pos)
+    engine.npc_ships["s9994"] = npc
     
-    # Simulate enemy firing torpedo at player
-    enemy.weapons.phaser_locked_target = "player"
-    engine._execute_torpedo(enemy, engine.player_ship.id)
+    # Simulate npc firing torpedo at player
+    npc.weapons.phaser_locked_target = "player"
+    engine._execute_torpedo(npc, engine.player_ship.id)
     
     # Process the torpedo hit
-    if enemy.weapons.active_torpedos:
-        torpedo = enemy.weapons.active_torpedos[0]
+    if npc.weapons.active_torpedos:
+        torpedo = npc.weapons.active_torpedos[0]
         torpedo['current_pos'] = Position(engine.player_ship.position.x + 0.5, 
                                          engine.player_ship.position.y)
         torpedo['distance_traveled'] = 50.0
-        engine._update_torpedos_for_ship(enemy, False)
+        engine._update_torpedos_for_ship(npc, False)
     
-    print(f"\nAfter enemy torpedo hit:")
+    print(f"\nAfter npc torpedo hit:")
     print(f"  Player shields: {engine.player_ship.shields}%")
     print(f"  Player damage: {engine.player_ship.damage}%")
     
@@ -335,7 +335,7 @@ def test_torpedo_vs_starbase():
     starbase.shields = 100.0
     starbase.shields_active = True
     starbase.damage = 0.0
-    starbase.faction = "enemy"  # Make it hostile
+    starbase.faction = "npc"  # Make it hostile
     engine.universe_objects["sb1000"] = starbase
     
     print(f"Initial starbase state:")
@@ -377,7 +377,7 @@ def main():
         ("No Shields", test_torpedo_no_shields),
         ("Multiple Hits (5x)", test_torpedo_multiple_hits),
         ("Hull Damage After Shields", test_torpedo_sixth_hit_damages_hull),
-        ("Enemy vs Player", test_enemy_torpedo_vs_player),
+        ("NPC vs Player", test_enemy_torpedo_vs_player),
         ("Starbase Shields", test_torpedo_vs_starbase),
     ]
     

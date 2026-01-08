@@ -88,7 +88,7 @@ Press ENTER to execute, ESC to clear
 
 ### Main Map
 - Real-time 20×20 AU viewport
-- Player and enemy ships with colors
+- Player and npc ships with colors
 - 9 different object symbols
 - Object labels and IDs
 - Coordinates display
@@ -139,7 +139,7 @@ impulse on/off      Impulse drive (1 AU/turn)
 heading 180         Set course (0-359°)
 shields up/down     Shields control
 scan                Find objects
-lock on s1          Target enemy
+lock on s1          Target npc
 fire                Phaser attack
 tor s1              Torpedo attack
 status              Show vitals
@@ -194,7 +194,7 @@ Total: 29 passed in 59.24s
 | Unit Tests | 29 (all passing) |
 | Supported Commands | 14 |
 | Game Objects | 12,340 |
-| Enemy Ships | 50 active |
+| NPC Ships | 50 active |
 | Visual Effects | 5 types |
 
 ---
@@ -203,12 +203,12 @@ Total: 29 passed in 59.24s
 
 ### Colors
 - **Player Ship**: Green triangle ▲
-- **Enemy Ships**: Red triangles ▼
+- **NPC Ships**: Red triangles ▼
 - **Stars**: Yellow ★
 - **Planets**: Cyan ●
 - **Hazards**: Black/Magenta (black holes, pulsars)
 - **Friendly Base**: Green ⊕
-- **Enemy Base**: Red ⊕
+- **NPC Base**: Red ⊕
 
 ### Status Bars
 - Energy: Cyan bar
@@ -334,7 +334,7 @@ $ python -m src.ui_main
 Warp drive engaged, speed 5 AU/turn
 
 > scan
-Nearby objects: st1 (star), pl45 (planet), s1 (enemy ship)
+Nearby objects: st1 (star), pl45 (planet), s1 (npc ship)
 
 > heading 270
 Course set to 270°

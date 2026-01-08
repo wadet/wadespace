@@ -1,6 +1,6 @@
 # Wade Space - Complete Game Project
 
-A professional-grade 2D turn-based space game written in modular Python, featuring a procedurally generated 10,000x10,000 AU universe with 12,340 celestial objects, advanced ship systems, and intelligent enemy AI framework.
+A professional-grade 2D turn-based space game written in modular Python, featuring a procedurally generated 10,000x10,000 AU universe with 12,340 celestial objects, advanced ship systems, and intelligent npc AI framework.
 
 ## 📋 Quick Navigation
 
@@ -38,7 +38,7 @@ python -m pytest tests/test_core.py -v
 | Module Files | 7 |
 | Test Cases | 30+ |
 | Supported Commands | 14 |
-| Enemy Ships | 50 |
+| NPC Ships | 50 |
 | Game Objects Types | 8 |
 
 ## 🎮 Game Features
@@ -101,7 +101,7 @@ src/
 ### Resource Management
 - **Energy**: Powers all systems (limited to 100%)
 - **Crew**: Lost in combat, affects ship capability
-- **Cash**: Earned from mining and destroyed enemies
+- **Cash**: Earned from mining and destroyed npcs
 - **Torpedos**: Limited to 50, restocked at starbases
 
 ## 🛠️ Technology Stack
@@ -153,7 +153,7 @@ python -m pytest tests/test_core.py -v
 1. Start game with your ship in a procedurally generated universe
 2. Use commands to navigate, scan, and interact
 3. Manage energy, shields, and crew
-4. Engage enemies in combat
+4. Engage npcs in combat
 5. Mine asteroids for resources
 6. Repair at starbases
 7. Survive until you decide to quit
@@ -164,7 +164,7 @@ warp 5              # Travel at 5 AU/turn
 heading 180         # Set course to 180°
 shields up          # Activate shields
 scan st12345        # Scan a specific object
-lock on s1          # Lock phasers on enemy
+lock on s1          # Lock phasers on npc
 fire                # Fire phasers
 tor s1              # Fire torpedo at target
 status              # Show ship status
@@ -182,7 +182,7 @@ ask what is nearest star  # Query system
 - Mouse-based targeting
 
 ### Phase 3: Advanced AI
-- GPT-4o enemy ship intelligence
+- GPT-4o npc ship intelligence
 - Natural language NPC communication
 - Tactical multi-ship coordination
 - Dynamic difficulty scaling
@@ -257,7 +257,7 @@ This project demonstrates:
 | Operation | Time | Details |
 |-----------|------|---------|
 | Universe Generation | 2-3s | 12,340 objects |
-| Turn Processing | <100ms | 50 enemy ships + player |
+| Turn Processing | <100ms | 50 npc ships + player |
 | Object Lookup | <10ms | Range query from 12,340 objects |
 | Command Parsing | <1ms | Regex-based matching |
 | Memory Usage | ~50MB | Base + 2-5MB per turn |

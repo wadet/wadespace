@@ -230,10 +230,10 @@ wadespace/
 ## 🎯 Next Steps
 
 ### Phase 3: AI System (Future)
-- GPT-4o integration for enemy tactics
+- GPT-4o integration for npc tactics
 - Dynamic difficulty scaling
 - Narrative elements
-- Advanced enemy behaviors
+- Advanced npc behaviors
 
 ### Potential Enhancements
 - Sound effects and music

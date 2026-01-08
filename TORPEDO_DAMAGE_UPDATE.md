@@ -20,9 +20,9 @@ Updated the torpedo damage system to prioritize shield damage before hull damage
 
 ### Implementation
 - **[src/game_engine.py](src/game_engine.py)**: Updated torpedo hit logic in `_update_torpedos_for_ship()` method
-  - Player torpedoes vs enemies (lines ~1463-1490)
+  - Player torpedoes vs npcs (lines ~1463-1490)
   - Enemy torpedoes vs player (lines ~1518-1545)
-  - Enemy torpedoes vs other enemies (lines ~1563-1589)
+  - Enemy torpedoes vs other npcs (lines ~1563-1589)
 
 ### Documentation
 - **[wadespace-prompt.txt](wadespace-prompt.txt)**: Updated game design document (line 89)

@@ -275,7 +275,7 @@ GameUI (Main orchestrator)
 ├─ GameEngine (shared with text mode)
 │  ├─ Universe (12,340 objects)
 │  ├─ Player Ship
-│  └─ 50 Enemy Ships
+│  └─ 50 NPC Ships
 │
 ├─ CommandParser (shared with text mode)
 │  └─ 14 command types
@@ -407,7 +407,7 @@ Update game state
 ⊕ = Starbase (cross in circle, green/red)
 ✕ = Asteroid Field (X mark, gray)
 △ = Player Ship (upward triangle, green)
-▽ = Enemy Ship (downward triangle, red)
+▽ = NPC Ship (downward triangle, red)
 ```
 
 ---
@@ -610,7 +610,7 @@ python -m src.ui_main
 - Report any UI issues
 
 ### Medium Term (Phase 3)
-- GPT-4o integration for enemy tactics
+- GPT-4o integration for npc tactics
 - Advanced AI behaviors
 - Sound and music
 

@@ -38,7 +38,7 @@ The game UI has been completely rebuilt to match your exact requirements.
 - Displays game messages instead of console output
 - Shows last 10 visible messages with word wrapping
 - Scrollable through accumulated message history (50 total stored)
-- Tracks enemy ship thinking, game events, command feedback
+- Tracks npc ship thinking, game events, command feedback
 
 #### Bottom Third: Command Prompt
 - Natural language command input field

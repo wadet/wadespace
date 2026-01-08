@@ -225,10 +225,10 @@ class TestGameEngine:
         nearby = engine.get_objects_in_range(pos, 50.0)
         assert len(nearby) > 0
     
-    def test_enemy_ship_creation(self):
-        """Test enemy ships are created."""
+    def test_npc_ship_creation(self):
+        """Test npc ships are created."""
         engine = GameEngine()
-        assert len(engine.enemy_ships) == 50
+        assert len(engine.npc_ships) == 50
 
 
 class TestCombat:

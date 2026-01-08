@@ -217,11 +217,11 @@ class GameUI:
                 viewport_min_y <= obj.position.y <= viewport_max_y):
                 self._draw_object(obj, map_rect, player_pos)
         
-        # Draw enemy ships
-        for enemy_id, enemy in self.engine.enemy_ships.items():
-            if (viewport_min_x <= enemy.position.x <= viewport_max_x and
-                viewport_min_y <= enemy.position.y <= viewport_max_y):
-                self._draw_ship(enemy, map_rect, player_pos, is_player=False)
+        # Draw npc ships
+        for npc_id, npc in self.engine.npc_ships.items():
+            if (viewport_min_x <= npc.position.x <= viewport_max_x and
+                viewport_min_y <= npc.position.y <= viewport_max_y):
+                self._draw_ship(npc, map_rect, player_pos, is_player=False)
         
         # Draw player ship at center
         player_screen_x = map_rect.left + map_rect.width // 2

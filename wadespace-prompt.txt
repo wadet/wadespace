@@ -37,15 +37,15 @@ THE SHIP:
 	8) warp core temperature (shown on a scale between 0 and 100 percent of max)
 	9) the number of crew remaining out of 1000 (the player starts with 1000 when the game begins)
 	10) the number of dollars the player has onboard
-* The enemy players controls a similar type of ship as the player with the same onboard systems
-* Enemy ships behave the same as the player's ship
+* The npc players controls a similar type of ship as the player with the same onboard systems
+* NPC ships behave the same as the player's ship
 * The player's ship should look like the ship from Star Trek on the map
-* Enemy ships should look like Klingon ships on the map
+* NPC ships should look like Klingon ships on the map
 * Each ship is powered by energy carried onboard the ship.  Energy is expressed as percentage between 0 and 100 percent
 * Each ship starts the game with 100 percent for energy, shields, and phasers
 * Each ship starts with 0 percent damage
 * A ship that is not moving can repair up to 5 percent of its total damage each turn if the ship has 100 percent of its crew onboard.  The amount of damage repaired percentage-wise by the crew each turn is porportional to the number of crew remaining aboard the ship out of the maximum that the ship can hold (up to the maximum 5 percent damage repairable each turn).  If the ship only has 50 percent of its crew onboard, only 2.5 percent of the ship's damage will be repaired each turn.
-* Ships that are moving can only auto repair 1 percent of its total damage each turn.  This applies to both player and enemy ships
+* Ships that are moving can only auto repair 1 percent of its total damage each turn.  This applies to both player and npc ships
 * The ship becomes disabled if there are no more crew aboard
 * The game is over when the player's ship is either destroyed or disabled
 * Shields consume 2 percent of the ship's energy each turn when it is active
@@ -72,15 +72,15 @@ SHIP COMMANDS:
 	12) nav (enables the player to auto-navigate the ship to the specified object identifier.  You will issue the correct warp and impulse commands to get the player's ship to the vicinity of the specified object.  Once the player's ship is within 0.5 AU of the specified object, issue commands to stop the player's ship)
 	13) stop (allows the player to cancel auto-navigation mode and stop the ship where it is)
 	14) hal (enables the player to ask questions about the game using natural language syntax.  For example, if the player asks "which is the nearest star?" the game's AI should return the star that is the closest to the player's ship.)
-	15) targets (show the first 25 enemy ships closest to the player's ship sorted by distance in ascending order)
-	16) debug (this command takes a single argument.  If the argument is "on", debug mode is on and what enemy ships are currently thinking and doing should be displayed in the Messages area each turn.  If the argument is "off", debug mode is then turned off and what the enemy ships are thinking and doing will no longer be shown in the Messages area.  When debug is on, only show the thinking and activities of the 5 enemy ships closest to the player's ship)
-	17) repair (this command can optionally accept an object ID which allows the player to repair another object such as a ship when the player's ship is within 0.5 AU of the object and the player's ship is not moving (stopped). When within 0.5 AU of another ship, the player can repair that ship at the rate of 5% per turn. The player can repair friendly starbases at the rate of 2% per turn. When submitted by the player without the object ID, the command will repair the player's own ship at the rate of 10% per turn only when the player's ship is stopped. The existing auto repair functionality will not be in effect when the player manually issues the repair command. The ship auto repair functionality while moving is preserved. This command can be issued by enemy ships as well following the same logic.)
+	15) targets (show the first 25 npc ships closest to the player's ship sorted by distance in ascending order)
+	16) debug (this command takes a single argument.  If the argument is "on", debug mode is on and what npc ships are currently thinking and doing should be displayed in the Messages area each turn.  If the argument is "off", debug mode is then turned off and what the npc ships are thinking and doing will no longer be shown in the Messages area.  When debug is on, only show the thinking and activities of the 5 npc ships closest to the player's ship)
+	17) repair (this command can optionally accept an object ID which allows the player to repair another object such as a ship when the player's ship is within 0.5 AU of the object and the player's ship is not moving (stopped). When within 0.5 AU of another ship, the player can repair that ship at the rate of 5% per turn. The player can repair friendly starbases at the rate of 2% per turn. When submitted by the player without the object ID, the command will repair the player's own ship at the rate of 10% per turn only when the player's ship is stopped. The existing auto repair functionality will not be in effect when the player manually issues the repair command. The ship auto repair functionality while moving is preserved. This command can be issued by npc ships as well following the same logic.)
 * Hitting the up arrow on the keyboard should show the last command that the player issued and allow the player to execute the command again
 * The player can query the status of each object on the map if the player's ship's onboard sensors are operational using the "scan" command
-* If the enemy ship is destroyed, the player's ship should exit auto-navigate mode
+* If the npc ship is destroyed, the player's ship should exit auto-navigate mode
 * If the player issues a warp, imp, or head command while auto-navigate mode is enabled, auto-navigate should be cancelled and the ship should comply with the new command
 * Heading is expressed as a number between 0 and 359 with 0 for northbound, 90 for eastbound, 180 for southbound, and 270 for westbound.  Headings inbetween the 4 cardinal points should be honored
-* Once the player locks onto an enemy ship using the "lock" command, the "fire" and "tor" commands can be issued against the locked target without any further command arguments
+* Once the player locks onto an npc ship using the "lock" command, the "fire" and "tor" commands can be issued against the locked target without any further command arguments
 
 THE SHIP'S WEAPONS:
 * Each ship also starts with 50 photon torpedos
@@ -102,7 +102,7 @@ THE SHIP'S WEAPONS:
 * Phasers hit instantly
 * When phasers are fired, a red line should be drawn in the game's map UI between the ship that fired the phaser and the target ship
 * Phasers hits randomly between 50 to 100 percentage of the time
-* Phasers need to be locked on the enemy ship before it can be fired
+* Phasers need to be locked on the npc ship before it can be fired
 * Phasers can damage both ships and starbases
 * When a phaser hits a ship, a small red circle about the same size as the target hit should be shown briefly in the location of the target
 * The range of phasers is 10 AU.  
@@ -128,28 +128,28 @@ SHIP PROPULSION:
 * A ship can move by either warp drive or impluse drive towards to a specified heading between 0 and 359 degrees
 * The ship is destroyed instantly if the warp core is hit
 
-ENEMY SHIPS:
-* Enemy ships have the same characteristics and behaviors as the player's ship
-* The behavior of enemy ships is to be controlled through GPT-4o LLM using the API key specified in the .env file in the project's folder whenever the player's ship is within sensor range of the enemy ship
-* The enemy ship's captain can respond to the player when the player calls the ship by its identifier using the tell commmand
-* The enemy ship's captain should respond using natural language that is appropriate to the player's message
-* Enemy ships can use phasers and torpedos to attack the player's ship
-* Enemy ships should appear randomly throughout the game
-* The number of enemy ships that are in the universe at any given moment is 50
-* At most 3 enemy ships should appear within 50 AU of the player's ship when the game first starts
-* Enemy ships can only first appear within 20 AU of the player's ship
-* Enemy ships can use their warp drives and impulse drives pursue or escape away from the player
-* Enemy ships should stop chasing the player's ship if the player's ship moves beyond the range of the enemy ship's sensors
-* Enemy ships that are not pursuing the player should behave like the player ship normally would
-* Enemy ships should dock at starbases friendly to the enemy ship for repairs and supplies and refuel next to stars when low on fuel
-* When an enemy ship is destroyed, the player's ship receives the cash carried onboard the enemy ship and a message should be shown in the Messages area to indicate the amount received
-* Enemy ships strategize to destroy the player's ship
-* If the player's ship is within the enemy's sensor range, the enemy ship should close in to attack the player's ship if the enemy ship is not too damaged and still able to attack
-* If the enemy ship is heavily damaged, the enemy ship should evade the player's ship
+NPC SHIPS:
+* NPC ships have the same characteristics and behaviors as the player's ship
+* The behavior of npc ships is to be controlled through GPT-4o LLM using the API key specified in the .env file in the project's folder whenever the player's ship is within sensor range of the npc ship
+* The npc ship's captain can respond to the player when the player calls the ship by its identifier using the tell commmand
+* The npc ship's captain should respond using natural language that is appropriate to the player's message
+* NPC ships can use phasers and torpedos to attack the player's ship
+* NPC ships should appear randomly throughout the game
+* The number of npc ships that are in the universe at any given moment is 50
+* At most 3 npc ships should appear within 50 AU of the player's ship when the game first starts
+* NPC ships can only first appear within 20 AU of the player's ship
+* NPC ships can use their warp drives and impulse drives pursue or escape away from the player
+* NPC ships should stop chasing the player's ship if the player's ship moves beyond the range of the npc ship's sensors
+* NPC ships that are not pursuing the player should behave like the player ship normally would
+* NPC ships should dock at starbases friendly to the npc ship for repairs and supplies and refuel next to stars when low on fuel
+* When an npc ship is destroyed, the player's ship receives the cash carried onboard the npc ship and a message should be shown in the Messages area to indicate the amount received
+* NPC ships strategize to destroy the player's ship
+* If the player's ship is within the npc's sensor range, the npc ship should close in to attack the player's ship if the npc ship is not too damaged and still able to attack
+* If the npc ship is heavily damaged, the npc ship should evade the player's ship
 * Ships that are fleeing must not attack the ship that they are fleeing from unless the fleeing ship has already been fired upon
-* Enemy ships can communicate with one another to coordinate an attack on the player's ship
-* The player uses the enemy ship identifier when targeting the enemy ship using weapons or sensors
-* When an enemy ship is destroyed, it should be removed from the universe and a new enemy ship generated to take its place and placed in a random location in the universe
+* NPC ships can communicate with one another to coordinate an attack on the player's ship
+* The player uses the npc ship identifier when targeting the npc ship using weapons or sensors
+* When an npc ship is destroyed, it should be removed from the universe and a new npc ship generated to take its place and placed in a random location in the universe
 
 STARS:
 * Stars provide energy for ships
@@ -179,10 +179,10 @@ WORM HOLES:
 STARBASES:
 * There are two types of starbases:
 	1) starbases that are friendly to the player's ship shown as green icons in the game's map
-	2) starbases that are friendly to enemy ships shown as red icons in the game's map
-* The player's ship cannot use starbases that are friendly to enemy ships
-* Enemy ships cannot use starbases that are friendly to the player's ship
-* The total number of starbases should be 100 in the entire universe and 50 percent of the total should be friendly to the player and 50 percent of the total should be friendly to the enemy ships
+	2) starbases that are friendly to npc ships shown as red icons in the game's map
+* The player's ship cannot use starbases that are friendly to npc ships
+* NPC ships cannot use starbases that are friendly to the player's ship
+* The total number of starbases should be 100 in the entire universe and 50 percent of the total should be friendly to the player and 50 percent of the total should be friendly to the npc ships
 * Starbases should be randomly positioned in the universe
 * Starbases should be greater than 10 AU from one another
 * Starbases have the same onboard systems as ships
@@ -191,8 +191,8 @@ STARBASES:
 * Ships can refuel at a starbase at the rate of 10 percent energy gained per turn
 * Refueling a ship drains the starbase's energy by 1 percent per turn
 * Starbases use shields for defense with phasers and photon torpedos for weapons
-* Starbases that are friendly to the player should attack enemy ships that are within 10 AU of the starbase
-* Starbases that are friendly to enemy ships should attack the player's ship when the player is within 10 AU of the starbase
+* Starbases that are friendly to the player should attack npc ships that are within 10 AU of the starbase
+* Starbases that are friendly to npc ships should attack the player's ship when the player is within 10 AU of the starbase
 * Starbases start with 100 percent energy and energy is replenished 1 percent each turn
 * Starbases consume 1 percent of the energy when firing phasers or photon torpedos
 * Starbases are destroyed when their damage reaches 100 percent
@@ -227,16 +227,16 @@ GAME UI:
 * Determine the resolution of the player's screen by querying the underlying operating system's API
 * The initial size of the main game UI should be two thirds of the maximum screen resolution of the player's computer that the game is running on
 * For objects shown in the 2d map, the object should be shown with its identifer, energy level, and shield level next to the object's graphical icon
-* The game should print what the enemy ships are thinking in the message area while the game is running
+* The game should print what the npc ships are thinking in the message area while the game is running
 * The minimap should allow the player to zoom in and out by a maximum of 300 AU using the mouse scroll wheel
-* When the player's ship is taking damage from enemy weapons, please print a message to the Messages panel to show type of weapon that hit the player's ship, the enemy's ship's identifer, and the amount of damage that the hit caused
+* When the player's ship is taking damage from npc weapons, please print a message to the Messages panel to show type of weapon that hit the player's ship, the npc ship's identifer, and the amount of damage that the hit caused
 
 OTHER GAME RULES:
 * Please keep track of the following in-game statistics:
-	1) The number of enemy ships that the player destroys
+	1) The number of npc ships that the player destroys
 	2) The number of times the player has fired the player ship's phaser
 	3) The number of times the player has fired a torpedo
-	4) The number of times that the player has hit an enemy ship with a torpedo
+	4) The number of times that the player has hit an npc ship with a torpedo
 * Add a section in the ship's status panel to show the in-game statistics and update them in the status panel each turn
 * Each turn allows the player and enemies to execute their commands simultaneously
 * Don't bother generating extensive documentation for now.  Just a simple summary markdown describing the game's architecture is sufficient

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test script for the tell command with enemy starbases.
+Test script for the tell command with npc starbases.
 """
 
 from src.game_engine import GameEngine
@@ -8,12 +8,12 @@ from src.command_parser import CommandParser
 from src.universe_objects import Starbase
 
 def test_starbase_tell():
-    """Test the tell command with enemy starbases."""
+    """Test the tell command with npc starbases."""
     print("Initializing game engine...")
     engine = GameEngine(universe_seed=42)
     parser = CommandParser()
     
-    # Find an enemy starbase
+    # Find an npc starbase
     enemy_starbase_id = None
     friendly_starbase_id = None
     
@@ -28,19 +28,19 @@ def test_starbase_tell():
             break
     
     if not enemy_starbase_id:
-        print("ERROR: No enemy starbases found!")
+        print("ERROR: No npc starbases found!")
         return
     
     enemy_starbase = engine.universe_objects[enemy_starbase_id]
-    print(f"\nFound enemy starbase: {enemy_starbase_id}")
+    print(f"\nFound npc starbase: {enemy_starbase_id}")
     print(f"Starbase position: {enemy_starbase.position}")
     print(f"Starbase damage: {enemy_starbase.damage}%")
     print(f"Starbase shields: {enemy_starbase.shields}%")
     print(f"Player position: {engine.player_ship.position}")
     
-    # Test 1: Send message to enemy starbase
+    # Test 1: Send message to npc starbase
     print("\n" + "="*60)
-    print("TEST 1: Sending threat to enemy starbase")
+    print("TEST 1: Sending threat to npc starbase")
     print("="*60)
     command = parser.parse(f"tell {enemy_starbase_id} Your base will be destroyed!")
     if command:
@@ -80,7 +80,7 @@ def test_starbase_tell():
     
     # Test 4: Taunt damaged starbase
     print("\n" + "="*60)
-    print("TEST 4: Taunt damaged enemy starbase")
+    print("TEST 4: Taunt damaged npc starbase")
     print("="*60)
     # Damage the starbase
     enemy_starbase.damage = 60
@@ -98,16 +98,16 @@ def test_starbase_tell():
         engine.messages.clear()
     
     # Test 5: Compare ship vs starbase responses
-    enemy_ship_id = list(engine.enemy_ships.keys())[0] if engine.enemy_ships else None
-    if enemy_ship_id:
+    npc_ship_id = list(engine.npc_ships.keys())[0] if engine.npc_ships else None
+    if npc_ship_id:
         print("\n" + "="*60)
         print("TEST 5: Compare ship vs starbase response to same message")
         print("="*60)
         
         test_message = "You're in my way"
         
-        print(f"\nSending to enemy ship {enemy_ship_id}:")
-        command = parser.parse(f"tell {enemy_ship_id} {test_message}")
+        print(f"\nSending to npc ship {npc_ship_id}:")
+        command = parser.parse(f"tell {npc_ship_id} {test_message}")
         if command:
             engine._execute_command(engine.player_ship, command)
             print("\nMessages:")
@@ -119,7 +119,7 @@ def test_starbase_tell():
         enemy_starbase.damage = 0
         enemy_starbase.shields = 100
         
-        print(f"\nSending to enemy starbase {enemy_starbase_id}:")
+        print(f"\nSending to npc starbase {enemy_starbase_id}:")
         command = parser.parse(f"tell {enemy_starbase_id} {test_message}")
         if command:
             engine._execute_command(engine.player_ship, command)

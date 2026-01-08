@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Test to verify enemy ships actively target and attack other enemy ships.
-This creates a scenario with damaged enemy ships to trigger enemy-on-enemy combat.
+Test to verify npc ships actively target and attack other npc ships.
+This creates a scenario with damaged npc ships to trigger npc-on-npc combat.
 """
 
 import sys
@@ -15,39 +15,39 @@ from ship import Ship
 from universe import Position
 
 def test_enemy_targeting_logic():
-    """Test that enemy ships will select other enemies as targets."""
+    """Test that npc ships will select other npcs as targets."""
     print("=" * 70)
-    print("Testing Enemy Ship Target Selection")
+    print("Testing NPC Ship Target Selection")
     print("=" * 70)
     
     # Create a game engine instance
     print("\n1. Creating game engine...")
     engine = GameEngine()
     
-    # Create a test scenario with multiple enemy ships
+    # Create a test scenario with multiple npc ships
     print("\n2. Setting up test scenario...")
-    print("   - Creating attacking enemy ship (low damage)")
-    print("   - Creating damaged enemy ships nearby")
+    print("   - Creating attacking npc ship (low damage)")
+    print("   - Creating damaged npc ships nearby")
     print("   - Player ship is far away")
     
     # Position the player far away
     engine.player_ship.position = Position(1000, 1000)
     engine.player_ship.reputation = 80  # High reputation (less attractive target)
     
-    # Get first 3 enemy ships
-    enemy_ids = list(engine.enemy_ships.keys())[:3]
+    # Get first 3 npc ships
+    npc_ids = list(engine.npc_ships.keys())[:3]
     
-    if len(enemy_ids) < 3:
-        print("   ✗ FAILED: Not enough enemy ships spawned")
+    if len(npc_ids) < 3:
+        print("   ✗ FAILED: Not enough npc ships spawned")
         return False
     
-    attacker_id = enemy_ids[0]
-    target1_id = enemy_ids[1]
-    target2_id = enemy_ids[2]
+    attacker_id = npc_ids[0]
+    target1_id = npc_ids[1]
+    target2_id = npc_ids[2]
     
-    attacker = engine.enemy_ships[attacker_id]
-    target1 = engine.enemy_ships[target1_id]
-    target2 = engine.enemy_ships[target2_id]
+    attacker = engine.npc_ships[attacker_id]
+    target1 = engine.npc_ships[target1_id]
+    target2 = engine.npc_ships[target2_id]
     
     # Position attacker with low damage
     attacker.position = Position(500, 500)
@@ -74,39 +74,39 @@ def test_enemy_targeting_logic():
     
     # Manually run through target selection logic
     nearby_enemies = []
-    for enemy_id, enemy_ship in engine.enemy_ships.items():
-        if enemy_id != attacker_id and not enemy_ship.is_destroyed:
-            dist = attacker.position.distance_to(enemy_ship.position)
+    for npc_id, npc_ship in engine.npc_ships.items():
+        if npc_id != attacker_id and not npc_ship.is_destroyed:
+            dist = attacker.position.distance_to(npc_ship.position)
             if dist < 50:
-                nearby_enemies.append((enemy_id, enemy_ship, dist))
+                nearby_enemies.append((npc_id, npc_ship, dist))
     
     nearby_enemies.sort(key=lambda x: x[2])
     
-    print(f"   Found {len(nearby_enemies)} nearby enemy ships")
-    for enemy_id, enemy_ship, dist in nearby_enemies[:5]:
-        print(f"     - {enemy_id}: {dist:.1f} AU away, {enemy_ship.damage:.1f}% damage")
+    print(f"   Found {len(nearby_enemies)} nearby npc ships")
+    for npc_id, npc_ship, dist in nearby_enemies[:5]:
+        print(f"     - {npc_id}: {dist:.1f} AU away, {npc_ship.damage:.1f}% damage")
     
     # Check target selection logic
     target_ship = engine.player_ship
     target_is_player = True
     
     # Aggressive behavior check
-    for enemy_id, enemy_ship, dist in nearby_enemies[:5]:
-        if enemy_ship.damage > 30 and dist < 25:
-            target_ship = enemy_ship
+    for npc_id, npc_ship, dist in nearby_enemies[:5]:
+        if npc_ship.damage > 30 and dist < 25:
+            target_ship = npc_ship
             target_is_player = False
-            print(f"\n   ✓ Target selected: {enemy_id} (damaged enemy)")
-            print(f"     Distance: {dist:.1f} AU, Damage: {enemy_ship.damage:.1f}%")
+            print(f"\n   ✓ Target selected: {npc_id} (damaged npc)")
+            print(f"     Distance: {dist:.1f} AU, Damage: {npc_ship.damage:.1f}%")
             break
-        elif dist < 10 and enemy_ship.damage > 0:
-            target_ship = enemy_ship
+        elif dist < 10 and npc_ship.damage > 0:
+            target_ship = npc_ship
             target_is_player = False
-            print(f"\n   ✓ Target selected: {enemy_id} (close enemy)")
-            print(f"     Distance: {dist:.1f} AU, Damage: {enemy_ship.damage:.1f}%")
+            print(f"\n   ✓ Target selected: {npc_id} (close npc)")
+            print(f"     Distance: {dist:.1f} AU, Damage: {npc_ship.damage:.1f}%")
             break
     
     if target_is_player:
-        print(f"\n   ✗ ISSUE: Still targeting player despite nearby damaged enemies")
+        print(f"\n   ✗ ISSUE: Still targeting player despite nearby damaged npcs")
         print(f"     This suggests the targeting logic isn't working as expected")
         return False
     
@@ -118,17 +118,17 @@ def test_enemy_targeting_logic():
     if behavior == 'aggressive':
         if not target_is_player and target_ship.damage > 20:
             should_attack = True
-            print(f"   ✓ Aggressive ship will attack damaged enemy (damage > 20%)")
+            print(f"   ✓ Aggressive ship will attack damaged npc (damage > 20%)")
     
     if not should_attack:
-        print(f"   ✗ FAILED: Attack conditions not met for enemy target")
+        print(f"   ✗ FAILED: Attack conditions not met for npc target")
         return False
     
     print("\n5. Testing actual AI execution...")
     # Run one AI decision cycle
     engine._execute_basic_enemy_ai(attacker, distance_to_player, False, True)
     
-    # Check messages for evidence of enemy targeting
+    # Check messages for evidence of npc targeting
     recent_messages = engine.messages[-5:]
     print("   Recent messages:")
     for msg in recent_messages:
@@ -138,18 +138,18 @@ def test_enemy_targeting_logic():
     enemy_target_mentioned = any(target1_id in msg or target2_id in msg for msg in recent_messages)
     
     if enemy_target_mentioned:
-        print(f"\n   ✓ Enemy ship is targeting another enemy ship!")
+        print(f"\n   ✓ NPC ship is targeting another npc ship!")
     else:
-        print(f"\n   ⚠ No explicit enemy targeting in messages (may still be working)")
+        print(f"\n   ⚠ No explicit npc targeting in messages (may still be working)")
     
     print("\n" + "=" * 70)
     print("Target Selection Logic Test PASSED! ✓")
     print("=" * 70)
     print("\nConclusions:")
-    print("  • Enemy ships will select nearby damaged enemies as targets")
-    print("  • Aggressive ships prioritize enemies with >30% damage within 25 AU")
-    print("  • Close enemies (<10 AU) are also considered as targets")
-    print("  • Enemy-on-enemy combat should now occur frequently in-game")
+    print("  • NPC ships will select nearby damaged npcs as targets")
+    print("  • Aggressive ships prioritize npcs with >30% damage within 25 AU")
+    print("  • Close npcs (<10 AU) are also considered as targets")
+    print("  • NPC-on-npc combat should now occur frequently in-game")
     return True
 
 if __name__ == '__main__':

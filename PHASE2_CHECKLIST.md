@@ -233,7 +233,7 @@ python -m src.ui_main
 ### Game Ready ✅
 - All 14 commands working
 - All game mechanics functional
-- 50 enemy AI ships active
+- 50 npc AI ships active
 - Universe fully generated
 - Smooth gameplay
 

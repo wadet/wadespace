@@ -1,7 +1,7 @@
 """
 Wade Space Game - LLM Handler
 
-Integrates OpenAI's GPT-4o for enemy ship AI decision making.
+Integrates OpenAI's GPT-4o for npc ship AI decision making.
 """
 
 import os
@@ -21,7 +21,7 @@ except ImportError:
 
 
 class LLMHandler:
-    """Handles communication with GPT-4o for enemy ship decision making."""
+    """Handles communication with GPT-4o for npc ship decision making."""
     
     def __init__(self):
         """Initialize the LLM handler with OpenAI API key."""
@@ -43,40 +43,40 @@ class LLMHandler:
             self.enabled = False
             print(f"[ERROR] Failed to initialize OpenAI client: {e}")
     
-    def get_enemy_decision(self, 
-                          enemy_ship_id: str,
-                          enemy_position: tuple,
-                          enemy_damage: float,
-                          enemy_energy: float,
-                          enemy_shields: float,
-                          enemy_behavior: str,
+    def get_npc_decision(self, 
+                          npc_ship_id: str,
+                          npc_position: tuple,
+                          npc_damage: float,
+                          npc_energy: float,
+                          npc_shields: float,
+                          npc_behavior: str,
                           player_position: tuple,
                           player_damage: float,
                           player_reputation: int,
                           nearby_objects: list,
-                          nearby_enemy_ships: list,
+                          nearby_npc_ships: list,
                           turn_count: int) -> Dict[str, Any]:
         """
-        Use GPT-4o to determine enemy ship behavior.
+        Use GPT-4o to determine npc ship behavior.
         
         Args:
-            enemy_ship_id: ID of the enemy ship
-            enemy_position: (x, y) position of enemy ship
-            enemy_damage: Damage percentage of enemy ship (0-100)
-            enemy_energy: Energy percentage of enemy ship (0-100)
-            enemy_shields: Shield percentage of enemy ship (0-100)
-            enemy_behavior: Behavior trait ('aggressive', 'neutral', 'timid')
+            npc_ship_id: ID of the npc ship
+            npc_position: (x, y) position of npc ship
+            npc_damage: Damage percentage of npc ship (0-100)
+            npc_energy: Energy percentage of npc ship (0-100)
+            npc_shields: Shield percentage of npc ship (0-100)
+            npc_behavior: Behavior trait ('aggressive', 'neutral', 'timid')
             player_position: (x, y) position of player ship
             player_damage: Damage percentage of player ship (0-100)
             player_reputation: Player's reputation (0-100)
             nearby_objects: List of nearby objects with their positions
-            nearby_enemy_ships: List of nearby enemy ships (id, position, damage, distance)
+            nearby_npc_ships: List of nearby npc ships (id, position, damage, distance)
             turn_count: Current turn number
         
         Returns:
             Dictionary with decision keys:
             - action: 'attack', 'evade', 'patrol', 'dock'
-            - target_id: ship ID to target (player or enemy ship)
+            - target_id: ship ID to target (player or npc ship)
             - heading: 0-359 degrees
             - speed: 0-20 AU/turn
             - fire_phasers: True/False
@@ -89,14 +89,14 @@ class LLMHandler:
         try:
             # Build context for GPT-4o
             distance_to_player = (
-                (player_position[0] - enemy_position[0])**2 + 
-                (player_position[1] - enemy_position[1])**2
+                (player_position[0] - npc_position[0])**2 + 
+                (player_position[1] - npc_position[1])**2
             ) ** 0.5
             
             prompt = self._build_decision_prompt(
-                enemy_ship_id, enemy_position, enemy_damage, enemy_energy,
-                enemy_shields, enemy_behavior, player_position, player_damage, 
-                player_reputation, distance_to_player, nearby_objects, nearby_enemy_ships, turn_count
+                npc_ship_id, npc_position, npc_damage, npc_energy,
+                npc_shields, npc_behavior, player_position, player_damage, 
+                player_reputation, distance_to_player, nearby_objects, nearby_npc_ships, turn_count
             )
             
             # Prepare request data for logging
@@ -144,7 +144,7 @@ class LLMHandler:
                     'total_tokens': response.usage.total_tokens
                 }
             }
-            self._log_api_call('get_enemy_decision', request_data, response_data)
+            self._log_api_call('get_npc_decision', request_data, response_data)
             
             # Parse response
             decision = self._parse_gpt_response(response.choices[0].message.content)
@@ -153,22 +153,22 @@ class LLMHandler:
         except Exception as e:
             print(f"[ERROR] LLM decision failed: {e}")
             # Log the error
-            self._log_api_call('get_enemy_decision', request_data if 'request_data' in locals() else {}, None, str(e))
+            self._log_api_call('get_npc_decision', request_data if 'request_data' in locals() else {}, None, str(e))
             return self._default_decision()
     
     def _build_decision_prompt(self, 
-                               enemy_ship_id: str,
-                               enemy_position: tuple,
-                               enemy_damage: float,
-                               enemy_energy: float,
-                               enemy_shields: float,
-                               enemy_behavior: str,
+                               npc_ship_id: str,
+                               npc_position: tuple,
+                               npc_damage: float,
+                               npc_energy: float,
+                               npc_shields: float,
+                               npc_behavior: str,
                                player_position: tuple,
                                player_damage: float,
                                player_reputation: int,
                                distance_to_player: float,
                                nearby_objects: list,
-                               nearby_enemy_ships: list,
+                               nearby_npc_ships: list,
                                turn_count: int) -> str:
         """Build a prompt for GPT-4o decision making."""
         
@@ -177,21 +177,21 @@ class LLMHandler:
             obj_id, obj_type, distance, direction = obj
             nearby_desc += f"  - {obj_id} ({obj_type}) at {distance:.1f} AU, heading {direction:.0f}°\n"
         
-        # Format nearby enemy ships
+        # Format nearby npc ships
         nearby_enemies_desc = ""
-        for i, enemy_data in enumerate(nearby_enemy_ships[:5]):  # Limit to 5 nearest enemy ships
-            enemy_id, pos, damage, dist = enemy_data
-            nearby_enemies_desc += f"  - {enemy_id} at {dist:.1f} AU, Damage: {damage:.1f}%, Position: ({pos[0]:.1f}, {pos[1]:.1f})\n"
+        for i, npc_data in enumerate(nearby_npc_ships[:5]):  # Limit to 5 nearest npc ships
+            npc_id, pos, damage, dist = npc_data
+            nearby_enemies_desc += f"  - {npc_id} at {dist:.1f} AU, Damage: {damage:.1f}%, Position: ({pos[0]:.1f}, {pos[1]:.1f})\n"
         
         # Define behavior-specific attack and flee thresholds
-        if enemy_behavior == 'aggressive':
+        if npc_behavior == 'aggressive':
             attack_rep_threshold = 70
             flee_damage_threshold = 80
             behavior_desc = """You are an AGGRESSIVE captain. Your behavior:
 - Attack any ship with reputation < 70
 - Only withdraw from combat if your ship damage > 80%
 - Prefer direct confrontation and offensive maneuvers"""
-        elif enemy_behavior == 'timid':
+        elif npc_behavior == 'timid':
             attack_rep_threshold = 25
             flee_damage_threshold = 30
             behavior_desc = """You are a TIMID captain. Your behavior:
@@ -206,18 +206,18 @@ class LLMHandler:
 - Engage in combat until your ship damage > 50%
 - Balance between offense and defense"""
         
-        prompt = f"""You are commanding enemy spacecraft {enemy_ship_id} in a space combat scenario.
+        prompt = f"""You are commanding npc spacecraft {npc_ship_id} in a space combat scenario.
 
-CAPTAIN PERSONALITY: {enemy_behavior.upper()}
+CAPTAIN PERSONALITY: {npc_behavior.upper()}
 {behavior_desc}
 
 CURRENT SITUATION (Turn {turn_count}):
 Your Ship Status:
-- Position: ({enemy_position[0]:.1f}, {enemy_position[1]:.1f})
-- Damage: {enemy_damage:.1f}%
-- Energy: {enemy_energy:.1f}%
-- Shields: {enemy_shields:.1f}%
-- Behavior Type: {enemy_behavior}
+- Position: ({npc_position[0]:.1f}, {npc_position[1]:.1f})
+- Damage: {npc_damage:.1f}%
+- Energy: {npc_energy:.1f}%
+- Shields: {npc_shields:.1f}%
+- Behavior Type: {npc_behavior}
 
 Player Ship:
 - ID: PLAYER
@@ -226,7 +226,7 @@ Player Ship:
 - Damage: {player_damage:.1f}%
 - Reputation: {player_reputation}/100
 
-Nearby Enemy Ships (potential targets or threats):
+Nearby NPC Ships (potential targets or threats):
 {nearby_enemies_desc if nearby_enemies_desc else "  None"}
 
 Nearby Objects:
@@ -240,8 +240,8 @@ TACTICAL CONTEXT:
 - Impulse range: 1 AU/turn
 
 TARGET SELECTION:
-- You can attack the PLAYER or any nearby enemy ships
-- PRIORITIZE opportunistic targets: damaged enemy ships are easier kills and less risky
+- You can attack the PLAYER or any nearby npc ships
+- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky
 - Consider these factors when choosing targets:
   * Distance: Closer targets are easier to engage
   * Damage: Enemies with >30% damage are vulnerable and good targets
@@ -253,12 +253,12 @@ TARGET SELECTION:
 BEHAVIOR-SPECIFIC RULES:
 - Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)
 - Flee threshold: Your damage > {flee_damage_threshold}%
-{f"- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)" if enemy_behavior == 'timid' else ""}
+{f"- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)" if npc_behavior == 'timid' else ""}
 
-Make a tactical decision based on your {enemy_behavior} personality. Return ONLY valid JSON (no markdown, no code blocks):
+Make a tactical decision based on your {npc_behavior} personality. Return ONLY valid JSON (no markdown, no code blocks):
 {{
     "action": "attack"|"evade"|"patrol"|"dock",
-    "target_id": "PLAYER"|"<enemy_ship_id>"|null,
+    "target_id": "PLAYER"|"<npc_ship_id>"|null,
     "heading": <0-359>,
     "speed": <0-20>,
     "fire_phasers": true|false,
@@ -268,7 +268,7 @@ Make a tactical decision based on your {enemy_behavior} personality. Return ONLY
 
 Decision priorities based on personality:
 1. Check if you should flee based on damage threshold ({flee_damage_threshold}%)
-2. Select best target: PLAYER or a nearby enemy ship (consider distance, damage, threat level)
+2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)
 3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)
 4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)
 5. If not attacking or fleeing: patrol the area
@@ -338,17 +338,17 @@ Decision priorities based on personality:
         except Exception as e:
             print(f"[WARNING] Failed to log API call: {e}")
     
-    def get_enemy_response(self, enemy_ship_id: str, player_message: str) -> str:
-        """Get a conversational response from enemy ship captain."""
+    def get_npc_response(self, npc_ship_id: str, player_message: str) -> str:
+        """Get a conversational response from npc ship captain."""
         if not self.enabled or not self.client:
-            return f"[{enemy_ship_id}]: No response."
+            return f"[{npc_ship_id}]: No response."
         
         try:
             # Prepare request data for logging
             request_data = {
                 'model': 'gpt-4o-mini',
                 'messages': [
-                    {"role": "system", "content": f"You are the captain of hostile spacecraft {enemy_ship_id} in space combat. Respond in character, briefly (1-2 sentences)."},
+                    {"role": "system", "content": f"You are the captain of hostile spacecraft {npc_ship_id} in space combat. Respond in character, briefly (1-2 sentences)."},
                     {"role": "user", "content": player_message}
                 ],
                 'temperature': 0.8,
@@ -362,7 +362,7 @@ Decision priorities based on personality:
             response = self.client.chat.completions.create(
                 model="gpt-4o-mini",
                 messages=[
-                    {"role": "system", "content": f"You are the captain of hostile spacecraft {enemy_ship_id} in space combat. Respond in character, briefly (1-2 sentences)."},
+                    {"role": "system", "content": f"You are the captain of hostile spacecraft {npc_ship_id} in space combat. Respond in character, briefly (1-2 sentences)."},
                     {"role": "user", "content": player_message}
                 ],
                 temperature=0.8,
@@ -386,44 +386,44 @@ Decision priorities based on personality:
                     'total_tokens': response.usage.total_tokens
                 }
             }
-            self._log_api_call('get_enemy_response', request_data, response_data)
+            self._log_api_call('get_npc_response', request_data, response_data)
             
-            return f"[{enemy_ship_id}]: {response.choices[0].message.content}"
+            return f"[{npc_ship_id}]: {response.choices[0].message.content}"
         except Exception as e:
-            print(f"[ERROR] Failed to get enemy response: {e}")
-            self._log_api_call('get_enemy_response', request_data if 'request_data' in locals() else {}, None, str(e))
-            return f"[{enemy_ship_id}]: *no response*"
+            print(f"[ERROR] Failed to get npc response: {e}")
+            self._log_api_call('get_npc_response', request_data if 'request_data' in locals() else {}, None, str(e))
+            return f"[{npc_ship_id}]: *no response*"
     
-    def get_enemy_taunt(self, enemy_ship_id: str, context: Dict[str, Any]) -> str:
+    def get_npc_taunt(self, npc_ship_id: str, context: Dict[str, Any]) -> str:
         """
-        Generate a context-aware taunt from an enemy ship captain or starbase commander.
+        Generate a context-aware taunt from an npc ship captain or starbase commander.
         
         Args:
-            enemy_ship_id: ID of the enemy ship or starbase
+            npc_ship_id: ID of the npc ship or starbase
             context: Dictionary with combat context:
                 - player_message: The message sent by the player
                 - distance: Distance between ships in AU
                 - player_damage: Player ship damage percentage (0-100)
-                - enemy_damage: Enemy ship damage percentage (0-100)
+                - npc_damage: NPC ship damage percentage (0-100)
                 - player_shields: Player shield strength (0-100)
-                - enemy_shields: Enemy shield strength (0-100)
+                - npc_shields: NPC shield strength (0-100)
                 - turn_count: Current game turn
                 - entity_type: 'ship' or 'starbase'
         
         Returns:
-            String with enemy captain's/commander's taunt/response
+            String with npc captain's/commander's taunt/response
         """
         if not self.enabled or not self.client:
-            return f"[{enemy_ship_id}]: *no response*"
+            return f"[{npc_ship_id}]: *no response*"
         
         try:
             # Build a rich prompt with combat context
             player_message = context.get('player_message', '')
             distance = context.get('distance', 0)
             player_damage = context.get('player_damage', 0)
-            enemy_damage = context.get('enemy_damage', 0)
+            npc_damage = context.get('npc_damage', 0)
             player_shields = context.get('player_shields', 0)
-            enemy_shields = context.get('enemy_shields', 0)
+            npc_shields = context.get('npc_shields', 0)
             entity_type = context.get('entity_type', 'ship')
             
             # Determine tactical situation
@@ -432,17 +432,17 @@ Decision priorities based on personality:
             if entity_type == 'starbase':
                 # Starbases are defensive installations
                 situation_notes.append("you are a heavily fortified starbase with powerful weapons")
-                if enemy_damage < 30:
+                if npc_damage < 30:
                     situation_notes.append("your defenses are at full strength")
-                elif enemy_damage < 60:
+                elif npc_damage < 60:
                     situation_notes.append("your station has sustained some damage")
                 else:
                     situation_notes.append("your station is heavily damaged but still operational")
             else:
                 # Ships are mobile combat vessels
-                if enemy_damage < 30:
+                if npc_damage < 30:
                     situation_notes.append("your ship is in excellent condition")
-                elif enemy_damage < 60:
+                elif npc_damage < 60:
                     situation_notes.append("your ship has taken some damage")
                 else:
                     situation_notes.append("your ship is badly damaged")
@@ -463,23 +463,23 @@ Decision priorities based on personality:
             
             # Build role-specific prompt
             if entity_type == 'starbase':
-                role_description = f"You are the commander of hostile starbase {enemy_ship_id}, a fortified military installation in space."
+                role_description = f"You are the commander of hostile starbase {npc_ship_id}, a fortified military installation in space."
                 personality = """Respond as a stern, authoritative station commander. Be intimidating and territorial.
 - Emphasize your station's superior firepower and defenses
 - Warn intruders they're in hostile territory
 - Be commanding and imperious
 - If damaged: be resolute and unyielding, promising reinforcements"""
             else:
-                role_description = f"You are the captain of hostile spacecraft {enemy_ship_id} engaged in space combat."
-                personality = """Respond as a fierce, confident enemy captain. Be taunting, threatening, or defiant depending on the situation.
+                role_description = f"You are the captain of hostile spacecraft {npc_ship_id} engaged in space combat."
+                personality = """Respond as a fierce, confident npc captain. Be taunting, threatening, or defiant depending on the situation.
 - If winning: be arrogant and mocking
 - If losing: be defiant and threatening revenge
 - If evenly matched: be cocky and challenging"""
             
             system_prompt = f"""{role_description}
 Tactical situation: {', '.join(situation_notes)}.
-Your damage: {enemy_damage:.0f}%, shields: {enemy_shields:.0f}%
-Enemy damage: {player_damage:.0f}%, shields: {player_shields:.0f}%
+Your damage: {npc_damage:.0f}%, shields: {npc_shields:.0f}%
+NPC damage: {player_damage:.0f}%, shields: {player_shields:.0f}%
 Distance: {distance:.1f} AU
 
 The player says: "{player_message}"
@@ -529,13 +529,13 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
                     'total_tokens': response.usage.total_tokens
                 }
             }
-            self._log_api_call('get_enemy_taunt', request_data, response_data)
+            self._log_api_call('get_npc_taunt', request_data, response_data)
             
-            return f"[{enemy_ship_id}]: {response.choices[0].message.content}"
+            return f"[{npc_ship_id}]: {response.choices[0].message.content}"
         except Exception as e:
-            print(f"[ERROR] Failed to generate enemy taunt: {e}")
-            self._log_api_call('get_enemy_taunt', request_data if 'request_data' in locals() else {}, None, str(e))
-            return f"[{enemy_ship_id}]: *static*"
+            print(f"[ERROR] Failed to generate npc taunt: {e}")
+            self._log_api_call('get_npc_taunt', request_data if 'request_data' in locals() else {}, None, str(e))
+            return f"[{npc_ship_id}]: *static*"
     
     def answer_player_question(self, question: str, universe_data: Dict[str, Any]) -> str:
         """
@@ -546,7 +546,7 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
             universe_data: Dictionary containing:
                 - player_position: (x, y) tuple
                 - universe_objects: dict of all objects with their data
-                - enemy_ships: dict of all enemy ships with their data
+                - npc_ships: dict of all npc ships with their data
                 - nearby_objects: list of objects within sensor range
         
         Returns:
@@ -614,7 +614,7 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
         """Build a prompt for the AI to answer player questions."""
         player_pos = universe_data.get('player_position', (0, 0))
         all_objects = universe_data.get('nearby_objects', [])
-        enemy_ships = universe_data.get('enemy_ships', {})
+        npc_ships = universe_data.get('npc_ships', {})
         search_entire_universe = universe_data.get('search_entire_universe', False)
         sensor_range = universe_data.get('sensor_range', 50)
         
@@ -692,15 +692,15 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
             else:
                 nearby_desc += f"  - {obj_id} ({obj_type}): Position ({pos[0]:.1f}, {pos[1]:.1f}), Distance {distance:.1f} AU\n"
         
-        # Build enemy ships summary
-        enemy_desc = ""
-        for enemy_id, enemy_data in enemy_ships.items():
-            if not enemy_data.get('is_destroyed', False):
-                pos = enemy_data.get('position', (0, 0))
-                distance = enemy_data.get('distance', 0)
-                health = 100.0 - enemy_data.get('damage', 0)
-                shields = enemy_data.get('shields', 0)
-                enemy_desc += f"  - {enemy_id}: Position ({pos[0]:.1f}, {pos[1]:.1f}), Distance {distance:.1f} AU, Health {health:.1f}%, Shields {shields:.1f}%\n"
+        # Build npc ships summary
+        npc_desc = ""
+        for npc_id, npc_data in npc_ships.items():
+            if not npc_data.get('is_destroyed', False):
+                pos = npc_data.get('position', (0, 0))
+                distance = npc_data.get('distance', 0)
+                health = 100.0 - npc_data.get('damage', 0)
+                shields = npc_data.get('shields', 0)
+                npc_desc += f"  - {npc_id}: Position ({pos[0]:.1f}, {pos[1]:.1f}), Distance {distance:.1f} AU, Health {health:.1f}%, Shields {shields:.1f}%\n"
         
         prompt = f"""The captain asks: "{question}"
 
@@ -712,7 +712,7 @@ OBJECTS (sorted by distance from your ship, filtered by relevance to question):
 {nearby_desc if nearby_desc else "  None detected"}
 
 ENEMY SHIPS:
-{enemy_desc if enemy_desc else "  None detected"}
+{npc_desc if npc_desc else "  None detected"}
 
 AVAILABLE OBJECT TYPES IN UNIVERSE:
 - Stars (st####): Energy sources
@@ -722,17 +722,17 @@ AVAILABLE OBJECT TYPES IN UNIVERSE:
 - Pulsars (pu####): Disrupt sensors
 - Wormholes (wh####): Teleport to paired wormhole
 - Asteroid Fields (af####): Mining opportunities
-- Enemy Ships (s####): Hostile vessels
+- NPC Ships (s####): Hostile vessels
 
 IMPORTANT NOTES:
-- When asked about "enemy base" or "hostile base", look for Starbase objects marked as HOSTILE/ENEMY (not friendly).
+- When asked about "npc base" or "hostile base", look for Starbase objects marked as HOSTILE/ENEMY (not friendly).
 - When asked about "friendly base", look for Starbase objects marked as FRIENDLY.
-- Starbases can be either friendly or enemy - check the status in the objects list.
+- Starbases can be either friendly or npc - check the status in the objects list.
 - The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.
 
 Based on the available data, answer the captain's question concisely and accurately. 
 If asking for "nearest" or "closest" object, search through all listed objects and identify the closest one of that type.
-For enemy bases/starbases, ONLY report starbases that are marked as HOSTILE/ENEMY.
+For npc bases/starbases, ONLY report starbases that are marked as HOSTILE/ENEMY.
 For friendly bases, ONLY report starbases that are marked as FRIENDLY.
 Always include the object ID, position coordinates, and distance in your answer.
 If you don't have enough data to answer, say so clearly."""

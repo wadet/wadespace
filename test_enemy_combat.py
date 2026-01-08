@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test script to verify enemy ships can attack other enemy ships.
+Test script to verify npc ships can attack other npc ships.
 """
 
 import sys
@@ -13,10 +13,10 @@ from game_engine import GameEngine
 from ship import Ship
 from universe import Position
 
-def test_enemy_on_enemy_combat():
-    """Test that enemy ships can target and attack other enemy ships."""
+def test_npc_on_npc_combat():
+    """Test that npc ships can target and attack other npc ships."""
     print("=" * 60)
-    print("Testing Enemy-on-Enemy Combat")
+    print("Testing NPC-on-NPC Combat")
     print("=" * 60)
     
     # Create a game engine instance
@@ -30,10 +30,10 @@ def test_enemy_on_enemy_combat():
     params = list(sig.parameters.keys())
     print(f"   LLM handler parameters: {params}")
     
-    if 'nearby_enemy_ships' in params:
-        print("   ✓ LLM handler updated to include nearby_enemy_ships")
+    if 'nearby_npc_ships' in params:
+        print("   ✓ LLM handler updated to include nearby_npc_ships")
     else:
-        print("   ✗ FAILED: nearby_enemy_ships not in parameters")
+        print("   ✗ FAILED: nearby_npc_ships not in parameters")
         return False
     
     # Check that decisions include target_id
@@ -47,7 +47,7 @@ def test_enemy_on_enemy_combat():
         print("   ✗ FAILED: target_id not in decision")
         return False
     
-    # Check that basic AI considers other enemies
+    # Check that basic AI considers other npcs
     print("\n4. Checking basic AI implementation...")
     # Find the source code of _execute_basic_enemy_ai
     source_lines = inspect.getsource(engine._execute_basic_enemy_ai).split('\n')
@@ -56,9 +56,9 @@ def test_enemy_on_enemy_combat():
     has_target_selection = any('target_ship' in line for line in source_lines)
     
     if has_nearby_enemies:
-        print("   ✓ Basic AI checks for nearby enemy ships")
+        print("   ✓ Basic AI checks for nearby npc ships")
     else:
-        print("   ✗ FAILED: Basic AI doesn't check nearby enemies")
+        print("   ✗ FAILED: Basic AI doesn't check nearby npcs")
         return False
     
     if has_target_selection:
@@ -71,26 +71,26 @@ def test_enemy_on_enemy_combat():
     print("\n5. Checking torpedo collision detection...")
     source_lines = inspect.getsource(engine._update_torpedos_for_ship).split('\n')
     
-    checks_other_enemies = any('enemy_id != torpedo' in line or "Don't hit yourself" in line 
+    checks_other_enemies = any('npc_id != torpedo' in line or "Don't hit yourself" in line 
                                 for line in source_lines)
     
     if checks_other_enemies:
-        print("   ✓ Torpedo collision checks other enemy ships")
+        print("   ✓ Torpedo collision checks other npc ships")
     else:
-        print("   ✗ FAILED: Torpedo collision doesn't check other enemies")
+        print("   ✗ FAILED: Torpedo collision doesn't check other npcs")
         return False
     
     print("\n" + "=" * 60)
     print("All tests passed! ✓")
     print("=" * 60)
     print("\nSummary:")
-    print("  • LLM handler receives nearby enemy ship data")
+    print("  • LLM handler receives nearby npc ship data")
     print("  • Decision format includes target_id field")
-    print("  • Basic AI can select enemy ships as targets")
-    print("  • Torpedo collision detects enemy-on-enemy hits")
-    print("\nEnemy ships can now attack other enemy ships!")
+    print("  • Basic AI can select npc ships as targets")
+    print("  • Torpedo collision detects npc-on-npc hits")
+    print("\nEnemy ships can now attack other npc ships!")
     return True
 
 if __name__ == '__main__':
-    success = test_enemy_on_enemy_combat()
+    success = test_npc_on_npc_combat()
     sys.exit(0 if success else 1)

@@ -27,11 +27,11 @@ def test_ask_command():
     
     # Test questions
     test_questions = [
-        "where is the nearest enemy base?",
+        "where is the nearest npc base?",
         "what is the closest hostile starbase?",
         "find me the nearest friendly base",
-        "where is the closest enemy ship?",
-        "how many enemies are nearby?",
+        "where is the closest npc ship?",
+        "how many npcs are nearby?",
         "what stars are in range?"
     ]
     

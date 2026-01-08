@@ -73,8 +73,8 @@ class Ship:
         # Player starts with reputation 70-100, enemies get 0-100
         self.reputation = random.randint(70, 100) if is_player else random.randint(0, 100)
         
-        # Behavior trait for enemy ships (aggressive, neutral, timid)
-        self.behavior_trait = None  # Only assigned for enemy ships
+        # Behavior trait for npc ships (aggressive, neutral, timid)
+        self.behavior_trait = None  # Only assigned for npc ships
         
         # Track ships that have fired upon this ship (for return fire logic)
         self.fired_upon_by = set()  # Set of ship IDs that have fired upon this ship

@@ -16,7 +16,7 @@ Full auto-navigation feature implemented as specified in wadespace-prompt.txt (l
 
 ### 2. Continuous Heading Updates
 - Recalculates heading to target every turn
-- Tracks moving targets (enemy ships, etc.)
+- Tracks moving targets (npc ships, etc.)
 - Ensures optimal trajectory throughout journey
 
 ### 3. Automatic Arrival
@@ -45,7 +45,7 @@ Works with all object types:
 - Pulsars (pu*****)
 - Wormholes (wh*****)
 - Asteroid Fields (af*****)
-- Enemy Ships (s*****)
+- NPC Ships (s*****)
 
 ## Usage
 
@@ -58,13 +58,13 @@ nav <object_id>
 ```
 nav pl1234          # Navigate to planet
 nav sb5678          # Navigate to starbase
-nav s9012           # Intercept enemy ship
+nav s9012           # Intercept npc ship
 ```
 
 ### Query + Navigate Workflow
 ```
-ask nearest enemy   # Find target: "s8254 at 127.5 AU"
-nav s8254          # Auto-navigate to enemy
+ask nearest npc   # Find target: "s8254 at 127.5 AU"
+nav s8254          # Auto-navigate to npc
 ```
 
 ## Technical Details

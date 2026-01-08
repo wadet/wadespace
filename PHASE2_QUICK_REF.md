@@ -60,7 +60,7 @@ ask [question]        Query the system
 ┌────────────────────────────────────────────┐
 │ Main Map (60%)        │ Status Panel (35%)  │
 │ 20×20 AU viewport     │ • Energy bar        │
-│ Player & enemies      │ • Shields bar       │
+│ Player & npcs      │ • Shields bar       │
 │ Objects nearby        │ • Damage bar        │
 │                       │ • Hull bar          │
 │                       │ • Vital stats       │
@@ -89,7 +89,7 @@ ask [question]        Query the system
 | ⊕ | Starbase | Green/Red |
 | ✕ | Asteroid | Gray |
 | △ | Player Ship | Green |
-| ▽ | Enemy Ship | Red |
+| ▽ | NPC Ship | Red |
 
 ## 💊 Vitals & Resources
 
@@ -143,7 +143,7 @@ ask [question]        Query the system
 ```
 Universe Size:  10,000 × 10,000 AU
 Objects:        12,340 total
-Enemy Ships:    50 active
+NPC Ships:    50 active
 Commands:       14 types
 Energy Cap:     100%
 Shield Cap:     100%
@@ -222,7 +222,7 @@ Starting position: Near star st1
    → Prepare for combat
 
 5. $ scan s1
-   → Identify enemy
+   → Identify npc
 
 6. $ lock on s1
    → Target locked

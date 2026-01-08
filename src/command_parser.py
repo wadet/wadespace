@@ -256,8 +256,8 @@ class CommandParser:
         return None
     
     def _match_targets(self, text: str) -> Optional[dict]:
-        """Match targets command: 'targets', 'list targets', 'enemy ships'"""
-        if re.search(r'(?:list\s+)?targets?\s*$|enemy\s+ships?\s*$', text):
+        """Match targets command: 'targets', 'list targets', 'npc ships'"""
+        if re.search(r'(?:list\s+)?targets?\s*$|npc\s+ships?\s*$', text):
             self.last_command = {'command': 'targets'}
             return self.last_command
         return None

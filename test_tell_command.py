@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test script for the tell command with LLM-generated enemy responses.
+Test script for the tell command with LLM-generated npc responses.
 """
 
 from src.game_engine import GameEngine
@@ -12,21 +12,21 @@ def test_tell_command():
     engine = GameEngine(universe_seed=42)
     parser = CommandParser()
     
-    # Get the first enemy ship ID
-    if not engine.enemy_ships:
-        print("ERROR: No enemy ships found!")
+    # Get the first npc ship ID
+    if not engine.npc_ships:
+        print("ERROR: No npc ships found!")
         return
     
-    enemy_id = list(engine.enemy_ships.keys())[0]
-    print(f"\nFound enemy ship: {enemy_id}")
-    print(f"Enemy position: {engine.enemy_ships[enemy_id].position}")
+    npc_id = list(engine.npc_ships.keys())[0]
+    print(f"\nFound npc ship: {npc_id}")
+    print(f"NPC position: {engine.npc_ships[npc_id].position}")
     print(f"Player position: {engine.player_ship.position}")
     
     # Test 1: Valid tell command
     print("\n" + "="*60)
-    print("TEST 1: Sending message to enemy ship")
+    print("TEST 1: Sending message to npc ship")
     print("="*60)
-    command = parser.parse(f"tell {enemy_id} Prepare to be destroyed!")
+    command = parser.parse(f"tell {npc_id} Prepare to be destroyed!")
     if command:
         print(f"Parsed command: {command}")
         engine._execute_command(engine.player_ship, command)
@@ -39,7 +39,7 @@ def test_tell_command():
     print("\n" + "="*60)
     print("TEST 2: Sending another message")
     print("="*60)
-    command = parser.parse(f"tell {enemy_id} Surrender now and I'll let you live")
+    command = parser.parse(f"tell {npc_id} Surrender now and I'll let you live")
     if command:
         print(f"Parsed command: {command}")
         engine._execute_command(engine.player_ship, command)
@@ -61,16 +61,16 @@ def test_tell_command():
             print(f"  {msg}")
         engine.messages.clear()
     
-    # Test 4: Message after damaging the enemy
+    # Test 4: Message after damaging the npc
     print("\n" + "="*60)
-    print("TEST 4: Taunt after damaging enemy ship")
+    print("TEST 4: Taunt after damaging npc ship")
     print("="*60)
-    # Damage the enemy ship
-    enemy_ship = engine.enemy_ships[enemy_id]
-    enemy_ship.damage += 50  # Add 50% damage
-    print(f"Enemy ship damage: {enemy_ship.damage:.1f}%")
+    # Damage the npc ship
+    npc_ship = engine.npc_ships[npc_id]
+    npc_ship.damage += 50  # Add 50% damage
+    print(f"NPC ship damage: {npc_ship.damage:.1f}%")
     
-    command = parser.parse(f"tell {enemy_id} How do you like that?")
+    command = parser.parse(f"tell {npc_id} How do you like that?")
     if command:
         print(f"Parsed command: {command}")
         engine._execute_command(engine.player_ship, command)
@@ -78,15 +78,15 @@ def test_tell_command():
         for msg in engine.messages:
             print(f"  {msg}")
         engine.messages.clear()
-        # Test 5: Message when enemy is nearly destroyed
+        # Test 5: Message when npc is nearly destroyed
     print("\n" + "="*60)
-    print("TEST 5: Taunt when enemy is critically damaged")
+    print("TEST 5: Taunt when npc is critically damaged")
     print("="*60)
-    # Damage the enemy ship more
-    enemy_ship.damage = 85  # Set to 85% damage
-    print(f"Enemy ship damage: {enemy_ship.damage:.1f}%")
+    # Damage the npc ship more
+    npc_ship.damage = 85  # Set to 85% damage
+    print(f"NPC ship damage: {npc_ship.damage:.1f}%")
     
-    command = parser.parse(f"tell {enemy_id} Ready to surrender yet?")
+    command = parser.parse(f"tell {npc_id} Ready to surrender yet?")
     if command:
         print(f"Parsed command: {command}")
         engine._execute_command(engine.player_ship, command)

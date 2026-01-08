@@ -34,7 +34,7 @@ Let's create a 2-d turn-based space game!  The game should written in Python.  T
 	8) the number of crew remaining out of 1000 (the player starts with 1000 when the game begins)
 	9) the number of dollars the player has onboard
 * Each ship can move by either warp drive or impluse drive according to a specified heading between 0 and 359 degrees
-* The enemy players controls a similar type of ship as the player with the same onboard systems
+* The npc players controls a similar type of ship as the player with the same onboard systems
 * Enemy ships behave the same as the player's ship
 * The player's ship should look like the ship from Star Trek on the map
 * Enemy ships should look like Klingon ships on the map
@@ -75,7 +75,7 @@ Let's create a 2-d turn-based space game!  The game should written in Python.  T
 * The ship is destroyed instantly if the warp core is hit
 
 * Enemy ships should appear randomly throughout the game
-* At most 3 enemy ships should appear in the area of the universe that the player's ship is located in on the map
+* At most 3 npc ships should appear in the area of the universe that the player's ship is located in on the map
 * Enemy ships can only first appear within 20 AU of the player's ship
 
 * Stars provide energy for ships
@@ -100,10 +100,10 @@ Let's create a 2-d turn-based space game!  The game should written in Python.  T
 
 * There are two types of starbases:
 	1) starbases that are friendly to the player's ship
-	2) starbases that are friendly to enemy ships
-* The player's ship cannot use starbases that are friendly to enemy ships
+	2) starbases that are friendly to npc ships
+* The player's ship cannot use starbases that are friendly to npc ships
 * Enemy ships cannot use starbases that are friendly to the player's ship
-* The total number of starbases should be 100 in the entire universe and 50% of the total should be friendly to the player and 50% of the total should be friendly to the enemy ships
+* The total number of starbases should be 100 in the entire universe and 50% of the total should be friendly to the player and 50% of the total should be friendly to the npc ships
 * Starbases should be randomly positioned in the universe
 * Starbases should be greater than 10 AU from one another
 * Starbases have the same onboard systems as ships
@@ -112,7 +112,7 @@ Let's create a 2-d turn-based space game!  The game should written in Python.  T
 * Ships can refuel at a starbase at the rate of 10% energy gained per turn
 * Refueling a ship drains the starbase's energy by 1% per turn
 * Starbases use shields for defense with phasers and photon torpedos for weapons
-* Starbases that are friendly to the player should attack enemy ships that are within 2 AUs of the starbase
+* Starbases that are friendly to the player should attack npc ships that are within 2 AUs of the starbase
 * Starbases start with 100 percent energy and energy is replenished 1 percent each turn
 * Starbases consume 1 percent of the energy when firing phasers or photon torpedos
 * Starbases are destroyed when their damage reaches 100 percent
@@ -127,8 +127,8 @@ Let's create a 2-d turn-based space game!  The game should written in Python.  T
 * Each ship can mine once per turn
 * Each mining attempt can generate between 0 to 1000 dollars
 
-* Each turn allows the player and enemies to execute their commands
-* When an enemy ship is destroyed, the player's ship receives the cash carried onboard the enemy ship
+* Each turn allows the player and npcs to execute their commands
+* When an npc ship is destroyed, the player's ship receives the cash carried onboard the npc ship
 * The player controls the ship through the command prompt
 * Commands that the player can give to the ship should be in natural english familiar to english speakers
 * The player can query the status of each object on the map if the player's ship's onboard sensors are operational

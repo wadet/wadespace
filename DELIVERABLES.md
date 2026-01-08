@@ -216,7 +216,7 @@ pygame>=2.1.0
 - ✅ 60% main map with 20×20 AU viewport
 - ✅ 40% right panel with status/minimap/messages/input
 - ✅ Real-time object rendering with 9 symbol types
-- ✅ Player and enemy ship visualization
+- ✅ Player and npc ship visualization
 - ✅ Graphical status bars (4 types)
 - ✅ Text vital statistics (4 displays)
 - ✅ Interactive minimap with mouse wheel zoom
@@ -452,7 +452,7 @@ python -m pytest tests/test_core.py -v
 ### Planned Features
 - Sound effects and music
 - GPT-4o AI integration
-- Advanced enemy tactics
+- Advanced npc tactics
 - Narrative elements
 - Save/load system
 - Multiplayer support

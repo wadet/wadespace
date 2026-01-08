@@ -96,7 +96,7 @@ ask what is nearest star    Query the system
 | Total Objects | 12,340 |
 | Stars | 1,000 |
 | Planets | 10,000 |
-| Enemy Ships | 50 |
+| NPC Ships | 50 |
 | Commands | 14 supported |
 
 ## 📁 Project Structure

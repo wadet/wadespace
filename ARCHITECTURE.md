@@ -1,6 +1,6 @@
 # Wade Space - 2D Turn-Based Space Game
 
-A modular, Python-based turn-based space game featuring a procedurally generated universe, intelligent enemy AI, dynamic combat system, and Star Trek-inspired mechanics.
+A modular, Python-based turn-based space game featuring a procedurally generated universe, intelligent npc AI, dynamic combat system, and Star Trek-inspired mechanics.
 
 ## Architecture Overview
 
@@ -36,7 +36,7 @@ wadespace/
 - **Black Holes**: Destroy ships within 3 AU instantly
 - **Pulsars**: Disrupt sensors within 2 AU radius
 - **Worm Holes**: Paired teleportation portals
-- **Starbases**: Repair, refuel, restock; split friendly/enemy (50/50)
+- **Starbases**: Repair, refuel, restock; split friendly/npc (50/50)
 - **Asteroid Fields**: Mining locations for cash generation
 
 **Universe Generator**:
@@ -72,7 +72,7 @@ Ships have three major subsystem categories:
 - Shields (0-100%, drain 2%/turn when active)
 - Crew (0-1000, ship disabled at 0)
 - Photon Torpedos (0-50, 1% reload per turn at starbase)
-- Cash ($, earned from destroyed enemies and mining)
+- Cash ($, earned from destroyed npcs and mining)
 
 #### 3. **Command Parser** (`command_parser.py`)
 Natural language command processing supporting:
@@ -95,7 +95,7 @@ Supports command history (up arrow) for rapid re-execution.
 
 #### 4. **Game Engine** (`game_engine.py`)
 Core state management and turn processing:
-- **Turn Processing**: Simultaneous command execution for player and all enemies
+- **Turn Processing**: Simultaneous command execution for player and all npcs
 - **Universe Management**: 10,000+ objects tracked and updated each turn
 - **Object Interactions**: 
   - Star refueling (10%/turn within 1 AU)
@@ -129,8 +129,8 @@ Unique ID generation for all game objects:
 - **Resizable/Maximizable**: Full screen support
 
 #### AI System (`ai_system.py`) - GPT-4o Integration
-- 50 concurrent enemy ships with personality
-- OpenAI API integration for natural language enemy responses
+- 50 concurrent npc ships with personality
+- OpenAI API integration for natural language npc responses
 - Advanced tactics: coordinated attacks, strategic refueling
 - Enemy ship captains respond to player `tell` commands
 - Strategy learned through game progression
@@ -183,7 +183,7 @@ pip install -r requirements.txt
 
 # Set up environment
 cp .env.example .env
-# Edit .env with your OpenAI API key (for enemy AI)
+# Edit .env with your OpenAI API key (for npc AI)
 ```
 
 ### Launch
@@ -212,7 +212,7 @@ python -m src.ui
 - [ ] Minimap zoom functionality
 
 ### Phase 3: Advanced AI
-- [ ] GPT-4o integration for enemy ships
+- [ ] GPT-4o integration for npc ships
 - [ ] Tactical decision-making
 - [ ] Inter-ship communication
 - [ ] Learning and adaptation

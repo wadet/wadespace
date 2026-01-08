@@ -27,7 +27,7 @@ WHAT'S INCLUDED
 ✅ Ship Systems        - Complete Star Trek-inspired mechanics
 ✅ Combat System       - Phasers, torpedos, shields
 ✅ Command Parser      - 14 natural language commands
-✅ Enemy AI            - 50 concurrent enemy ships
+✅ Enemy AI            - 50 concurrent npc ships
 ✅ Unit Tests          - 29 test cases, all passing
 ✅ Documentation       - 5 comprehensive guides
 
@@ -144,7 +144,7 @@ Quick command reference:
   heading 180         - Set course
   shields up          - Activate shields
   scan                - Scan nearby objects
-  lock on s1          - Lock phasers on enemy
+  lock on s1          - Lock phasers on npc
   fire                - Fire phasers
   tor s1              - Fire torpedo
   status              - Show ship status

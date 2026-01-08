@@ -2,12 +2,12 @@
 
 ## Summary
 Fixed two critical gameplay issues:
-1. **Enemy Ships Now Visible on Maps** - Enemy ships render on both 2D map and minimap
+1. **NPC Ships Now Visible on Maps** - Enemy ships render on both 2D map and minimap
 2. **Torpedo Movement Implemented** - Torpedos travel 10 AU per turn toward targets
 
 ## Changes Made
 
-### 1. Enemy Ship Rendering in UI (`src/ui.py`)
+### 1. NPC Ship Rendering in UI (`src/ui.py`)
 
 #### 2D Map Display (Lines 156-206)
 - Added iteration over `self.engine.enemy_ships` in `_draw_2d_map()`
@@ -37,8 +37,8 @@ Fixed two critical gameplay issues:
 - **Collision Detection:** Detects when torpedo reaches target
 - **Damage System:**
   - 25% damage per torpedo hit
-  - Applies damage to enemy ships
-  - Auto-destroys enemy ship if damage >= 100%
+  - Applies damage to npc ships
+  - Auto-destroys npc ship if damage >= 100%
   - Generates game messages for each hit
 
 #### Integration in Game Loop
@@ -62,23 +62,23 @@ Fixed two critical gameplay issues:
 - Enemy ships spawn correctly (1-3 within 50 AU)
 - Enemies visible on maps at correct positions
 - Torpedos fire and move at correct speed
-- Damage applies to enemy ships on impact
+- Damage applies to npc ships on impact
 - Enemy destruction triggers when damage reaches 100%
 
 ## Gameplay Impact
 
 ### Enemy Detection
-Players can now see all enemy ships on both the main tactical map and minimap, enabling strategic decision-making about:
-- Which enemies to avoid
-- Which enemies to target
+Players can now see all npc ships on both the main tactical map and minimap, enabling strategic decision-making about:
+- Which npcs to avoid
+- Which npcs to target
 - Threat assessment based on proximity
 
 ### Tactical Weapon Use
 The torpedo system is now fully functional:
-- Players can fire at enemy ships
+- Players can fire at npc ships
 - Torpedos travel across space
 - Hit/miss mechanics work correctly
-- Damaged enemies become visible threats
+- Damaged npcs become visible threats
 - Enemy destruction removes ship from board
 
 ## Technical Details
@@ -89,7 +89,7 @@ The torpedo system is now fully functional:
 - Torpedo movement uses vector math (normalized direction)
 
 ### Performance
-- Enemy rendering: O(n) where n = number of enemies in viewport
+- Enemy rendering: O(n) where n = number of npcs in viewport
 - Torpedo update: O(m) where m = number of active torpedos
 - Both optimized to only process visible/active entities
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-**Wade Space** is a comprehensive 2D turn-based space game written in modular, maintainable Python. The game features a procedurally generated 10,000 x 10,000 AU universe filled with diverse celestial objects, challenging enemies, and deep ship management mechanics inspired by Star Trek.
+**Wade Space** is a comprehensive 2D turn-based space game written in modular, maintainable Python. The game features a procedurally generated 10,000 x 10,000 AU universe filled with diverse celestial objects, challenging npcs, and deep ship management mechanics inspired by Star Trek.
 
 ## ✅ Completed Features (Phase 1)
 
@@ -15,7 +15,7 @@
 - ✅ 100 black holes (instant ship destruction)
 - ✅ 100 pulsars (sensor disruption within 2 AU)
 - ✅ 20 wormhole pairs (free teleportation)
-- ✅ 100 starbases (50% friendly/50% enemy with repairs, refueling, restocking)
+- ✅ 100 starbases (50% friendly/50% npc with repairs, refueling, restocking)
 - ✅ 1,000 asteroid fields (mining for $0-1,000/attempt)
 - ✅ Minimum spacing validation between objects
 - ✅ Object inheritance hierarchy with abstract base class
@@ -33,7 +33,7 @@
 - ✅ Energy (0-100%, system consumption tracking)
 - ✅ Shields (0-100%, drain 2%/turn when active)
 - ✅ Crew (0-1,000, ship disabled at 0)
-- ✅ Cash (resource gathering from enemies/mining)
+- ✅ Cash (resource gathering from npcs/mining)
 - ✅ Photon Torpedos (0-50, tracked consumption)
 
 **Weapon Systems**:
@@ -80,7 +80,7 @@
 
 #### 5. **Game Engine** (`game_engine.py`)
 **Turn Processing**:
-- ✅ Simultaneous command execution (player + enemies)
+- ✅ Simultaneous command execution (player + npcs)
 - ✅ Object state updates
 - ✅ Collision detection
 - ✅ Game state evaluation
@@ -99,7 +99,7 @@
 - ✅ Wormhole teleportation
 
 **Enemy AI (Basic)**:
-- ✅ 50 concurrent enemy ships
+- ✅ 50 concurrent npc ships
 - ✅ Random movement patterns
 - ✅ Opportunistic attacks on player
 - ✅ Enemy destruction with cash drops
@@ -164,9 +164,9 @@ wadespace/
 - **Black Holes**: 100
 - **Pulsars**: 100
 - **Wormholes**: 20 pairs (40 total)
-- **Starbases**: 100 (50 friendly, 50 enemy)
+- **Starbases**: 100 (50 friendly, 50 npc)
 - **Asteroid Fields**: 1,000
-- **Enemy Ships**: 50 concurrent
+- **NPC Ships**: 50 concurrent
 
 ### Ship Capabilities
 - **Max Energy**: 100%
@@ -218,8 +218,8 @@ wadespace/
 - [ ] Ship icons (Enterprise vs Klingon)
 
 ### Advanced AI (Phase 3)
-- [ ] GPT-4o integration for enemy ships
-- [ ] Natural language enemy responses
+- [ ] GPT-4o integration for npc ships
+- [ ] Natural language npc responses
 - [ ] Tactical decision-making
 - [ ] Inter-ship communication
 - [ ] Coordinated fleet attacks
@@ -278,7 +278,7 @@ wadespace/
 ## 📈 Performance Characteristics
 
 - **Universe Generation**: ~2-3 seconds (12,340 objects)
-- **Turn Processing**: <100ms (with 50 enemy ships)
+- **Turn Processing**: <100ms (with 50 npc ships)
 - **Object Queries**: <10ms (10,000+ object search)
 - **Memory Usage**: ~50MB base + 2-5MB/turn
 - **Scalability**: Supports 10,000+ simultaneous objects

@@ -1,6 +1,6 @@
 # WADE SPACE GAME - COMPLETE RECREATION PROMPT
 
-Please create a comprehensive 2D turn-based space game called "Wade Space" inspired by Star Trek. This is a complete game with procedurally generated universe, combat system, enemy AI, and both text-based and graphical (Pygame) interfaces.
+Please create a comprehensive 2D turn-based space game called "Wade Space" inspired by Star Trek. This is a complete game with procedurally generated universe, combat system, npc AI, and both text-based and graphical (Pygame) interfaces.
 
 ## PROJECT STRUCTURE
 
@@ -50,9 +50,9 @@ openai>=1.0.0
 - 100 black holes (instant destruction within 3 AU)
 - 100 pulsars (disrupt sensors within 2 AU)
 - 20 wormhole pairs (free teleportation)
-- 100 starbases (50% friendly, 50% enemy - repairs 25%/turn, refuel, restock torpedos)
+- 100 starbases (50% friendly, 50% npc - repairs 25%/turn, refuel, restock torpedos)
 - 1,000 asteroid fields (mining 0-1,000$ per attempt within 1 AU)
-- 50 enemy ships (1-3 spawn near player start, rest random across universe)
+- 50 npc ships (1-3 spawn near player start, rest random across universe)
 - Minimum 5 AU spacing between objects (8 AU for stars, 20 AU for black holes, etc.)
 
 ### Ship Systems
@@ -62,9 +62,9 @@ openai>=1.0.0
 - Energy: 0-100% (drained by systems)
 - Shields: 0-100% (drain 2%/turn when active, absorb damage before hull)
 - Crew: 0-1,000 (ship disabled at 0, affects repair rate)
-- Cash: Starting $1,000-5,000 (earned from mining and destroyed enemies)
+- Cash: Starting $1,000-5,000 (earned from mining and destroyed npcs)
 - Photon Torpedos: 0-50 max
-- Reputation: 0-100 (affects enemy behavior and combat outcomes)
+- Reputation: 0-100 (affects npc behavior and combat outcomes)
 
 **Weapon Systems:**
 - Phasers: Instant-hit, 10 AU range, 5% damage, 50-100% accuracy based on distance, requires lock-on, 1% energy cost, 25% recharge/turn
@@ -128,7 +128,7 @@ Natural language command parser supporting:
 - `ask [question]` or `hal [question]` - Query LLM about game state
 
 **Debug:**
-- `debug on/off` - Toggle debug mode (shows closest 5 enemy decisions)
+- `debug on/off` - Toggle debug mode (shows closest 5 npc decisions)
 
 ### Enemy AI System (llm_handler.py)
 
@@ -147,7 +147,7 @@ Enemy ships use GPT-4o-mini for tactical decisions based on:
 **Reputation System:**
 - Destroying timid ships OR ships with reputation > 70: -10 reputation
 - Destroying aggressive ships OR ships with reputation < 30: +10 reputation
-- Reputation affects how enemy ships perceive threat level
+- Reputation affects how npc ships perceive threat level
 
 LLM returns JSON with: action, heading, speed, fire_phasers, fire_torpedos, reason
 
@@ -158,7 +158,7 @@ Fallback to rule-based AI if OpenAI API unavailable.
 Main game loop processes turns:
 1. Execute player command
 2. Process player auto-navigation
-3. Generate and execute enemy commands (using LLM)
+3. Generate and execute npc commands (using LLM)
 4. Update all objects (movement, energy, damage, shields, warp core)
 5. Update active projectiles (torpedos travel 1 AU/turn in straight line)
 6. Check collisions and interactions:
@@ -177,7 +177,7 @@ Main game loop processes turns:
 - Player ship destroyed (damage >= 100%)
 - Player ship disabled (crew <= 0)
 - Player ship consumed by black hole
-- Victory: All 50 enemy ships destroyed
+- Victory: All 50 npc ships destroyed
 
 ### Universe Generation (universe.py)
 
@@ -187,7 +187,7 @@ Uses spatial grid partitioning for efficient object placement:
 - Stars use sector-based distribution for even spacing
 - Planets orbit stars at 5-50 AU distance using proper polar coordinates
 - Wormholes paired during generation
-- Starbases randomly assigned friendly/enemy status
+- Starbases randomly assigned friendly/npc status
 
 ### Universe Objects (universe_objects.py)
 
@@ -283,9 +283,9 @@ Full Pygame interface with 2/3 screen resolution:
 - Black Holes: Purple
 - Pulsars: Cyan
 - Wormholes: Blue
-- Starbases: Green (friendly) / Red (enemy)
+- Starbases: Green (friendly) / Red (npc)
 - Asteroid Fields: Brown
-- Enemy Ships: Red
+- NPC Ships: Red
 - Player Ship: Green
 - Torpedos: Yellow
 - Phasers: Red beams
@@ -409,7 +409,7 @@ Include:
    - Handle API failures gracefully with fallback AI
    - Use GPT-4o-mini for cost efficiency
    - Request JSON-formatted responses
-   - Include context: ship state, enemy state, nearby objects, behavior trait
+   - Include context: ship state, npc state, nearby objects, behavior trait
 
 8. **Error Handling:**
    - Validate all user inputs
@@ -539,11 +539,11 @@ Ensure each file contains:
 
 ## GAMEPLAY FLOW EXAMPLE
 
-1. Player starts near a star with 1-3 enemy ships nearby
+1. Player starts near a star with 1-3 npc ships nearby
 2. Use `scan` to detect nearby objects
 3. Navigate to star with `nav st1234` for refueling
 4. Use `heading 90` and `warp 5` for manual navigation
-5. Lock weapons with `lock s42` when enemy in range
+5. Lock weapons with `lock s42` when npc in range
 6. Fire phasers with `fire` or torpedos with `tor`
 7. Manage shields with `shi up` during combat
 8. Mine asteroids with automatic mining when within 1 AU
@@ -552,7 +552,7 @@ Ensure each file contains:
 11. Avoid black holes (instant death within 3 AU)
 12. Use wormholes for rapid transit across universe
 13. Track reputation and adjust tactics
-14. Win by destroying all 50 enemy ships
+14. Win by destroying all 50 npc ships
 
 ## ADDITIONAL FEATURES TO IMPLEMENT
 
@@ -560,17 +560,17 @@ The codebase includes these extra features:
 
 1. **Reputation System:**
    - Track player reputation (0-100)
-   - Affects enemy behavior decisions
+   - Affects npc behavior decisions
    - Changes based on which ships are destroyed
 
 2. **Behavior Traits:**
-   - Each enemy has aggressive/neutral/timid trait
+   - Each npc has aggressive/neutral/timid trait
    - Affects combat decisions and threshold for engagement/fleeing
    - Visible in scan results
 
 3. **Debug Mode:**
    - Toggle with `debug on/off`
-   - Shows LLM decisions for 5 closest enemies
+   - Shows LLM decisions for 5 closest npcs
    - Displays reasoning in messages
 
 4. **Ask Command:**

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Test script to verify behavior traits affect enemy ship behavior in combat.
+Test script to verify behavior traits affect npc ship behavior in combat.
 """
 
 from src.game_engine import GameEngine
 
 def test_behavior_in_combat():
-    """Test that behavior traits affect enemy decisions during combat."""
+    """Test that behavior traits affect npc decisions during combat."""
     print("Initializing game with specific scenario...")
     game = GameEngine(universe_seed=42)
     
@@ -14,41 +14,41 @@ def test_behavior_in_combat():
     game.player_ship.reputation = 45  # Below aggressive threshold (70), neutral threshold (50), but above timid (25)
     
     print(f"Player reputation set to: {game.player_ship.reputation}")
-    print(f"Total enemy ships: {len(game.enemy_ships)}")
+    print(f"Total npc ships: {len(game.npc_ships)}")
     
     # Find examples of each behavior type nearby
     print("\n" + "="*70)
     print("TESTING BEHAVIOR TRAITS IN COMBAT SCENARIOS")
     print("="*70)
     
-    # Get first 5 enemy ships
-    enemies_to_test = list(game.enemy_ships.items())[:5]
+    # Get first 5 npc ships
+    enemies_to_test = list(game.npc_ships.items())[:5]
     
-    for enemy_id, enemy_ship in enemies_to_test:
-        behavior = enemy_ship.behavior_trait
-        distance = enemy_ship.position.distance_to(game.player_ship.position)
+    for npc_id, npc_ship in enemies_to_test:
+        behavior = npc_ship.behavior_trait
+        distance = npc_ship.position.distance_to(game.player_ship.position)
         
-        print(f"\n{behavior.upper()} Captain ({enemy_id}):")
-        print(f"  Position: ({enemy_ship.position.x:.1f}, {enemy_ship.position.y:.1f})")
+        print(f"\n{behavior.upper()} Captain ({npc_id}):")
+        print(f"  Position: ({npc_ship.position.x:.1f}, {npc_ship.position.y:.1f})")
         print(f"  Distance to player: {distance:.1f} AU")
-        print(f"  Current damage: {enemy_ship.damage:.1f}%")
-        print(f"  Reputation: {enemy_ship.reputation}")
+        print(f"  Current damage: {npc_ship.damage:.1f}%")
+        print(f"  Reputation: {npc_ship.reputation}")
         
         # Test attack decision
         if behavior == 'aggressive':
             will_attack = game.player_ship.reputation < 70
             flee_threshold = 80
             print(f"  • Will attack (player rep {game.player_ship.reputation} < 70): {will_attack}")
-            print(f"  • Will flee only if damage > {flee_threshold}%: {enemy_ship.damage > flee_threshold}")
+            print(f"  • Will flee only if damage > {flee_threshold}%: {npc_ship.damage > flee_threshold}")
         elif behavior == 'neutral':
-            will_attack = (enemy_ship.damage > 0) or (game.player_ship.reputation < 50)
+            will_attack = (npc_ship.damage > 0) or (game.player_ship.reputation < 50)
             flee_threshold = 50
             print(f"  • Will attack (provoked or player rep {game.player_ship.reputation} < 50): {will_attack}")
-            print(f"  • Will flee if damage > {flee_threshold}%: {enemy_ship.damage > flee_threshold}")
+            print(f"  • Will flee if damage > {flee_threshold}%: {npc_ship.damage > flee_threshold}")
         elif behavior == 'timid':
-            will_attack = (enemy_ship.damage > 0) or (game.player_ship.reputation < 25)
+            will_attack = (npc_ship.damage > 0) or (game.player_ship.reputation < 25)
             flee_threshold = 30
-            will_flee = (enemy_ship.damage > flee_threshold) and (game.player_ship.reputation >= 10)
+            will_flee = (npc_ship.damage > flee_threshold) and (game.player_ship.reputation >= 10)
             print(f"  • Will attack (provoked or player rep {game.player_ship.reputation} < 25): {will_attack}")
             print(f"  • Will flee if damage > {flee_threshold}% (and player rep >= 10): {will_flee}")
     
@@ -68,11 +68,11 @@ def test_behavior_in_combat():
     ]
     
     for behavior_type, damage_level, expected in test_cases:
-        # Find an enemy with this behavior
+        # Find an npc with this behavior
         target_enemy = None
-        for enemy_ship in game.enemy_ships.values():
-            if enemy_ship.behavior_trait == behavior_type:
-                target_enemy = enemy_ship
+        for npc_ship in game.npc_ships.values():
+            if npc_ship.behavior_trait == behavior_type:
+                target_enemy = npc_ship
                 break
         
         if target_enemy:

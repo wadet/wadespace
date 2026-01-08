@@ -148,7 +148,7 @@ class Starbase(UniverseObject):
             self.energy = min(100.0, self.energy + 1.0)
     
     def get_display_symbol(self) -> str:
-        return "⊕"  # Green (friendly) or red (enemy) in actual UI
+        return "⊕"  # Green (friendly) or red (npc) in actual UI
 
 
 class AsteroidField(UniverseObject):

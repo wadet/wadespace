@@ -272,7 +272,7 @@ class UniverseGenerator:
         """Generate starbases distributed across the universe."""
         starbases = {}
         friendly_count = total_count // 2
-        enemy_count = total_count - friendly_count
+        hostile_count = total_count - friendly_count
         
         # Generate friendly starbases with sector distribution
         friendly_sectors = int(math.sqrt(friendly_count / 10)) or 1
@@ -288,14 +288,14 @@ class UniverseGenerator:
                     sb = Starbase(sb_id, position, friendly_to_player=True)
                     starbases[sb_id] = sb
         
-        # Generate enemy starbases
-        enemy_sectors = int(math.sqrt(enemy_count / 10)) or 1
-        for sector in range(enemy_sectors * enemy_sectors):
-            for _ in range((enemy_count // (enemy_sectors * enemy_sectors)) + 1):
-                if len([s for s in starbases.values() if not s.friendly_to_player]) >= enemy_count:
+        # Generate npc starbases
+        hostile_sectors = int(math.sqrt(hostile_count / 10)) or 1
+        for sector in range(hostile_sectors * hostile_sectors):
+            for _ in range((hostile_count // (hostile_sectors * hostile_sectors)) + 1):
+                if len([s for s in starbases.values() if not s.friendly_to_player]) >= hostile_count:
                     break
                 
-                position = self._get_distributed_position(sector, enemy_sectors * enemy_sectors)
+                position = self._get_distributed_position(sector, hostile_sectors * hostile_sectors)
                 
                 if self._is_valid_position(position, min_distance=12.0):
                     sb_id = self.id_generator.generate('starbase')

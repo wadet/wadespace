@@ -22,26 +22,26 @@ def test_low_damage_fleeing_no_return_fire():
     engine = GameEngine()
     engine.player_ship.position = Position(5000.0, 5000.0)
     
-    enemy_id = list(engine.enemy_ships.keys())[0]
-    enemy_ship = engine.enemy_ships[enemy_id]
-    enemy_ship.position = Position(5008.0, 5000.0)  # 8 AU away
-    enemy_ship.damage = 35.0  # LOW damage, but timid behavior will still flee
-    enemy_ship.shields = 100.0
-    enemy_ship.energy = 100.0
-    enemy_ship.behavior_trait = "timid"  # Timid ships flee at 30%+ damage
-    enemy_ship.lock_phasers(engine.player_ship.id)
+    npc_id = list(engine.npc_ships.keys())[0]
+    npc_ship = engine.npc_ships[npc_id]
+    npc_ship.position = Position(5008.0, 5000.0)  # 8 AU away
+    npc_ship.damage = 35.0  # LOW damage, but timid behavior will still flee
+    npc_ship.shields = 100.0
+    npc_ship.energy = 100.0
+    npc_ship.behavior_trait = "timid"  # Timid ships flee at 30%+ damage
+    npc_ship.lock_phasers(engine.player_ship.id)
     
     print(f"\nSetup:")
-    print(f"  Enemy damage: {enemy_ship.damage:.1f}% (LOW)")
-    print(f"  Behavior: {enemy_ship.behavior_trait} (flees at 30%+)")
+    print(f"  NPC damage: {npc_ship.damage:.1f}% (LOW)")
+    print(f"  Behavior: {npc_ship.behavior_trait} (flees at 30%+)")
     print(f"  Distance: 8.0 AU (within phaser range)")
-    print(f"  Enemy fired_upon_by: {enemy_ship.fired_upon_by}")
+    print(f"  NPC fired_upon_by: {npc_ship.fired_upon_by}")
     
     player_initial_damage = engine.player_ship.damage
     player_initial_shields = engine.player_ship.shields
     
-    print(f"\nExecuting enemy AI (should flee without attacking)...")
-    engine._execute_basic_enemy_ai(enemy_ship, 8.0, False, False)
+    print(f"\nExecuting npc AI (should flee without attacking)...")
+    engine._execute_basic_enemy_ai(npc_ship, 8.0, False, False)
     
     player_damage_taken = engine.player_ship.damage - player_initial_damage
     player_shields_lost = player_initial_shields - engine.player_ship.shields
@@ -67,26 +67,26 @@ def test_high_damage_fleeing_no_return_fire():
     engine = GameEngine()
     engine.player_ship.position = Position(5000.0, 5000.0)
     
-    enemy_id = list(engine.enemy_ships.keys())[0]
-    enemy_ship = engine.enemy_ships[enemy_id]
-    enemy_ship.position = Position(5008.0, 5000.0)  # 8 AU away
-    enemy_ship.damage = 95.0  # VERY HIGH damage
-    enemy_ship.shields = 100.0
-    enemy_ship.energy = 100.0
-    enemy_ship.behavior_trait = "aggressive"  # Even aggressive ships flee at 80%+
-    enemy_ship.lock_phasers(engine.player_ship.id)
+    npc_id = list(engine.npc_ships.keys())[0]
+    npc_ship = engine.npc_ships[npc_id]
+    npc_ship.position = Position(5008.0, 5000.0)  # 8 AU away
+    npc_ship.damage = 95.0  # VERY HIGH damage
+    npc_ship.shields = 100.0
+    npc_ship.energy = 100.0
+    npc_ship.behavior_trait = "aggressive"  # Even aggressive ships flee at 80%+
+    npc_ship.lock_phasers(engine.player_ship.id)
     
     print(f"\nSetup:")
-    print(f"  Enemy damage: {enemy_ship.damage:.1f}% (VERY HIGH)")
-    print(f"  Behavior: {enemy_ship.behavior_trait} (flees at 80%+)")
+    print(f"  NPC damage: {npc_ship.damage:.1f}% (VERY HIGH)")
+    print(f"  Behavior: {npc_ship.behavior_trait} (flees at 80%+)")
     print(f"  Distance: 8.0 AU (within phaser range)")
-    print(f"  Enemy fired_upon_by: {enemy_ship.fired_upon_by}")
+    print(f"  NPC fired_upon_by: {npc_ship.fired_upon_by}")
     
     player_initial_damage = engine.player_ship.damage
     player_initial_shields = engine.player_ship.shields
     
-    print(f"\nExecuting enemy AI (should flee without attacking)...")
-    engine._execute_basic_enemy_ai(enemy_ship, 8.0, False, False)
+    print(f"\nExecuting npc AI (should flee without attacking)...")
+    engine._execute_basic_enemy_ai(npc_ship, 8.0, False, False)
     
     player_damage_taken = engine.player_ship.damage - player_initial_damage
     player_shields_lost = player_initial_shields - engine.player_ship.shields
@@ -112,35 +112,35 @@ def test_low_damage_fleeing_with_return_fire():
     engine = GameEngine()
     engine.player_ship.position = Position(5000.0, 5000.0)
     
-    enemy_id = list(engine.enemy_ships.keys())[0]
-    enemy_ship = engine.enemy_ships[enemy_id]
-    enemy_ship.position = Position(5008.0, 5000.0)  # 8 AU away
-    enemy_ship.damage = 35.0  # LOW damage
-    enemy_ship.shields = 100.0
-    enemy_ship.energy = 100.0
-    enemy_ship.behavior_trait = "timid"
-    enemy_ship.weapons.phaser_operational = True
-    enemy_ship.lock_phasers(engine.player_ship.id)
+    npc_id = list(engine.npc_ships.keys())[0]
+    npc_ship = engine.npc_ships[npc_id]
+    npc_ship.position = Position(5008.0, 5000.0)  # 8 AU away
+    npc_ship.damage = 35.0  # LOW damage
+    npc_ship.shields = 100.0
+    npc_ship.energy = 100.0
+    npc_ship.behavior_trait = "timid"
+    npc_ship.weapons.phaser_operational = True
+    npc_ship.lock_phasers(engine.player_ship.id)
     
     print(f"\nSetup:")
-    print(f"  Enemy damage: {enemy_ship.damage:.1f}% (LOW)")
-    print(f"  Enemy fired_upon_by: {enemy_ship.fired_upon_by}")
+    print(f"  NPC damage: {npc_ship.damage:.1f}% (LOW)")
+    print(f"  NPC fired_upon_by: {npc_ship.fired_upon_by}")
     
-    # Player fires on enemy first
-    print(f"\nPlayer fires at enemy...")
-    engine.player_ship.lock_phasers(enemy_id)
-    result = engine.player_ship.fire_phaser(enemy_ship)
+    # Player fires on npc first
+    print(f"\nPlayer fires at npc...")
+    engine.player_ship.lock_phasers(npc_id)
+    result = engine.player_ship.fire_phaser(npc_ship)
     
     if result:
         print(f"  ✓ Hit: {result['damage']:.1f}% {result['damage_type']} damage")
     
-    print(f"  Enemy fired_upon_by: {enemy_ship.fired_upon_by}")
+    print(f"  NPC fired_upon_by: {npc_ship.fired_upon_by}")
     
     player_initial_damage = engine.player_ship.damage
     player_initial_shields = engine.player_ship.shields
     
-    print(f"\nExecuting enemy AI (should flee AND return fire)...")
-    engine._execute_basic_enemy_ai(enemy_ship, 8.0, False, False)
+    print(f"\nExecuting npc AI (should flee AND return fire)...")
+    engine._execute_basic_enemy_ai(npc_ship, 8.0, False, False)
     
     player_damage_taken = engine.player_ship.damage - player_initial_damage
     player_shields_lost = player_initial_shields - engine.player_ship.shields
