@@ -86,7 +86,7 @@ THE SHIP'S WEAPONS:
 * Each ship also starts with 50 photon torpedos
 * Ships should not be able to fire phases once the amount of energy reaches zero percent
 * Ships should not be able to fire photo torpedos once the amount of energy reaches zero perent or if the number of torpedos remaining reaches zero
-* Each torpedo does 10 percent damage to a ship when hit
+* Each torpedo damages ship shields by 20 percent when hit. Once shields are at 0% or when shields are down, torpedos damage the ship by 10 percent
 * Torpedos have a 1 percent chance of hitting the warp core if the torpedo does hit the target ship
 * Torpedos have a 25 percent chance of missing the target ship
 * When a torpedo is fired, a small dot should be drawn in the game's map UI to represent the torpedo

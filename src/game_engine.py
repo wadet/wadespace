@@ -1464,13 +1464,27 @@ class GameEngine:
                         if hit_target:
                             hit_type, hit_id, hit_obj = hit_target
                             if hit_type == 'enemy':
-                                damage = 25.0  # Torpedo damage
-                                
                                 # Record that player fired upon this enemy
                                 hit_obj.fired_upon_by.add(torpedo['source_ship_id'])
                                 
-                                hit_obj.damage = min(100.0, hit_obj.damage + damage)
-                                self.messages.append(f"Torpedo hit {hit_id}! Damage: {damage:.0f}%")
+                                # Torpedo damages shields first (20%), then ship (10%)
+                                if hit_obj.shields_active and hit_obj.shields > 0:
+                                    shield_damage = min(20.0, hit_obj.shields)
+                                    hit_obj.shields -= shield_damage
+                                    
+                                    if shield_damage >= 20.0:
+                                        self.messages.append(f"Torpedo hit {hit_id}! Shields damaged by {shield_damage:.0f}%")
+                                    else:
+                                        # Partial shield damage, rest goes to ship
+                                        remaining_damage = 20.0 - shield_damage
+                                        ship_damage = min(10.0, remaining_damage * 0.5)  # Convert remaining shield damage to ship damage proportionally
+                                        hit_obj.damage = min(100.0, hit_obj.damage + ship_damage)
+                                        self.messages.append(f"Torpedo hit {hit_id}! Shields absorbed {shield_damage:.0f}%, ship took {ship_damage:.1f}% damage")
+                                else:
+                                    # Shields down or at 0%, damage ship directly
+                                    damage = 10.0
+                                    hit_obj.damage = min(100.0, hit_obj.damage + damage)
+                                    self.messages.append(f"Torpedo hit {hit_id}! Damage: {damage:.0f}%")
                                 
                                 # Track torpedo hit
                                 self.player_ship.stats['torpedo_hits'] += 1
@@ -1520,23 +1534,26 @@ class GameEngine:
                         if dist_to_player < 2.0:
                             # Hit the player!
                             hit_something = True
-                            damage = 10.0  # 10% damage per torpedo hit (as per requirements)
                             
                             # Record that this ship fired upon the player
                             self.player_ship.fired_upon_by.add(torpedo['source_ship_id'])
                             
-                            # Apply damage to shields first, then ship
+                            # Torpedo damages shields first (20%), then ship (10%)
                             if self.player_ship.shields_active and self.player_ship.shields > 0:
-                                shield_damage = min(damage, self.player_ship.shields)
+                                shield_damage = min(20.0, self.player_ship.shields)
                                 self.player_ship.shields -= shield_damage
-                                remaining_damage = damage - shield_damage
                                 
-                                if remaining_damage > 0:
-                                    self.player_ship.damage = min(100.0, self.player_ship.damage + remaining_damage)
-                                    self.messages.append(f"Torpedo hit from {torpedo['source_ship_id']}! Shields absorbed {shield_damage:.1f}%, ship took {remaining_damage:.1f}% damage!")
+                                if shield_damage >= 20.0:
+                                    self.messages.append(f"Torpedo hit from {torpedo['source_ship_id']}! Shields damaged by {shield_damage:.0f}%")
                                 else:
-                                    self.messages.append(f"Torpedo hit from {torpedo['source_ship_id']}! Shields absorbed {shield_damage:.1f}% damage!")
+                                    # Partial shield damage, rest goes to ship
+                                    remaining_damage = 20.0 - shield_damage
+                                    ship_damage = min(10.0, remaining_damage * 0.5)  # Convert remaining shield damage to ship damage proportionally
+                                    self.player_ship.damage = min(100.0, self.player_ship.damage + ship_damage)
+                                    self.messages.append(f"Torpedo hit from {torpedo['source_ship_id']}! Shields absorbed {shield_damage:.0f}%, ship took {ship_damage:.1f}% damage")
                             else:
+                                # Shields down or at 0%, damage ship directly
+                                damage = 10.0
                                 self.player_ship.damage = min(100.0, self.player_ship.damage + damage)
                                 self.messages.append(f"Torpedo hit from {torpedo['source_ship_id']}! {damage:.1f}% damage to ship!")
                             
@@ -1559,23 +1576,26 @@ class GameEngine:
                                     if dist_to_enemy < 2.0 and not enemy_ship.is_destroyed:
                                         # Hit another enemy ship!
                                         hit_something = True
-                                        damage = 10.0  # 10% damage per torpedo hit
                                         
                                         # Record that this ship fired upon the enemy
                                         enemy_ship.fired_upon_by.add(torpedo['source_ship_id'])
                                         
-                                        # Apply damage to shields first, then ship
+                                        # Torpedo damages shields first (20%), then ship (10%)
                                         if enemy_ship.shields_active and enemy_ship.shields > 0:
-                                            shield_damage = min(damage, enemy_ship.shields)
+                                            shield_damage = min(20.0, enemy_ship.shields)
                                             enemy_ship.shields -= shield_damage
-                                            remaining_damage = damage - shield_damage
                                             
-                                            if remaining_damage > 0:
-                                                enemy_ship.damage = min(100.0, enemy_ship.damage + remaining_damage)
-                                                self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {enemy_id}! {remaining_damage:.1f}% damage!")
+                                            if shield_damage >= 20.0:
+                                                self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {enemy_id}! Shields damaged by {shield_damage:.0f}%")
                                             else:
-                                                self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {enemy_id}'s shields for {shield_damage:.1f}%!")
+                                                # Partial shield damage, rest goes to ship
+                                                remaining_damage = 20.0 - shield_damage
+                                                ship_damage = min(10.0, remaining_damage * 0.5)  # Convert remaining shield damage to ship damage proportionally
+                                                enemy_ship.damage = min(100.0, enemy_ship.damage + ship_damage)
+                                                self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {enemy_id}! Shields absorbed {shield_damage:.0f}%, ship took {ship_damage:.1f}% damage")
                                         else:
+                                            # Shields down or at 0%, damage ship directly
+                                            damage = 10.0
                                             enemy_ship.damage = min(100.0, enemy_ship.damage + damage)
                                             self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {enemy_id}! {damage:.1f}% damage!")
                                         
