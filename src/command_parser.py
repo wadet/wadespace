@@ -59,6 +59,8 @@ class CommandParser:
             return {'command': 'targets'}
         elif self._match_debug(input_text):
             return self._match_debug(input_text)
+        elif self._match_repair(input_text):
+            return self._match_repair(input_text)
         
         return None
     
@@ -266,6 +268,22 @@ class CommandParser:
         if match:
             mode = match.group(1) == 'on'
             self.last_command = {'command': 'debug', 'mode': mode}
+            return self.last_command
+        
+        return None
+    
+    def _match_repair(self, text: str) -> Optional[dict]:
+        """Match repair command: 'repair' or 'repair s1234'"""
+        # Match repair with optional target ID: 'repair s1', 'repair sb123'
+        match = re.search(r'repair\s+([a-z]{1,2}\d+)', text)
+        if match:
+            target_id = match.group(1)
+            self.last_command = {'command': 'repair', 'target_id': target_id}
+            return self.last_command
+        
+        # Match repair without target (self-repair)
+        if re.search(r'repair\s*$', text):
+            self.last_command = {'command': 'repair'}
             return self.last_command
         
         return None

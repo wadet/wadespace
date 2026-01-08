@@ -325,6 +325,10 @@ class GameEngine:
             mode = command.get('mode', False)
             self.debug_mode = mode
             self.messages.append(f"Debug mode turned {'ON' if mode else 'OFF'}")
+        
+        elif cmd == 'repair':
+            target_id = command.get('target_id')
+            self._execute_repair(ship, target_id)
     
     def _process_auto_nav(self, ship: Ship) -> None:
         """Process auto-navigation for a ship."""
@@ -1268,6 +1272,91 @@ class GameEngine:
         
         # Show total count
         self.messages.append(f"Total enemy ships in universe: {len(self.enemy_ships)}")
+    
+    def _execute_repair(self, ship: Ship, target_id: Optional[str] = None) -> None:
+        """
+        Execute repair command.
+        
+        If no target_id: repair player's own ship at 10% per turn (only when stopped).
+        If target_id provided: repair another ship (5% per turn) or friendly starbase (2% per turn).
+        Player's ship must be within 0.5 AU of target and not moving (stopped).
+        
+        Manual repair disables auto-repair for this turn.
+        """
+        if target_id:
+            # Repairing another object
+            # Check if ship is stopped
+            if ship.propulsion.current_speed != 0.0:
+                self.messages.append("Repair error: Ship must be stopped to repair another object")
+                return
+            
+            # Find target object
+            target_obj = None
+            target_type = None
+            
+            # Check enemy ships
+            if target_id in self.enemy_ships:
+                target_obj = self.enemy_ships[target_id]
+                target_type = 'ship'
+            # Check player ship
+            elif target_id == self.player_ship.id:
+                target_obj = self.player_ship
+                target_type = 'ship'
+            # Check universe objects (for starbases)
+            elif target_id in self.universe_objects:
+                obj = self.universe_objects[target_id]
+                if isinstance(obj, Starbase):
+                    target_obj = obj
+                    target_type = 'starbase'
+                else:
+                    self.messages.append(f"Repair error: Cannot repair {target_id} (not a ship or starbase)")
+                    return
+            else:
+                self.messages.append(f"Repair error: Target {target_id} not found")
+                return
+            
+            # Check distance to target
+            distance = ship.position.distance_to(target_obj.position)
+            if distance > 0.5:
+                self.messages.append(f"Repair error: {target_id} is too far away ({distance:.2f} AU). Must be within 0.5 AU")
+                return
+            
+            # Check if target is destroyed
+            if hasattr(target_obj, 'is_destroyed') and target_obj.is_destroyed:
+                self.messages.append(f"Repair error: {target_id} is destroyed and cannot be repaired")
+                return
+            
+            # Determine repair rate and check if target is friendly
+            if target_type == 'ship':
+                # Can repair any ship at 5% per turn
+                repair_rate = 5.0
+                repair_amount = min(repair_rate, target_obj.damage)
+                target_obj.damage = max(0.0, target_obj.damage - repair_amount)
+                # Mark target as having received manual repair
+                target_obj.manual_repair_this_turn = True
+                self.messages.append(f"Repairing {target_id}: {repair_amount:.1f}% damage repaired (Damage: {target_obj.damage:.1f}%)")
+            elif target_type == 'starbase':
+                # Can only repair friendly starbases at 2% per turn
+                if not target_obj.friendly_to_player:
+                    self.messages.append(f"Repair error: Cannot repair enemy starbase {target_id}")
+                    return
+                repair_rate = 2.0
+                repair_amount = min(repair_rate, target_obj.damage)
+                target_obj.damage = max(0.0, target_obj.damage - repair_amount)
+                self.messages.append(f"Repairing starbase {target_id}: {repair_amount:.1f}% damage repaired (Damage: {target_obj.damage:.1f}%)")
+        else:
+            # Self-repair - only works when stopped
+            if ship.propulsion.current_speed != 0.0:
+                self.messages.append("Repair error: Ship must be stopped to perform manual repair")
+                return
+            
+            # Manual self-repair at 10% per turn
+            repair_rate = 10.0
+            repair_amount = min(repair_rate, ship.damage)
+            ship.damage = max(0.0, ship.damage - repair_amount)
+            # Mark ship as having used manual repair this turn (disables auto-repair)
+            ship.manual_repair_this_turn = True
+            self.messages.append(f"Self-repair: {repair_amount:.1f}% damage repaired (Damage: {ship.damage:.1f}%)")
     
     def _update_all_objects(self) -> None:
         """Update all game objects."""

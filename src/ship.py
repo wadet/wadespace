@@ -94,6 +94,9 @@ class Ship:
         self.is_destroyed = False
         self.is_disabled = False
         
+        # Repair tracking
+        self.manual_repair_this_turn = False  # Track if manual repair was used this turn
+        
         # Game statistics (for player ships only)
         self.stats = {
             'enemies_destroyed': 0,
@@ -142,7 +145,14 @@ class Ship:
         For example: 50% crew = 2.5% repair per turn.
         
         Moving ships: Auto repair 1% per turn regardless of crew.
+        
+        Note: Auto-repair is skipped if manual repair was used this turn.
         """
+        # Skip auto-repair if manual repair was used this turn
+        if self.manual_repair_this_turn:
+            self.manual_repair_this_turn = False  # Reset for next turn
+            return
+        
         if self.propulsion.current_speed == 0.0:
             # Stationary: repair up to 5% scaled by crew percentage
             crew_percentage = self.crew / 1000.0  # Returns 0.0 to 1.0
