@@ -536,18 +536,22 @@ class GameUI:
         # Calculate total width available for the bar row (accounting for padding)
         total_bar_width = self.status_area_width - 20  # 10px padding on each side
         
+        # Determine shield display value and label color based on shields_active
+        shield_display_value = ship.shields if ship.shields_active else 0
+        shield_label_color = Colors.WHITE if ship.shields_active else Colors.GRAY
+        
         vitals = [
-            ("Energy", ship.energy, Colors.CYAN),
-            ("Shields", ship.shields, Colors.BLUE),
-            ("Damage", ship.damage, Colors.RED),
-            ("Warp Core", ship.propulsion.warp_core_temp, Colors.RED),
+            ("Energy", ship.energy, Colors.CYAN, Colors.WHITE),
+            ("Shields", shield_display_value, Colors.BLUE, shield_label_color),
+            ("Damage", ship.damage, Colors.RED, Colors.WHITE),
+            ("Warp Core", ship.propulsion.warp_core_temp, Colors.RED, Colors.WHITE),
         ]
         
-        for i, (label, value, color) in enumerate(vitals):
+        for i, (label, value, color, label_color) in enumerate(vitals):
             y = start_y + i * spacing
             self._draw_status_bar(
                 self.status_rect.left + 10, y,
-                label, value, label_width, bar_height, color, total_bar_width
+                label, value, label_width, bar_height, color, total_bar_width, label_color
             )
         
         # Draw other vitals as text
@@ -613,10 +617,12 @@ class GameUI:
     
     def _draw_status_bar(self, x: float, y: float, label: str, value: float,
                         label_width: float, bar_height: float, color: Tuple[int, int, int],
-                        total_width: float):
+                        total_width: float, label_color: Tuple[int, int, int] = None):
         """Draw a single status bar with label, bar, and percentage."""
         # Draw label
-        label_text = self.font_small.render(label, True, Colors.WHITE)
+        if label_color is None:
+            label_color = Colors.WHITE
+        label_text = self.font_small.render(label, True, label_color)
         self.screen.blit(label_text, (x, y))
         
         # Draw percentage text first to know its width
