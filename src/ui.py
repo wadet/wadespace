@@ -845,9 +845,8 @@ class GameUI:
             (Colors.CYAN, "Wormhole", "circle"),
             (Colors.MAGENTA, "Pulsar", "circle"),
             (Colors.ORANGE, "Asteroid", "circle"),
-            (Colors.GREEN, "Friendly Base", "square"),
-            (Colors.RED, "NPC Base", "square"),
-            (Colors.RED, "NPC Ship", "triangle"),
+            (Colors.GRAY, "Starbase", "square"),
+            (Colors.GRAY, "NPC Ship", "triangle"),
         ]
         
         legend_x = self.minimap_rect.left + 10
@@ -857,13 +856,14 @@ class GameUI:
         line_height = sample_text.get_height() + 4  # Add 4px padding between lines
         
         # Position legend at the very bottom of the minimap
-        total_legend_height = len(legend_items) * line_height
+        # Add extra space for the stance explanation text
+        total_legend_height = len(legend_items) * line_height + line_height + 5
         legend_y = self.minimap_rect.bottom - (total_legend_height + 5)
         
         for color, label, shape in legend_items:
             # Draw colored symbol based on shape
             if shape == "triangle":
-                # Draw red triangle for npc ships
+                # Draw grey triangle for npc ships
                 size = 3
                 center_x = legend_x + 3
                 center_y = legend_y + 2
@@ -874,7 +874,7 @@ class GameUI:
                 ]
                 pygame.draw.polygon(self.screen, color, points)
             elif shape == "square":
-                # Draw colored square for starbases
+                # Draw grey square for starbases
                 pygame.draw.rect(self.screen, color, (int(legend_x + 1), int(legend_y), 4, 4))
             else:
                 # Draw colored dot for other objects
@@ -886,6 +886,30 @@ class GameUI:
             
             # Move to next line
             legend_y += line_height
+        
+        # Add stance explanation at the bottom in smaller font
+        legend_y += 5  # Add some extra spacing
+        
+        # Create a smaller font for the stance explanation
+        small_font_size = int(self.FONT_SIZE * 0.6)  # 60% of normal size
+        small_font = pygame.font.Font(None, small_font_size)
+        
+        # Build the colored text: "(Ships and starbases can be friendly, neutral, or hostile)"
+        text_parts = [
+            ("(Ships and starbases can be ", Colors.WHITE),
+            ("friendly", Colors.GREEN),
+            (", ", Colors.WHITE),
+            ("neutral", Colors.YELLOW),
+            (", or ", Colors.WHITE),
+            ("hostile", Colors.RED),
+            (")", Colors.WHITE),
+        ]
+        
+        x_offset = legend_x
+        for text_str, text_color in text_parts:
+            text_surface = small_font.render(text_str, True, text_color)
+            self.screen.blit(text_surface, (x_offset, legend_y))
+            x_offset += text_surface.get_width()
     
     def _draw_message_area(self):
         """Draw the message area showing game messages."""
