@@ -625,9 +625,17 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
         lower_q = question.lower()
         priority_types = set()
         
-        # Determine which object types are relevant to the question
+        # Check for friendly/hostile/enemy filters for starbases
+        starbase_filter = None  # None, 'friendly', or 'hostile'
         if any(word in lower_q for word in ['base', 'starbase', 'station']):
             priority_types.add('Starbase')
+            # Check if asking for friendly or hostile starbases specifically
+            if any(word in lower_q for word in ['friendly', 'allied']):
+                starbase_filter = 'friendly'
+            elif any(word in lower_q for word in ['hostile', 'enemy', 'npc', 'unfriendly']):
+                starbase_filter = 'hostile'
+        
+        # Determine which object types are relevant to the question
         if any(word in lower_q for word in ['star', 'sun']):
             priority_types.add('Star')
         if any(word in lower_q for word in ['planet', 'world']):
@@ -645,15 +653,29 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
         if not priority_types:
             priority_types = {'Starbase', 'Star', 'Planet', 'BlackHole'}
         
-        # Separate objects by priority
+        # Separate objects by priority and apply starbase filter if needed
         priority_objects = []
         other_objects = []
         
         for obj_id, obj_data in all_objects:
-            if obj_data['type'] in priority_types:
+            obj_type = obj_data['type']
+            
+            # Apply starbase filtering if specified
+            if obj_type == 'Starbase' and starbase_filter:
+                is_friendly = obj_data.get('friendly', True)
+                if starbase_filter == 'friendly' and not is_friendly:
+                    continue  # Skip hostile starbases when asking for friendly
+                elif starbase_filter == 'hostile' and is_friendly:
+                    continue  # Skip friendly starbases when asking for hostile
+            
+            if obj_type in priority_types:
                 priority_objects.append((obj_id, obj_data))
             else:
                 other_objects.append((obj_id, obj_data))
+        
+        # Sort both lists by distance to maintain ascending order
+        priority_objects.sort(key=lambda x: x[1].get('distance', 0))
+        other_objects.sort(key=lambda x: x[1].get('distance', 0))
         
         # Combine: show all priority objects (up to 100), then fill remaining with others
         max_display = 100

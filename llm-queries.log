@@ -24676,3 +24676,671 @@ RESPONSE:
 }
 ================================================================================
 
+================================================================================
+TIMESTAMP: 2026-01-08T21:03:31.879243
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"show me the closest 10 starbases in ascending order\"\n\nCURRENT SITUATION:\nYour Ship Position: (3840.2, 2616.9)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - st3472 (Star): Position (3793.1, 2588.9), Distance 54.8 AU\n  - st3385 (Star): Position (3887.2, 2847.4), Distance 235.3 AU\n  - st7614 (Star): Position (3576.8, 2629.2), Distance 263.7 AU\n  - sb3545 (Starbase - HOSTILE/ENEMY): Position (3902.8, 2910.9), Distance 300.6 AU\n  - st9277 (Star): Position (3433.0, 2582.6), Distance 408.6 AU\n  - st1130 (Star): Position (4212.3, 2345.0), Distance 460.8 AU\n  - st587 (Star): Position (3560.9, 3017.1), Distance 488.0 AU\n  - st9946 (Star): Position (4185.3, 2987.3), Distance 506.3 AU\n  - st7928 (Star): Position (3988.1, 2094.8), Distance 542.7 AU\n  - st1150 (Star): Position (4076.0, 3151.3), Distance 584.1 AU\n  - st5639 (Star): Position (4299.6, 3025.9), Distance 615.1 AU\n  - st2821 (Star): Position (3909.5, 1993.5), Distance 627.2 AU\n  - sb5733 (Starbase - FRIENDLY): Position (3715.6, 3285.9), Distance 680.5 AU\n  - sb9388 (Starbase - HOSTILE/ENEMY): Position (3253.6, 2260.2), Distance 686.6 AU\n  - sb1260 (Starbase - FRIENDLY): Position (3256.4, 2999.1), Distance 697.8 AU\n  - st1013 (Star): Position (4427.0, 3026.0), Distance 715.3 AU\n  - st8478 (Star): Position (4483.2, 2279.8), Distance 725.9 AU\n  - st8962 (Star): Position (3551.5, 1948.8), Distance 727.8 AU\n  - st9457 (Star): Position (3356.2, 2063.7), Distance 735.0 AU\n  - st3449 (Star): Position (3969.9, 3360.8), Distance 755.1 AU\n  - st6562 (Star): Position (3483.3, 1947.3), Distance 758.7 AU\n  - st8668 (Star): Position (4435.2, 3100.4), Distance 766.6 AU\n  - st157 (Star): Position (4622.9, 2677.7), Distance 785.0 AU\n  - st7400 (Star): Position (4057.8, 1844.6), Distance 802.4 AU\n  - st1343 (Star): Position (4128.4, 3385.0), Distance 820.4 AU\n  - st2279 (Star): Position (3032.3, 2436.1), Distance 827.9 AU\n  - st888 (Star): Position (4414.0, 1991.0), Distance 849.1 AU\n  - st8416 (Star): Position (3282.8, 3268.0), Distance 857.1 AU\n  - sb500 (Starbase - FRIENDLY): Position (3309.3, 1934.9), Distance 864.3 AU\n  - st583 (Star): Position (4181.9, 3421.7), Distance 874.3 AU\n  - st9960 (Star): Position (4057.3, 1754.5), Distance 889.3 AU\n  - st7023 (Star): Position (2961.6, 2766.9), Distance 891.3 AU\n  - st6308 (Star): Position (3160.3, 2011.5), Distance 910.4 AU\n  - st4222 (Star): Position (3470.3, 3502.1), Distance 959.4 AU\n  - st7895 (Star): Position (3220.3, 3390.0), Distance 991.0 AU\n  - st9377 (Star): Position (2843.2, 2615.8), Distance 997.0 AU\n  - st78 (Star): Position (4863.7, 2485.7), Distance 1031.8 AU\n  - st3403 (Star): Position (4442.5, 3472.0), Distance 1045.9 AU\n  - st4558 (Star): Position (3263.1, 3490.7), Distance 1047.2 AU\n  - st6274 (Star): Position (3634.6, 3720.1), Distance 1122.2 AU\n  - sb8251 (Starbase - FRIENDLY): Position (4437.2, 3595.4), Distance 1146.3 AU\n  - st4806 (Star): Position (4952.4, 2949.2), Distance 1160.7 AU\n  - st8141 (Star): Position (2692.8, 2867.0), Distance 1174.4 AU\n  - st381 (Star): Position (2993.5, 3442.7), Distance 1182.7 AU\n  - st2205 (Star): Position (2806.8, 2032.3), Distance 1187.3 AU\n  - st5055 (Star): Position (3738.2, 3801.0), Distance 1188.5 AU\n  - st2286 (Star): Position (3450.2, 1479.8), Distance 1202.1 AU\n  - st9155 (Star): Position (4819.4, 1892.0), Distance 1218.3 AU\n  - st7894 (Star): Position (2971.2, 3487.5), Distance 1230.1 AU\n  - st2995 (Star): Position (2734.0, 3162.7), Distance 1233.5 AU\n  - st1163 (Star): Position (3273.6, 3715.7), Distance 1236.3 AU\n  - st8688 (Star): Position (3037.2, 3559.5), Distance 1238.3 AU\n  - st5215 (Star): Position (2602.8, 2755.4), Distance 1245.2 AU\n  - st4964 (Star): Position (2593.7, 2417.4), Distance 1262.4 AU\n  - st4330 (Star): Position (3955.0, 1347.6), Distance 1274.5 AU\n  - st700 (Star): Position (2563.4, 2618.6), Distance 1276.9 AU\n  - st1885 (Star): Position (5129.0, 2670.6), Distance 1289.9 AU\n  - st4978 (Star): Position (4073.6, 1332.7), Distance 1305.2 AU\n  - st9434 (Star): Position (3073.0, 1535.8), Distance 1325.7 AU\n  - st2354 (Star): Position (4844.1, 3482.9), Distance 1325.8 AU\n  - sb3569 (Starbase - FRIENDLY): Position (3665.3, 3932.2), Distance 1326.9 AU\n  - st6860 (Star): Position (3457.4, 3887.8), Distance 1327.3 AU\n  - st1110 (Star): Position (2698.4, 1923.2), Distance 1336.0 AU\n  - st2896 (Star): Position (3096.0, 3727.8), Distance 1337.2 AU\n  - st6966 (Star): Position (2919.7, 3604.0), Distance 1349.8 AU\n  - st2271 (Star): Position (3095.7, 1490.8), Distance 1349.9 AU\n  - st1430 (Star): Position (3616.4, 1277.2), Distance 1358.2 AU\n  - sb6798 (Starbase - HOSTILE/ENEMY): Position (2501.1, 2385.6), Distance 1358.9 AU\n  - st8055 (Star): Position (5163.4, 2280.5), Distance 1365.3 AU\n  - st2548 (Star): Position (2469.3, 2656.7), Distance 1371.5 AU\n  - st679 (Star): Position (4759.9, 3658.9), Distance 1389.8 AU\n  - st76 (Star): Position (3277.5, 1319.2), Distance 1414.4 AU\n  - st7185 (Star): Position (4213.4, 1250.4), Distance 1416.5 AU\n  - st2747 (Star): Position (2490.9, 2184.7), Distance 1416.9 AU\n  - st6847 (Star): Position (4080.9, 4015.2), Distance 1418.8 AU\n  - st6854 (Star): Position (4618.8, 1420.8), Distance 1427.2 AU\n  - st2947 (Star): Position (5216.7, 2237.9), Distance 1427.7 AU\n  - st4996 (Star): Position (5226.9, 3001.1), Distance 1438.9 AU\n  - st4458 (Star): Position (3237.1, 1299.4), Distance 1449.0 AU\n  - sb5884 (Starbase - FRIENDLY): Position (5190.0, 2082.2), Distance 1451.8 AU\n  - st6053 (Star): Position (3339.7, 3998.2), Distance 1469.2 AU\n  - sb3848 (Starbase - FRIENDLY): Position (5011.6, 1697.1), Distance 1489.3 AU\n  - st4150 (Star): Position (4602.9, 3896.5), Distance 1489.7 AU\n  - st2719 (Star): Position (2628.8, 1743.5), Distance 1493.5 AU\n  - st396 (Star): Position (5321.5, 2901.8), Distance 1508.4 AU\n  - sb916 (Starbase - FRIENDLY): Position (4104.6, 4102.4), Distance 1508.9 AU\n  - st90 (Star): Position (4459.7, 1238.0), Distance 1511.6 AU\n  - st5095 (Star): Position (2816.3, 3735.1), Distance 1516.2 AU\n  - st2540 (Star): Position (2892.6, 3805.0), Distance 1519.8 AU\n  - sb4123 (Starbase - FRIENDLY): Position (5348.0, 2829.0), Distance 1522.6 AU\n  - st9355 (Star): Position (4794.6, 1420.3), Distance 1530.5 AU\n  - st102 (Star): Position (2921.2, 3842.2), Distance 1531.7 AU\n  - st8719 (Star): Position (3600.3, 4144.1), Distance 1545.9 AU\n  - sb9992 (Starbase - HOSTILE/ENEMY): Position (4973.3, 3682.6), Distance 1555.5 AU\n  - st8925 (Star): Position (4173.7, 4141.5), Distance 1560.7 AU\n  - st7775 (Star): Position (3870.4, 4188.1), Distance 1571.5 AU\n  - st8334 (Star): Position (2501.9, 1781.1), Distance 1577.9 AU\n  - sb5388 (Starbase - FRIENDLY): Position (3076.1, 1227.4), Distance 1585.7 AU\n  - st3398 (Star): Position (5422.9, 2455.8), Distance 1590.9 AU\n  - st8974 (Star): Position (3790.9, 4220.4), Distance 1604.2 AU\n\n\nENEMY SHIPS:\n  - s6883: Position (3847.9, 2638.0), Distance 22.4 AU, Health 100.0%, Shields 100.0%\n  - s6128: Position (2089.7, 4991.5), Distance 2950.1 AU, Health 100.0%, Shields 100.0%\n  - s9247: Position (5566.9, 5980.9), Distance 3781.2 AU, Health 100.0%, Shields 100.0%\n  - s7322: Position (3634.0, 7762.1), Distance 5149.4 AU, Health 100.0%, Shields 100.0%\n  - s9273: Position (6942.6, 4364.1), Distance 3560.5 AU, Health 100.0%, Shields 100.0%\n  - s5744: Position (8336.9, 8572.5), Distance 7462.5 AU, Health 100.0%, Shields 100.0%\n  - s3074: Position (8403.1, 423.6), Distance 5062.6 AU, Health 100.0%, Shields 100.0%\n  - s797: Position (449.7, 7722.4), Distance 6128.8 AU, Health 100.0%, Shields 100.0%\n  - s6942: Position (6347.2, 6612.1), Distance 4716.6 AU, Health 100.0%, Shields 100.0%\n  - s1405: Position (6403.3, 3393.9), Distance 2678.2 AU, Health 100.0%, Shields 100.0%\n  - s2401: Position (9809.2, 4423.5), Distance 6236.4 AU, Health 100.0%, Shields 100.0%\n  - s6198: Position (9315.4, 7371.7), Distance 7251.6 AU, Health 100.0%, Shields 100.0%\n  - s5729: Position (4458.7, 5816.0), Distance 3258.4 AU, Health 100.0%, Shields 100.0%\n  - s9149: Position (4669.6, 9122.1), Distance 6557.9 AU, Health 100.0%, Shields 100.0%\n  - s5213: Position (8031.9, 5990.7), Distance 5380.7 AU, Health 100.0%, Shields 100.0%\n  - s3307: Position (9234.7, 7054.2), Distance 6985.0 AU, Health 100.0%, Shields 100.0%\n  - s3928: Position (1691.7, 6357.4), Distance 4313.7 AU, Health 100.0%, Shields 100.0%\n  - s6335: Position (6885.6, 3729.6), Distance 3242.3 AU, Health 100.0%, Shields 100.0%\n  - s3621: Position (5383.8, 6443.2), Distance 4125.9 AU, Health 100.0%, Shields 100.0%\n  - s1225: Position (9021.5, 6415.7), Distance 6424.7 AU, Health 100.0%, Shields 100.0%\n  - s7908: Position (7787.6, 9334.1), Distance 7791.2 AU, Health 100.0%, Shields 100.0%\n  - s7055: Position (754.5, 5960.6), Distance 4550.0 AU, Health 100.0%, Shields 100.0%\n  - s6634: Position (2210.3, 7077.5), Distance 4749.1 AU, Health 100.0%, Shields 100.0%\n  - s4373: Position (7548.9, 2459.2), Distance 3712.0 AU, Health 100.0%, Shields 100.0%\n  - s9151: Position (9953.4, 9944.8), Distance 9543.0 AU, Health 100.0%, Shields 100.0%\n  - s7395: Position (2568.9, 3623.3), Distance 1621.5 AU, Health 100.0%, Shields 100.0%\n  - s7335: Position (6186.5, 5292.7), Distance 3558.8 AU, Health 100.0%, Shields 100.0%\n  - s6684: Position (3875.5, 6296.8), Distance 3680.1 AU, Health 100.0%, Shields 100.0%\n  - s1279: Position (375.2, 723.7), Distance 3948.5 AU, Health 100.0%, Shields 100.0%\n  - s5680: Position (2210.5, 4715.7), Distance 2657.3 AU, Health 100.0%, Shields 100.0%\n  - s5605: Position (891.1, 893.6), Distance 3415.7 AU, Health 100.0%, Shields 100.0%\n  - s330: Position (9716.7, 9374.8), Distance 8955.5 AU, Health 100.0%, Shields 100.0%\n  - s7373: Position (789.6, 8348.6), Distance 6493.0 AU, Health 100.0%, Shields 100.0%\n  - s6482: Position (8823.6, 8661.7), Distance 7834.1 AU, Health 100.0%, Shields 100.0%\n  - s3285: Position (3111.4, 8710.0), Distance 6136.5 AU, Health 100.0%, Shields 100.0%\n  - s9965: Position (1229.6, 9499.0), Distance 7360.6 AU, Health 100.0%, Shields 100.0%\n  - s500: Position (8954.2, 708.5), Distance 5458.4 AU, Health 100.0%, Shields 100.0%\n  - s7454: Position (6069.2, 5913.1), Distance 3979.2 AU, Health 100.0%, Shields 100.0%\n  - s1634: Position (7075.0, 2409.5), Distance 3241.4 AU, Health 100.0%, Shields 100.0%\n  - s4786: Position (9555.8, 1368.2), Distance 5850.4 AU, Health 100.0%, Shields 100.0%\n  - s2937: Position (64.4, 5590.8), Distance 4806.4 AU, Health 100.0%, Shields 100.0%\n  - s7665: Position (8295.5, 8747.5), Distance 7578.5 AU, Health 100.0%, Shields 100.0%\n  - s2298: Position (1916.9, 4775.7), Distance 2891.3 AU, Health 100.0%, Shields 100.0%\n  - s3406: Position (8347.8, 3788.9), Distance 4657.5 AU, Health 100.0%, Shields 100.0%\n  - s7405: Position (1125.8, 5072.4), Distance 3660.3 AU, Health 100.0%, Shields 100.0%\n  - s1755: Position (7367.6, 1213.1), Distance 3796.5 AU, Health 100.0%, Shields 100.0%\n  - s5182: Position (8117.0, 1670.5), Distance 4380.3 AU, Health 100.0%, Shields 100.0%\n  - s686: Position (7399.0, 8390.0), Distance 6781.9 AU, Health 100.0%, Shields 100.0%\n  - s941: Position (2526.1, 9920.7), Distance 7421.1 AU, Health 100.0%, Shields 100.0%\n  - s4045: Position (6832.1, 6970.2), Distance 5282.3 AU, Health 100.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. NOTE: Half are FRIENDLY to you, half are HOSTILE/ENEMY bases!\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Hostile vessels\n\nIMPORTANT NOTES:\n- When asked about \"npc base\" or \"hostile base\", look for Starbase objects marked as HOSTILE/ENEMY (not friendly).\n- When asked about \"friendly base\", look for Starbase objects marked as FRIENDLY.\n- Starbases can be either friendly or npc - check the status in the objects list.\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor npc bases/starbases, ONLY report starbases that are marked as HOSTILE/ENEMY.\nFor friendly bases, ONLY report starbases that are marked as FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CvywdObDv1BEV5RVdimODJYg87cZw",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "**Closest 10 Starbases (Ascending Order):**\n\n1. **sb3545** (Starbase - HOSTILE/ENEMY)  \n   - Position: (3902.8, 2910.9)  \n   - Distance: 300.6 AU  \n\n2. **sb5733** (Starbase - FRIENDLY)  \n   - Position: (3715.6, 3285.9)  \n   - Distance: 680.5 AU  \n\n3. **sb9388** (Starbase - HOSTILE/ENEMY)  \n   - Position: (3253.6, 2260.2)  \n   - Distance: 686.6 AU  \n\n4. **sb1260** (Starbase - FRIENDLY)  \n   - Position: (3256.4, 2999.1)  \n   - Distance: 697.8 AU  \n\n5. **sb500** (Starbase - FRIENDLY)  \n   - Position: (3309.3, 1934.9)  \n   - Distance: 864.3 AU  \n\n6. **sb8251** (Starbase - FRIENDLY)  \n   - Position: (4437.2, 3595.4)  \n   - Distance: 1146.3 AU  \n\n7. **sb3569** (Starbase - FRIENDLY)  \n   - Position: (3665.3, 3932.2)  \n   - Distance: 1326.9 AU  \n\n8. **sb3848** (Starbase - FRIENDLY)  \n   - Position: (5011.6, 1697.1)  \n   - Distance: 1489.3 AU  \n\n9. **sb916** (Starbase - FRIENDLY)  \n   - Position: (4104.6, 4102.4)  \n   - Distance: 1508.9 AU  \n\n10. **sb4123** (Starbase - FRIENDLY)  \n    - Position: (5348.0, 2829.0)  \n    - Distance: 1522.6 AU  \n\nNote: The list includes both FRIENDLY and HOSTILE/ENEMY starbases as per the request."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5375,
+    "completion_tokens": 461,
+    "total_tokens": 5836
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:03:33.995862
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s6883 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (3847.9, 2638.0)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (3840.2, 2616.9)\n- Distance: 22.4 AU\n- Damage: 0.0%\n- Reputation: 94/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvywmh6RbCHChYiS8E95YWLXmIVBi",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 90,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"The PLAYER ship has a high reputation but I am aggressive and will attack regardless due to my aggressive nature.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 74,
+    "total_tokens": 737
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:04:22.081474
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"show me the closest 5 friendly starbases in ascending order\"\n\nCURRENT SITUATION:\nYour Ship Position: (3840.2, 2616.9)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - st3472 (Star): Position (3793.1, 2588.9), Distance 54.8 AU\n  - st3385 (Star): Position (3887.2, 2847.4), Distance 235.3 AU\n  - st7614 (Star): Position (3576.8, 2629.2), Distance 263.7 AU\n  - sb3545 (Starbase - HOSTILE/ENEMY): Position (3902.8, 2910.9), Distance 300.6 AU\n  - st9277 (Star): Position (3433.0, 2582.6), Distance 408.6 AU\n  - st1130 (Star): Position (4212.3, 2345.0), Distance 460.8 AU\n  - st587 (Star): Position (3560.9, 3017.1), Distance 488.0 AU\n  - st9946 (Star): Position (4185.3, 2987.3), Distance 506.3 AU\n  - st7928 (Star): Position (3988.1, 2094.8), Distance 542.7 AU\n  - st1150 (Star): Position (4076.0, 3151.3), Distance 584.1 AU\n  - st5639 (Star): Position (4299.6, 3025.9), Distance 615.1 AU\n  - st2821 (Star): Position (3909.5, 1993.5), Distance 627.2 AU\n  - sb5733 (Starbase - FRIENDLY): Position (3715.6, 3285.9), Distance 680.5 AU\n  - sb9388 (Starbase - HOSTILE/ENEMY): Position (3253.6, 2260.2), Distance 686.6 AU\n  - sb1260 (Starbase - FRIENDLY): Position (3256.4, 2999.1), Distance 697.8 AU\n  - st1013 (Star): Position (4427.0, 3026.0), Distance 715.3 AU\n  - st8478 (Star): Position (4483.2, 2279.8), Distance 725.9 AU\n  - st8962 (Star): Position (3551.5, 1948.8), Distance 727.8 AU\n  - st9457 (Star): Position (3356.2, 2063.7), Distance 735.0 AU\n  - st3449 (Star): Position (3969.9, 3360.8), Distance 755.1 AU\n  - st6562 (Star): Position (3483.3, 1947.3), Distance 758.7 AU\n  - st8668 (Star): Position (4435.2, 3100.4), Distance 766.6 AU\n  - st157 (Star): Position (4622.9, 2677.7), Distance 785.0 AU\n  - st7400 (Star): Position (4057.8, 1844.6), Distance 802.4 AU\n  - st1343 (Star): Position (4128.4, 3385.0), Distance 820.4 AU\n  - st2279 (Star): Position (3032.3, 2436.1), Distance 827.9 AU\n  - st888 (Star): Position (4414.0, 1991.0), Distance 849.1 AU\n  - st8416 (Star): Position (3282.8, 3268.0), Distance 857.1 AU\n  - sb500 (Starbase - FRIENDLY): Position (3309.3, 1934.9), Distance 864.3 AU\n  - st583 (Star): Position (4181.9, 3421.7), Distance 874.3 AU\n  - st9960 (Star): Position (4057.3, 1754.5), Distance 889.3 AU\n  - st7023 (Star): Position (2961.6, 2766.9), Distance 891.3 AU\n  - st6308 (Star): Position (3160.3, 2011.5), Distance 910.4 AU\n  - st4222 (Star): Position (3470.3, 3502.1), Distance 959.4 AU\n  - st7895 (Star): Position (3220.3, 3390.0), Distance 991.0 AU\n  - st9377 (Star): Position (2843.2, 2615.8), Distance 997.0 AU\n  - st78 (Star): Position (4863.7, 2485.7), Distance 1031.8 AU\n  - st3403 (Star): Position (4442.5, 3472.0), Distance 1045.9 AU\n  - st4558 (Star): Position (3263.1, 3490.7), Distance 1047.2 AU\n  - st6274 (Star): Position (3634.6, 3720.1), Distance 1122.2 AU\n  - sb8251 (Starbase - FRIENDLY): Position (4437.2, 3595.4), Distance 1146.3 AU\n  - st4806 (Star): Position (4952.4, 2949.2), Distance 1160.7 AU\n  - st8141 (Star): Position (2692.8, 2867.0), Distance 1174.4 AU\n  - st381 (Star): Position (2993.5, 3442.7), Distance 1182.7 AU\n  - st2205 (Star): Position (2806.8, 2032.3), Distance 1187.3 AU\n  - st5055 (Star): Position (3738.2, 3801.0), Distance 1188.5 AU\n  - st2286 (Star): Position (3450.2, 1479.8), Distance 1202.1 AU\n  - st9155 (Star): Position (4819.4, 1892.0), Distance 1218.3 AU\n  - st7894 (Star): Position (2971.2, 3487.5), Distance 1230.1 AU\n  - st2995 (Star): Position (2734.0, 3162.7), Distance 1233.5 AU\n  - st1163 (Star): Position (3273.6, 3715.7), Distance 1236.3 AU\n  - st8688 (Star): Position (3037.2, 3559.5), Distance 1238.3 AU\n  - st5215 (Star): Position (2602.8, 2755.4), Distance 1245.2 AU\n  - st4964 (Star): Position (2593.7, 2417.4), Distance 1262.4 AU\n  - st4330 (Star): Position (3955.0, 1347.6), Distance 1274.5 AU\n  - st700 (Star): Position (2563.4, 2618.6), Distance 1276.9 AU\n  - st1885 (Star): Position (5129.0, 2670.6), Distance 1289.9 AU\n  - st4978 (Star): Position (4073.6, 1332.7), Distance 1305.2 AU\n  - st9434 (Star): Position (3073.0, 1535.8), Distance 1325.7 AU\n  - st2354 (Star): Position (4844.1, 3482.9), Distance 1325.8 AU\n  - sb3569 (Starbase - FRIENDLY): Position (3665.3, 3932.2), Distance 1326.9 AU\n  - st6860 (Star): Position (3457.4, 3887.8), Distance 1327.3 AU\n  - st1110 (Star): Position (2698.4, 1923.2), Distance 1336.0 AU\n  - st2896 (Star): Position (3096.0, 3727.8), Distance 1337.2 AU\n  - st6966 (Star): Position (2919.7, 3604.0), Distance 1349.8 AU\n  - st2271 (Star): Position (3095.7, 1490.8), Distance 1349.9 AU\n  - st1430 (Star): Position (3616.4, 1277.2), Distance 1358.2 AU\n  - sb6798 (Starbase - HOSTILE/ENEMY): Position (2501.1, 2385.6), Distance 1358.9 AU\n  - st8055 (Star): Position (5163.4, 2280.5), Distance 1365.3 AU\n  - st2548 (Star): Position (2469.3, 2656.7), Distance 1371.5 AU\n  - st679 (Star): Position (4759.9, 3658.9), Distance 1389.8 AU\n  - st76 (Star): Position (3277.5, 1319.2), Distance 1414.4 AU\n  - st7185 (Star): Position (4213.4, 1250.4), Distance 1416.5 AU\n  - st2747 (Star): Position (2490.9, 2184.7), Distance 1416.9 AU\n  - st6847 (Star): Position (4080.9, 4015.2), Distance 1418.8 AU\n  - st6854 (Star): Position (4618.8, 1420.8), Distance 1427.2 AU\n  - st2947 (Star): Position (5216.7, 2237.9), Distance 1427.7 AU\n  - st4996 (Star): Position (5226.9, 3001.1), Distance 1438.9 AU\n  - st4458 (Star): Position (3237.1, 1299.4), Distance 1449.0 AU\n  - sb5884 (Starbase - FRIENDLY): Position (5190.0, 2082.2), Distance 1451.8 AU\n  - st6053 (Star): Position (3339.7, 3998.2), Distance 1469.2 AU\n  - sb3848 (Starbase - FRIENDLY): Position (5011.6, 1697.1), Distance 1489.3 AU\n  - st4150 (Star): Position (4602.9, 3896.5), Distance 1489.7 AU\n  - st2719 (Star): Position (2628.8, 1743.5), Distance 1493.5 AU\n  - st396 (Star): Position (5321.5, 2901.8), Distance 1508.4 AU\n  - sb916 (Starbase - FRIENDLY): Position (4104.6, 4102.4), Distance 1508.9 AU\n  - st90 (Star): Position (4459.7, 1238.0), Distance 1511.6 AU\n  - st5095 (Star): Position (2816.3, 3735.1), Distance 1516.2 AU\n  - st2540 (Star): Position (2892.6, 3805.0), Distance 1519.8 AU\n  - sb4123 (Starbase - FRIENDLY): Position (5348.0, 2829.0), Distance 1522.6 AU\n  - st9355 (Star): Position (4794.6, 1420.3), Distance 1530.5 AU\n  - st102 (Star): Position (2921.2, 3842.2), Distance 1531.7 AU\n  - st8719 (Star): Position (3600.3, 4144.1), Distance 1545.9 AU\n  - sb9992 (Starbase - HOSTILE/ENEMY): Position (4973.3, 3682.6), Distance 1555.5 AU\n  - st8925 (Star): Position (4173.7, 4141.5), Distance 1560.7 AU\n  - st7775 (Star): Position (3870.4, 4188.1), Distance 1571.5 AU\n  - st8334 (Star): Position (2501.9, 1781.1), Distance 1577.9 AU\n  - sb5388 (Starbase - FRIENDLY): Position (3076.1, 1227.4), Distance 1585.7 AU\n  - st3398 (Star): Position (5422.9, 2455.8), Distance 1590.9 AU\n  - st8974 (Star): Position (3790.9, 4220.4), Distance 1604.2 AU\n\n\nENEMY SHIPS:\n  - s6883: Position (3847.9, 2658.0), Distance 41.8 AU, Health 100.0%, Shields 100.0%\n  - s6128: Position (2089.7, 4991.5), Distance 2950.1 AU, Health 100.0%, Shields 100.0%\n  - s9247: Position (5566.9, 5980.9), Distance 3781.2 AU, Health 100.0%, Shields 100.0%\n  - s7322: Position (3633.7, 7760.2), Distance 5147.4 AU, Health 100.0%, Shields 100.0%\n  - s9273: Position (6942.6, 4364.1), Distance 3560.5 AU, Health 100.0%, Shields 100.0%\n  - s5744: Position (8336.3, 8574.4), Distance 7463.7 AU, Health 100.0%, Shields 100.0%\n  - s3074: Position (8403.1, 423.6), Distance 5062.6 AU, Health 100.0%, Shields 100.0%\n  - s797: Position (449.7, 7722.4), Distance 6128.8 AU, Health 100.0%, Shields 100.0%\n  - s6942: Position (6347.2, 6612.1), Distance 4716.6 AU, Health 100.0%, Shields 100.0%\n  - s1405: Position (6403.3, 3393.9), Distance 2678.2 AU, Health 100.0%, Shields 100.0%\n  - s2401: Position (9809.2, 4423.5), Distance 6236.4 AU, Health 100.0%, Shields 100.0%\n  - s6198: Position (9315.4, 7371.7), Distance 7251.6 AU, Health 100.0%, Shields 100.0%\n  - s5729: Position (4458.7, 5816.0), Distance 3258.4 AU, Health 100.0%, Shields 100.0%\n  - s9149: Position (4666.6, 9119.4), Distance 6554.8 AU, Health 100.0%, Shields 100.0%\n  - s5213: Position (8031.9, 5990.7), Distance 5380.7 AU, Health 100.0%, Shields 100.0%\n  - s3307: Position (9234.7, 7054.2), Distance 6985.0 AU, Health 100.0%, Shields 100.0%\n  - s3928: Position (1691.2, 6361.4), Distance 4317.3 AU, Health 100.0%, Shields 100.0%\n  - s6335: Position (6887.0, 3731.0), Distance 3244.1 AU, Health 100.0%, Shields 100.0%\n  - s3621: Position (5383.8, 6443.2), Distance 4125.9 AU, Health 100.0%, Shields 100.0%\n  - s1225: Position (9021.5, 6415.7), Distance 6424.7 AU, Health 100.0%, Shields 100.0%\n  - s7908: Position (7787.6, 9334.1), Distance 7791.2 AU, Health 100.0%, Shields 100.0%\n  - s7055: Position (754.5, 5960.6), Distance 4550.0 AU, Health 100.0%, Shields 100.0%\n  - s6634: Position (2218.3, 7076.9), Distance 4745.8 AU, Health 100.0%, Shields 100.0%\n  - s4373: Position (7549.9, 2457.4), Distance 3713.0 AU, Health 100.0%, Shields 100.0%\n  - s9151: Position (9953.4, 9940.8), Distance 9539.9 AU, Health 100.0%, Shields 100.0%\n  - s7395: Position (2568.9, 3623.3), Distance 1621.5 AU, Health 100.0%, Shields 100.0%\n  - s7335: Position (6186.5, 5292.7), Distance 3558.8 AU, Health 100.0%, Shields 100.0%\n  - s6684: Position (3875.5, 6296.8), Distance 3680.1 AU, Health 100.0%, Shields 100.0%\n  - s1279: Position (376.5, 725.2), Distance 3946.6 AU, Health 100.0%, Shields 100.0%\n  - s5680: Position (2210.5, 4715.7), Distance 2657.3 AU, Health 100.0%, Shields 100.0%\n  - s5605: Position (891.1, 893.6), Distance 3415.7 AU, Health 100.0%, Shields 100.0%\n  - s330: Position (9716.7, 9374.8), Distance 8955.5 AU, Health 100.0%, Shields 100.0%\n  - s7373: Position (788.4, 8350.2), Distance 6494.9 AU, Health 100.0%, Shields 100.0%\n  - s6482: Position (8823.6, 8653.7), Distance 7827.9 AU, Health 100.0%, Shields 100.0%\n  - s3285: Position (3110.4, 8704.1), Distance 6130.8 AU, Health 100.0%, Shields 100.0%\n  - s9965: Position (1229.6, 9499.0), Distance 7360.6 AU, Health 100.0%, Shields 100.0%\n  - s500: Position (8954.2, 708.5), Distance 5458.4 AU, Health 100.0%, Shields 100.0%\n  - s7454: Position (6067.6, 5921.0), Distance 3984.8 AU, Health 100.0%, Shields 100.0%\n  - s1634: Position (7075.0, 2409.5), Distance 3241.4 AU, Health 100.0%, Shields 100.0%\n  - s4786: Position (9555.8, 1368.2), Distance 5850.4 AU, Health 100.0%, Shields 100.0%\n  - s2937: Position (64.4, 5590.8), Distance 4806.4 AU, Health 100.0%, Shields 100.0%\n  - s7665: Position (8295.5, 8747.5), Distance 7578.5 AU, Health 100.0%, Shields 100.0%\n  - s2298: Position (1915.7, 4774.0), Distance 2890.9 AU, Health 100.0%, Shields 100.0%\n  - s3406: Position (8347.8, 3788.9), Distance 4657.5 AU, Health 100.0%, Shields 100.0%\n  - s7405: Position (1125.8, 5072.4), Distance 3660.3 AU, Health 100.0%, Shields 100.0%\n  - s1755: Position (7367.6, 1213.1), Distance 3796.5 AU, Health 100.0%, Shields 100.0%\n  - s5182: Position (8117.0, 1670.5), Distance 4380.3 AU, Health 100.0%, Shields 100.0%\n  - s686: Position (7399.0, 8390.0), Distance 6781.9 AU, Health 100.0%, Shields 100.0%\n  - s941: Position (2526.1, 9920.7), Distance 7421.1 AU, Health 100.0%, Shields 100.0%\n  - s4045: Position (6832.1, 6970.2), Distance 5282.3 AU, Health 100.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. NOTE: Half are FRIENDLY to you, half are HOSTILE/ENEMY bases!\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Hostile vessels\n\nIMPORTANT NOTES:\n- When asked about \"npc base\" or \"hostile base\", look for Starbase objects marked as HOSTILE/ENEMY (not friendly).\n- When asked about \"friendly base\", look for Starbase objects marked as FRIENDLY.\n- Starbases can be either friendly or npc - check the status in the objects list.\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor npc bases/starbases, ONLY report starbases that are marked as HOSTILE/ENEMY.\nFor friendly bases, ONLY report starbases that are marked as FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CvyxVSdOvRt4dZnYXnqQAWmMgVfDa",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "Here are the closest 5 friendly starbases in ascending order:\n\n1. **sb500**\n   - Position: (3309.3, 1934.9)\n   - Distance: 864.3 AU\n\n2. **sb5733**\n   - Position: (3715.6, 3285.9)\n   - Distance: 680.5 AU\n\n3. **sb1260**\n   - Position: (3256.4, 2999.1)\n   - Distance: 697.8 AU\n\n4. **sb8251**\n   - Position: (4437.2, 3595.4)\n   - Distance: 1146.3 AU\n\n5. **sb3848**\n   - Position: (5011.6, 1697.1)\n   - Distance: 1489.3 AU\n\nPlease note that the distances are sorted in ascending order."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5376,
+    "completion_tokens": 190,
+    "total_tokens": 5566
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:04:23.887804
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s6883 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (3847.9, 2658.0)\n- Damage: 0.0%\n- Energy: 99.6%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (3840.2, 2616.9)\n- Distance: 41.8 AU\n- Damage: 0.0%\n- Reputation: 94/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvyxa17DFJv9pKJdj5Scf7NaBQvDe",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 270,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"Engage the player ship with torpedoes as they are within range and pose a high threat due to their reputation.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 77,
+    "total_tokens": 740
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:13:11.780303
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"show me the closest 5 ships in ascending order\"\n\nCURRENT SITUATION:\nYour Ship Position: (8883.7, 5693.2)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - pl2338 (Planet): Position (8893.2, 5685.7), Distance 12.1 AU\n  - pl2669 (Planet): Position (8904.6, 5665.9), Distance 34.3 AU\n  - st2794 (Star): Position (8868.9, 5659.6), Distance 36.8 AU\n  - pl7034 (Planet): Position (8846.2, 5675.9), Distance 41.4 AU\n  - pl1031 (Planet): Position (8840.1, 5680.6), Distance 45.4 AU\n  - pl3363 (Planet): Position (8852.0, 5657.7), Distance 47.6 AU\n  - pl5035 (Planet): Position (8850.0, 5658.9), Distance 48.1 AU\n  - pl3327 (Planet): Position (8863.8, 5647.1), Distance 50.2 AU\n  - pl6105 (Planet): Position (8834.3, 5679.3), Distance 51.3 AU\n  - pl3179 (Planet): Position (8835.8, 5649.2), Distance 65.0 AU\n  - pl6411 (Planet): Position (8954.0, 5660.3), Distance 77.6 AU\n  - pl6380 (Planet): Position (8949.0, 5648.9), Distance 78.9 AU\n  - pl4813 (Planet): Position (8965.1, 5701.0), Distance 81.8 AU\n  - st2839 (Star): Position (8968.4, 5666.1), Distance 88.9 AU\n  - pl4413 (Planet): Position (8979.5, 5678.4), Distance 96.9 AU\n  - pl8346 (Planet): Position (8979.9, 5710.8), Distance 97.8 AU\n  - pl9241 (Planet): Position (8975.6, 5654.8), Distance 99.6 AU\n  - pl3999 (Planet): Position (8955.4, 5620.5), Distance 102.0 AU\n  - pl7852 (Planet): Position (8934.8, 5599.7), Distance 106.6 AU\n  - pl4679 (Planet): Position (8991.6, 5710.0), Distance 109.2 AU\n  - pl4359 (Planet): Position (8914.9, 5581.6), Distance 115.9 AU\n  - pl2947 (Planet): Position (9003.2, 5681.7), Distance 120.0 AU\n  - pl6425 (Planet): Position (8907.1, 5574.5), Distance 120.9 AU\n  - pl8414 (Planet): Position (8933.5, 5581.5), Distance 122.3 AU\n  - pl9434 (Planet): Position (8932.3, 5576.4), Distance 126.5 AU\n  - st7309 (Star): Position (8928.4, 5571.8), Distance 129.3 AU\n  - pl5758 (Planet): Position (8937.1, 5572.9), Distance 131.6 AU\n  - pl4482 (Planet): Position (8962.0, 5583.1), Distance 135.1 AU\n  - pl7356 (Planet): Position (8917.3, 5551.1), Distance 146.0 AU\n  - pl5697 (Planet): Position (8930.6, 5539.0), Distance 161.2 AU\n  - bh2005 (BlackHole): Position (8642.8, 5678.5), Distance 241.4 AU\n  - pl8096 (Planet): Position (8618.4, 5564.3), Distance 295.0 AU\n  - pl3852 (Planet): Position (8633.9, 5530.9), Distance 297.9 AU\n  - pl4547 (Planet): Position (8600.2, 5551.9), Distance 316.8 AU\n  - pl6479 (Planet): Position (8868.1, 6010.7), Distance 317.9 AU\n  - pl6824 (Planet): Position (8911.1, 6010.7), Distance 318.6 AU\n  - pl785 (Planet): Position (8597.2, 5548.4), Distance 321.1 AU\n  - pl3496 (Planet): Position (8893.0, 6016.8), Distance 323.7 AU\n  - pl4004 (Planet): Position (8584.4, 5565.1), Distance 325.6 AU\n  - pl6637 (Planet): Position (8588.9, 5546.4), Distance 329.4 AU\n  - st705 (Star): Position (8871.2, 6024.3), Distance 331.3 AU\n  - st3070 (Star): Position (8591.7, 5534.0), Distance 332.6 AU\n  - pl9129 (Planet): Position (8877.7, 6026.6), Distance 333.4 AU\n  - pl8486 (Planet): Position (8586.5, 5536.9), Distance 335.8 AU\n  - pl3001 (Planet): Position (8589.8, 5521.7), Distance 340.4 AU\n  - pl5526 (Planet): Position (8879.2, 6034.6), Distance 341.4 AU\n  - pl1243 (Planet): Position (8868.1, 6035.7), Distance 342.9 AU\n  - pl1697 (Planet): Position (9232.4, 5655.6), Distance 350.7 AU\n  - pl260 (Planet): Position (8848.7, 6047.7), Distance 356.2 AU\n  - pl7594 (Planet): Position (8547.7, 5551.8), Distance 364.5 AU\n  - pl7145 (Planet): Position (9249.0, 5670.9), Distance 366.0 AU\n  - pl4827 (Planet): Position (9249.8, 5652.4), Distance 368.3 AU\n  - pl1525 (Planet): Position (8898.1, 6061.8), Distance 368.9 AU\n  - pl2429 (Planet): Position (9247.6, 5619.2), Distance 371.3 AU\n  - pl5373 (Planet): Position (9211.3, 5875.2), Distance 374.7 AU\n  - pl5948 (Planet): Position (9196.7, 5906.5), Distance 378.8 AU\n  - pl5467 (Planet): Position (8878.0, 6072.8), Distance 379.7 AU\n  - pl4377 (Planet): Position (9262.6, 5649.7), Distance 381.4 AU\n  - pl1094 (Planet): Position (9218.2, 5879.8), Distance 383.0 AU\n  - pl7344 (Planet): Position (9270.9, 5678.1), Distance 387.4 AU\n  - st6722 (Star): Position (9277.3, 5649.3), Distance 396.1 AU\n  - pl1958 (Planet): Position (9229.3, 5917.5), Distance 412.0 AU\n  - st4931 (Star): Position (9241.2, 5905.8), Distance 415.9 AU\n  - pl3973 (Planet): Position (9297.3, 5640.0), Distance 417.0 AU\n  - pl5353 (Planet): Position (9301.0, 5692.7), Distance 417.3 AU\n  - pl5574 (Planet): Position (9245.3, 5908.7), Distance 420.9 AU\n  - pl3038 (Planet): Position (9276.7, 5875.9), Distance 433.4 AU\n  - pl9248 (Planet): Position (9274.9, 5879.7), Distance 433.4 AU\n  - pl282 (Planet): Position (9269.3, 5894.2), Distance 434.8 AU\n  - pl487 (Planet): Position (9260.9, 5909.5), Distance 434.8 AU\n  - pl9849 (Planet): Position (9322.9, 5665.6), Distance 440.1 AU\n  - pl5963 (Planet): Position (8789.4, 5220.1), Distance 482.4 AU\n  - pl8322 (Planet): Position (8803.5, 5209.6), Distance 490.3 AU\n  - pl3608 (Planet): Position (8768.2, 5207.8), Distance 498.9 AU\n  - pl1332 (Planet): Position (8732.1, 5214.5), Distance 502.1 AU\n  - pl6062 (Planet): Position (8799.3, 5192.9), Distance 507.4 AU\n  - pl4021 (Planet): Position (8764.1, 5196.4), Distance 511.0 AU\n  - pl4761 (Planet): Position (8723.8, 5207.8), Distance 511.1 AU\n  - pl7974 (Planet): Position (8729.2, 5204.1), Distance 512.9 AU\n  - st463 (Star): Position (8768.6, 5193.0), Distance 513.3 AU\n  - pl7999 (Planet): Position (8780.1, 5184.4), Distance 519.3 AU\n  - pl275 (Planet): Position (8363.7, 5663.4), Distance 520.9 AU\n  - pl4348 (Planet): Position (8996.0, 6203.8), Distance 522.8 AU\n  - pl3281 (Planet): Position (8980.0, 6208.2), Distance 523.9 AU\n  - pl3527 (Planet): Position (8752.1, 5185.8), Distance 524.2 AU\n  - pl3381 (Planet): Position (8776.3, 5178.2), Distance 526.1 AU\n  - pl7447 (Planet): Position (8758.0, 5181.7), Distance 526.7 AU\n  - pl8075 (Planet): Position (8964.9, 6213.8), Distance 526.9 AU\n  - pl1762 (Planet): Position (8728.4, 5187.1), Distance 529.4 AU\n  - st9518 (Star): Position (8740.3, 5178.7), Distance 534.1 AU\n  - pl4745 (Planet): Position (8764.4, 5170.9), Distance 535.8 AU\n  - pl4360 (Planet): Position (8746.9, 5172.3), Distance 538.6 AU\n  - pl6158 (Planet): Position (9029.4, 6216.1), Distance 542.8 AU\n  - pl5892 (Planet): Position (8758.0, 5164.3), Distance 543.6 AU\n  - pl4461 (Planet): Position (9010.0, 6222.6), Distance 544.2 AU\n  - st2428 (Star): Position (9003.3, 6224.6), Distance 544.7 AU\n  - pl29 (Planet): Position (8337.4, 5692.9), Distance 546.3 AU\n  - pl6369 (Planet): Position (8969.3, 6233.1), Distance 546.7 AU\n  - pl9305 (Planet): Position (8335.4, 5688.9), Distance 548.4 AU\n  - pl140 (Planet): Position (8718.4, 5169.7), Distance 549.0 AU\n\n\nENEMY SHIPS:\n  - s2335: Position (8880.8, 5681.8), Distance 11.8 AU, Health 100.0%, Shields 100.0%\n  - s289: Position (279.7, 706.8), Distance 9944.6 AU, Health 100.0%, Shields 100.0%\n  - s2211: Position (9462.8, 2352.9), Distance 3390.1 AU, Health 100.0%, Shields 100.0%\n  - s8285: Position (5976.7, 8736.9), Distance 4208.9 AU, Health 100.0%, Shields 100.0%\n  - s746: Position (2789.6, 5259.0), Distance 6109.6 AU, Health 100.0%, Shields 100.0%\n  - s7044: Position (2144.8, 819.4), Distance 8316.7 AU, Health 100.0%, Shields 100.0%\n  - s4007: Position (165.6, 9592.5), Distance 9550.4 AU, Health 100.0%, Shields 100.0%\n  - s7813: Position (3421.5, 2208.4), Distance 6479.2 AU, Health 100.0%, Shields 100.0%\n  - s5775: Position (9924.3, 6563.7), Distance 1356.6 AU, Health 100.0%, Shields 100.0%\n  - s8510: Position (4194.3, 8664.9), Distance 5551.7 AU, Health 100.0%, Shields 100.0%\n  - s5631: Position (4056.0, 3882.4), Distance 5156.2 AU, Health 100.0%, Shields 100.0%\n  - s7007: Position (394.0, 1295.8), Distance 9561.0 AU, Health 100.0%, Shields 100.0%\n  - s1: Position (3186.2, 8286.9), Distance 6260.1 AU, Health 100.0%, Shields 100.0%\n  - s6141: Position (3404.0, 124.9), Distance 7812.4 AU, Health 100.0%, Shields 100.0%\n  - s7911: Position (6019.0, 383.1), Distance 6033.6 AU, Health 100.0%, Shields 100.0%\n  - s7050: Position (9896.1, 1831.0), Distance 3992.7 AU, Health 100.0%, Shields 100.0%\n  - s7391: Position (194.2, 7496.4), Distance 8874.7 AU, Health 100.0%, Shields 100.0%\n  - s2132: Position (532.2, 7925.5), Distance 8644.8 AU, Health 100.0%, Shields 100.0%\n  - s8395: Position (658.8, 7421.4), Distance 8404.6 AU, Health 100.0%, Shields 100.0%\n  - s7429: Position (4231.3, 4975.6), Distance 4707.5 AU, Health 100.0%, Shields 100.0%\n  - s5139: Position (3300.9, 5561.1), Distance 5584.4 AU, Health 100.0%, Shields 100.0%\n  - s2979: Position (2309.8, 413.7), Distance 8431.5 AU, Health 100.0%, Shields 100.0%\n  - s2446: Position (2078.2, 1792.7), Distance 7844.1 AU, Health 100.0%, Shields 100.0%\n  - s1435: Position (7526.1, 7307.4), Distance 2109.2 AU, Health 100.0%, Shields 100.0%\n  - s9182: Position (1759.8, 2207.4), Distance 7931.0 AU, Health 100.0%, Shields 100.0%\n  - s8836: Position (4958.0, 2407.7), Distance 5119.2 AU, Health 100.0%, Shields 100.0%\n  - s6490: Position (5858.8, 5937.4), Distance 3034.7 AU, Health 100.0%, Shields 100.0%\n  - s3389: Position (9171.7, 7770.1), Distance 2096.7 AU, Health 100.0%, Shields 100.0%\n  - s9886: Position (2819.1, 9404.1), Distance 7109.9 AU, Health 100.0%, Shields 100.0%\n  - s1251: Position (6476.5, 9092.7), Distance 4165.5 AU, Health 100.0%, Shields 100.0%\n  - s7729: Position (8180.0, 7218.2), Distance 1679.5 AU, Health 100.0%, Shields 100.0%\n  - s5942: Position (2557.8, 1285.6), Distance 7710.1 AU, Health 100.0%, Shields 100.0%\n  - s41: Position (7647.7, 9608.6), Distance 4105.8 AU, Health 100.0%, Shields 100.0%\n  - s1859: Position (6584.0, 6.8), Distance 6133.8 AU, Health 100.0%, Shields 100.0%\n  - s2237: Position (1545.3, 8547.7), Distance 7874.0 AU, Health 100.0%, Shields 100.0%\n  - s7838: Position (6641.4, 1781.3), Distance 4509.0 AU, Health 100.0%, Shields 100.0%\n  - s4080: Position (8965.0, 3938.8), Distance 1756.3 AU, Health 100.0%, Shields 100.0%\n  - s9789: Position (5081.9, 8333.1), Distance 4628.4 AU, Health 100.0%, Shields 100.0%\n  - s4209: Position (7534.7, 6379.5), Distance 1513.5 AU, Health 100.0%, Shields 100.0%\n  - s2391: Position (7307.3, 129.7), Distance 5782.5 AU, Health 100.0%, Shields 100.0%\n  - s1310: Position (6687.6, 2915.7), Distance 3540.9 AU, Health 100.0%, Shields 100.0%\n  - s4231: Position (6548.4, 7139.8), Distance 2747.0 AU, Health 100.0%, Shields 100.0%\n  - s9915: Position (8027.9, 7763.6), Distance 2240.3 AU, Health 100.0%, Shields 100.0%\n  - s4009: Position (8466.8, 1338.3), Distance 4374.8 AU, Health 100.0%, Shields 100.0%\n  - s5788: Position (6861.2, 4750.0), Distance 2231.7 AU, Health 100.0%, Shields 100.0%\n  - s3815: Position (837.1, 1628.5), Distance 9015.0 AU, Health 100.0%, Shields 100.0%\n  - s1616: Position (8489.8, 6491.1), Distance 889.9 AU, Health 100.0%, Shields 100.0%\n  - s7499: Position (4775.1, 7876.9), Distance 4652.9 AU, Health 100.0%, Shields 100.0%\n  - s4936: Position (8064.4, 934.7), Distance 4828.5 AU, Health 100.0%, Shields 100.0%\n  - s3350: Position (4515.9, 3953.8), Distance 4701.4 AU, Health 100.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. NOTE: Half are FRIENDLY to you, half are HOSTILE/ENEMY bases!\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Hostile vessels\n\nIMPORTANT NOTES:\n- When asked about \"npc base\" or \"hostile base\", look for Starbase objects marked as HOSTILE/ENEMY (not friendly).\n- When asked about \"friendly base\", look for Starbase objects marked as FRIENDLY.\n- Starbases can be either friendly or npc - check the status in the objects list.\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor npc bases/starbases, ONLY report starbases that are marked as HOSTILE/ENEMY.\nFor friendly bases, ONLY report starbases that are marked as FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvz64SeKWqPSX8QYZv6nJ0wV5Qsfd",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "**Closest 5 Ships in Ascending Order:**\n\n1. **s2335**: Position (8880.8, 5681.8), Distance 11.8 AU, Health 100.0%, Shields 100.0%\n2. **s289**: Position (279.7, 706.8), Distance 9944.6 AU, Health 100.0%, Shields 100.0%\n3. **s2211**: Position (9462.8, 2352.9), Distance 3390.1 AU, Health 100.0%, Shields 100.0%\n4. **s8285**: Position (5976.7, 8736.9), Distance 4208.9 AU, Health 100.0%, Shields 100.0%\n5. **s746**: Position (2789.6, 5259.0), Distance 6109.6 AU, Health 100.0%, Shields 100.0%"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5243,
+    "completion_tokens": 211,
+    "total_tokens": 5454
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:13:13.292583
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s2335 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (8880.8, 5681.8)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (8883.7, 5693.2)\n- Distance: 11.8 AU\n- Damage: 0.0%\n- Reputation: 87/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvz68VRO7XPMzMOdxqzRe39myQjQI",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"No immediate threats detected, maintaining a cautious approach while observing surroundings.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 693,
+    "completion_tokens": 66,
+    "total_tokens": 759
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:13:36.038824
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"show me the closest 5 ships in ascending order by distance\"\n\nCURRENT SITUATION:\nYour Ship Position: (8883.7, 5693.2)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - pl2338 (Planet): Position (8893.2, 5685.7), Distance 12.1 AU\n  - pl2669 (Planet): Position (8904.6, 5665.9), Distance 34.3 AU\n  - st2794 (Star): Position (8868.9, 5659.6), Distance 36.8 AU\n  - pl7034 (Planet): Position (8846.2, 5675.9), Distance 41.4 AU\n  - pl1031 (Planet): Position (8840.1, 5680.6), Distance 45.4 AU\n  - pl3363 (Planet): Position (8852.0, 5657.7), Distance 47.6 AU\n  - pl5035 (Planet): Position (8850.0, 5658.9), Distance 48.1 AU\n  - pl3327 (Planet): Position (8863.8, 5647.1), Distance 50.2 AU\n  - pl6105 (Planet): Position (8834.3, 5679.3), Distance 51.3 AU\n  - pl3179 (Planet): Position (8835.8, 5649.2), Distance 65.0 AU\n  - pl6411 (Planet): Position (8954.0, 5660.3), Distance 77.6 AU\n  - pl6380 (Planet): Position (8949.0, 5648.9), Distance 78.9 AU\n  - pl4813 (Planet): Position (8965.1, 5701.0), Distance 81.8 AU\n  - st2839 (Star): Position (8968.4, 5666.1), Distance 88.9 AU\n  - pl4413 (Planet): Position (8979.5, 5678.4), Distance 96.9 AU\n  - pl8346 (Planet): Position (8979.9, 5710.8), Distance 97.8 AU\n  - pl9241 (Planet): Position (8975.6, 5654.8), Distance 99.6 AU\n  - pl3999 (Planet): Position (8955.4, 5620.5), Distance 102.0 AU\n  - pl7852 (Planet): Position (8934.8, 5599.7), Distance 106.6 AU\n  - pl4679 (Planet): Position (8991.6, 5710.0), Distance 109.2 AU\n  - pl4359 (Planet): Position (8914.9, 5581.6), Distance 115.9 AU\n  - pl2947 (Planet): Position (9003.2, 5681.7), Distance 120.0 AU\n  - pl6425 (Planet): Position (8907.1, 5574.5), Distance 120.9 AU\n  - pl8414 (Planet): Position (8933.5, 5581.5), Distance 122.3 AU\n  - pl9434 (Planet): Position (8932.3, 5576.4), Distance 126.5 AU\n  - st7309 (Star): Position (8928.4, 5571.8), Distance 129.3 AU\n  - pl5758 (Planet): Position (8937.1, 5572.9), Distance 131.6 AU\n  - pl4482 (Planet): Position (8962.0, 5583.1), Distance 135.1 AU\n  - pl7356 (Planet): Position (8917.3, 5551.1), Distance 146.0 AU\n  - pl5697 (Planet): Position (8930.6, 5539.0), Distance 161.2 AU\n  - bh2005 (BlackHole): Position (8642.8, 5678.5), Distance 241.4 AU\n  - pl8096 (Planet): Position (8618.4, 5564.3), Distance 295.0 AU\n  - pl3852 (Planet): Position (8633.9, 5530.9), Distance 297.9 AU\n  - pl4547 (Planet): Position (8600.2, 5551.9), Distance 316.8 AU\n  - pl6479 (Planet): Position (8868.1, 6010.7), Distance 317.9 AU\n  - pl6824 (Planet): Position (8911.1, 6010.7), Distance 318.6 AU\n  - pl785 (Planet): Position (8597.2, 5548.4), Distance 321.1 AU\n  - pl3496 (Planet): Position (8893.0, 6016.8), Distance 323.7 AU\n  - pl4004 (Planet): Position (8584.4, 5565.1), Distance 325.6 AU\n  - pl6637 (Planet): Position (8588.9, 5546.4), Distance 329.4 AU\n  - st705 (Star): Position (8871.2, 6024.3), Distance 331.3 AU\n  - st3070 (Star): Position (8591.7, 5534.0), Distance 332.6 AU\n  - pl9129 (Planet): Position (8877.7, 6026.6), Distance 333.4 AU\n  - pl8486 (Planet): Position (8586.5, 5536.9), Distance 335.8 AU\n  - pl3001 (Planet): Position (8589.8, 5521.7), Distance 340.4 AU\n  - pl5526 (Planet): Position (8879.2, 6034.6), Distance 341.4 AU\n  - pl1243 (Planet): Position (8868.1, 6035.7), Distance 342.9 AU\n  - pl1697 (Planet): Position (9232.4, 5655.6), Distance 350.7 AU\n  - pl260 (Planet): Position (8848.7, 6047.7), Distance 356.2 AU\n  - pl7594 (Planet): Position (8547.7, 5551.8), Distance 364.5 AU\n  - pl7145 (Planet): Position (9249.0, 5670.9), Distance 366.0 AU\n  - pl4827 (Planet): Position (9249.8, 5652.4), Distance 368.3 AU\n  - pl1525 (Planet): Position (8898.1, 6061.8), Distance 368.9 AU\n  - pl2429 (Planet): Position (9247.6, 5619.2), Distance 371.3 AU\n  - pl5373 (Planet): Position (9211.3, 5875.2), Distance 374.7 AU\n  - pl5948 (Planet): Position (9196.7, 5906.5), Distance 378.8 AU\n  - pl5467 (Planet): Position (8878.0, 6072.8), Distance 379.7 AU\n  - pl4377 (Planet): Position (9262.6, 5649.7), Distance 381.4 AU\n  - pl1094 (Planet): Position (9218.2, 5879.8), Distance 383.0 AU\n  - pl7344 (Planet): Position (9270.9, 5678.1), Distance 387.4 AU\n  - st6722 (Star): Position (9277.3, 5649.3), Distance 396.1 AU\n  - pl1958 (Planet): Position (9229.3, 5917.5), Distance 412.0 AU\n  - st4931 (Star): Position (9241.2, 5905.8), Distance 415.9 AU\n  - pl3973 (Planet): Position (9297.3, 5640.0), Distance 417.0 AU\n  - pl5353 (Planet): Position (9301.0, 5692.7), Distance 417.3 AU\n  - pl5574 (Planet): Position (9245.3, 5908.7), Distance 420.9 AU\n  - pl3038 (Planet): Position (9276.7, 5875.9), Distance 433.4 AU\n  - pl9248 (Planet): Position (9274.9, 5879.7), Distance 433.4 AU\n  - pl282 (Planet): Position (9269.3, 5894.2), Distance 434.8 AU\n  - pl487 (Planet): Position (9260.9, 5909.5), Distance 434.8 AU\n  - pl9849 (Planet): Position (9322.9, 5665.6), Distance 440.1 AU\n  - pl5963 (Planet): Position (8789.4, 5220.1), Distance 482.4 AU\n  - pl8322 (Planet): Position (8803.5, 5209.6), Distance 490.3 AU\n  - pl3608 (Planet): Position (8768.2, 5207.8), Distance 498.9 AU\n  - pl1332 (Planet): Position (8732.1, 5214.5), Distance 502.1 AU\n  - pl6062 (Planet): Position (8799.3, 5192.9), Distance 507.4 AU\n  - pl4021 (Planet): Position (8764.1, 5196.4), Distance 511.0 AU\n  - pl4761 (Planet): Position (8723.8, 5207.8), Distance 511.1 AU\n  - pl7974 (Planet): Position (8729.2, 5204.1), Distance 512.9 AU\n  - st463 (Star): Position (8768.6, 5193.0), Distance 513.3 AU\n  - pl7999 (Planet): Position (8780.1, 5184.4), Distance 519.3 AU\n  - pl275 (Planet): Position (8363.7, 5663.4), Distance 520.9 AU\n  - pl4348 (Planet): Position (8996.0, 6203.8), Distance 522.8 AU\n  - pl3281 (Planet): Position (8980.0, 6208.2), Distance 523.9 AU\n  - pl3527 (Planet): Position (8752.1, 5185.8), Distance 524.2 AU\n  - pl3381 (Planet): Position (8776.3, 5178.2), Distance 526.1 AU\n  - pl7447 (Planet): Position (8758.0, 5181.7), Distance 526.7 AU\n  - pl8075 (Planet): Position (8964.9, 6213.8), Distance 526.9 AU\n  - pl1762 (Planet): Position (8728.4, 5187.1), Distance 529.4 AU\n  - st9518 (Star): Position (8740.3, 5178.7), Distance 534.1 AU\n  - pl4745 (Planet): Position (8764.4, 5170.9), Distance 535.8 AU\n  - pl4360 (Planet): Position (8746.9, 5172.3), Distance 538.6 AU\n  - pl6158 (Planet): Position (9029.4, 6216.1), Distance 542.8 AU\n  - pl5892 (Planet): Position (8758.0, 5164.3), Distance 543.6 AU\n  - pl4461 (Planet): Position (9010.0, 6222.6), Distance 544.2 AU\n  - st2428 (Star): Position (9003.3, 6224.6), Distance 544.7 AU\n  - pl29 (Planet): Position (8337.4, 5692.9), Distance 546.3 AU\n  - pl6369 (Planet): Position (8969.3, 6233.1), Distance 546.7 AU\n  - pl9305 (Planet): Position (8335.4, 5688.9), Distance 548.4 AU\n  - pl140 (Planet): Position (8718.4, 5169.7), Distance 549.0 AU\n\n\nENEMY SHIPS:\n  - s2335: Position (8880.8, 5681.8), Distance 11.8 AU, Health 100.0%, Shields 100.0%\n  - s289: Position (279.7, 706.8), Distance 9944.6 AU, Health 100.0%, Shields 100.0%\n  - s2211: Position (9463.2, 2354.9), Distance 3388.2 AU, Health 100.0%, Shields 100.0%\n  - s8285: Position (5976.7, 8736.9), Distance 4208.9 AU, Health 100.0%, Shields 100.0%\n  - s746: Position (2789.6, 5259.0), Distance 6109.6 AU, Health 100.0%, Shields 100.0%\n  - s7044: Position (2146.3, 827.2), Distance 8310.9 AU, Health 100.0%, Shields 100.0%\n  - s4007: Position (165.6, 9592.5), Distance 9550.4 AU, Health 100.0%, Shields 100.0%\n  - s7813: Position (3428.7, 2205.0), Distance 6474.9 AU, Health 100.0%, Shields 100.0%\n  - s5775: Position (9924.3, 6563.7), Distance 1356.6 AU, Health 100.0%, Shields 100.0%\n  - s8510: Position (4194.3, 8664.9), Distance 5551.7 AU, Health 100.0%, Shields 100.0%\n  - s5631: Position (4056.0, 3882.4), Distance 5156.2 AU, Health 100.0%, Shields 100.0%\n  - s7007: Position (394.0, 1295.8), Distance 9561.0 AU, Health 100.0%, Shields 100.0%\n  - s1: Position (3186.2, 8286.9), Distance 6260.1 AU, Health 100.0%, Shields 100.0%\n  - s6141: Position (3400.1, 123.9), Distance 7815.8 AU, Health 100.0%, Shields 100.0%\n  - s7911: Position (6019.0, 383.1), Distance 6033.6 AU, Health 100.0%, Shields 100.0%\n  - s7050: Position (9892.1, 1835.5), Distance 3987.3 AU, Health 100.0%, Shields 100.0%\n  - s7391: Position (194.2, 7496.4), Distance 8874.7 AU, Health 100.0%, Shields 100.0%\n  - s2132: Position (532.4, 7927.5), Distance 8645.0 AU, Health 100.0%, Shields 100.0%\n  - s8395: Position (658.8, 7421.4), Distance 8404.6 AU, Health 100.0%, Shields 100.0%\n  - s7429: Position (4231.3, 4975.6), Distance 4707.5 AU, Health 100.0%, Shields 100.0%\n  - s5139: Position (3300.9, 5561.1), Distance 5584.4 AU, Health 100.0%, Shields 100.0%\n  - s2979: Position (2309.8, 413.7), Distance 8431.5 AU, Health 100.0%, Shields 100.0%\n  - s2446: Position (2078.2, 1792.7), Distance 7844.1 AU, Health 100.0%, Shields 100.0%\n  - s1435: Position (7526.1, 7307.4), Distance 2109.2 AU, Health 100.0%, Shields 100.0%\n  - s9182: Position (1759.8, 2207.4), Distance 7931.0 AU, Health 100.0%, Shields 100.0%\n  - s8836: Position (4958.0, 2407.7), Distance 5119.2 AU, Health 100.0%, Shields 100.0%\n  - s6490: Position (5858.8, 5937.4), Distance 3034.7 AU, Health 100.0%, Shields 100.0%\n  - s3389: Position (9171.7, 7770.1), Distance 2096.7 AU, Health 100.0%, Shields 100.0%\n  - s9886: Position (2811.7, 9407.2), Distance 7117.8 AU, Health 100.0%, Shields 100.0%\n  - s1251: Position (6476.5, 9092.7), Distance 4165.5 AU, Health 100.0%, Shields 100.0%\n  - s7729: Position (8180.0, 7218.2), Distance 1679.5 AU, Health 100.0%, Shields 100.0%\n  - s5942: Position (2557.8, 1285.6), Distance 7710.1 AU, Health 100.0%, Shields 100.0%\n  - s41: Position (7647.7, 9608.6), Distance 4105.8 AU, Health 100.0%, Shields 100.0%\n  - s1859: Position (6587.5, 11.7), Distance 6128.0 AU, Health 100.0%, Shields 100.0%\n  - s2237: Position (1545.3, 8547.7), Distance 7874.0 AU, Health 100.0%, Shields 100.0%\n  - s7838: Position (6641.4, 1781.3), Distance 4509.0 AU, Health 100.0%, Shields 100.0%\n  - s4080: Position (8966.4, 3942.5), Distance 1752.6 AU, Health 100.0%, Shields 100.0%\n  - s9789: Position (5085.4, 8325.9), Distance 4621.5 AU, Health 100.0%, Shields 100.0%\n  - s4209: Position (7534.7, 6379.5), Distance 1513.5 AU, Health 100.0%, Shields 100.0%\n  - s2391: Position (7307.3, 129.7), Distance 5782.5 AU, Health 100.0%, Shields 100.0%\n  - s1310: Position (6684.5, 2918.2), Distance 3540.8 AU, Health 100.0%, Shields 100.0%\n  - s4231: Position (6548.4, 7139.8), Distance 2747.0 AU, Health 100.0%, Shields 100.0%\n  - s9915: Position (8027.9, 7763.6), Distance 2240.3 AU, Health 100.0%, Shields 100.0%\n  - s4009: Position (8472.8, 1338.2), Distance 4374.4 AU, Health 100.0%, Shields 100.0%\n  - s5788: Position (6863.8, 4752.9), Distance 2228.0 AU, Health 100.0%, Shields 100.0%\n  - s3815: Position (837.1, 1628.5), Distance 9015.0 AU, Health 100.0%, Shields 100.0%\n  - s1616: Position (8491.8, 6490.9), Distance 888.8 AU, Health 100.0%, Shields 100.0%\n  - s7499: Position (4775.1, 7876.9), Distance 4652.9 AU, Health 100.0%, Shields 100.0%\n  - s4936: Position (8064.4, 934.7), Distance 4828.5 AU, Health 100.0%, Shields 100.0%\n  - s3350: Position (4515.9, 3953.8), Distance 4701.4 AU, Health 100.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. NOTE: Half are FRIENDLY to you, half are HOSTILE/ENEMY bases!\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Hostile vessels\n\nIMPORTANT NOTES:\n- When asked about \"npc base\" or \"hostile base\", look for Starbase objects marked as HOSTILE/ENEMY (not friendly).\n- When asked about \"friendly base\", look for Starbase objects marked as FRIENDLY.\n- Starbases can be either friendly or npc - check the status in the objects list.\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor npc bases/starbases, ONLY report starbases that are marked as HOSTILE/ENEMY.\nFor friendly bases, ONLY report starbases that are marked as FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvz6RC2J4n84BAKK75XD2sBGkvnqJ",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "**Closest 5 Ships (in ascending order by distance):**\n\n1. **s2335**  \n   - Position: (8880.8, 5681.8)  \n   - Distance: 11.8 AU  \n   - Health: 100.0%, Shields: 100.0%\n\n2. **s5775**  \n   - Position: (9924.3, 6563.7)  \n   - Distance: 1356.6 AU  \n   - Health: 100.0%, Shields: 100.0%\n\n3. **s1616**  \n   - Position: (8491.8, 6490.9)  \n   - Distance: 888.8 AU  \n   - Health: 100.0%, Shields: 100.0%\n\n4. **s3389**  \n   - Position: (9171.7, 7770.1)  \n   - Distance: 2096.7 AU  \n   - Health: 100.0%, Shields: 100.0%\n\n5. **s1435**  \n   - Position: (7526.1, 7307.4)  \n   - Distance: 2109.2 AU  \n   - Health: 100.0%, Shields: 100.0%  \n\n(Note: The distances are sorted correctly, but due to the proximity of the first ship, it is listed first.)"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5245,
+    "completion_tokens": 295,
+    "total_tokens": 5540
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:13:37.875326
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s2335 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (8880.8, 5681.8)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (8883.7, 5693.2)\n- Distance: 11.8 AU\n- Damage: 0.0%\n- Reputation: 87/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvz6WRksg0C8jLEgmKRLXZLgOUpem",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"No immediate threats and I prefer to maintain distance. The player's reputation is high, so I will avoid confrontation.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 693,
+    "completion_tokens": 75,
+    "total_tokens": 768
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:15:54.140951
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"show me the 5 closest enemy bases in ascending order by distance\"\n\nCURRENT SITUATION:\nYour Ship Position: (9894.4, 4732.0)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - sb9768 (Starbase - HOSTILE/ENEMY): Position (9868.3, 4482.4), Distance 250.9 AU\n  - sb8766 (Starbase - HOSTILE/ENEMY): Position (9194.7, 4752.0), Distance 699.9 AU\n  - sb5657 (Starbase - HOSTILE/ENEMY): Position (9972.8, 3999.1), Distance 737.1 AU\n  - sb6584 (Starbase - HOSTILE/ENEMY): Position (8450.2, 3779.2), Distance 1730.2 AU\n  - sb2578 (Starbase - HOSTILE/ENEMY): Position (8383.7, 3733.9), Distance 1810.7 AU\n  - sb1326 (Starbase - HOSTILE/ENEMY): Position (9270.7, 6651.0), Distance 2017.9 AU\n  - sb7341 (Starbase - HOSTILE/ENEMY): Position (7846.2, 5080.5), Distance 2077.7 AU\n  - sb804 (Starbase - HOSTILE/ENEMY): Position (8021.1, 5917.7), Distance 2217.0 AU\n  - sb4065 (Starbase - HOSTILE/ENEMY): Position (7289.2, 5134.6), Distance 2636.1 AU\n  - sb6403 (Starbase - HOSTILE/ENEMY): Position (7819.9, 3015.4), Distance 2692.6 AU\n  - sb1434 (Starbase - HOSTILE/ENEMY): Position (8363.0, 1752.6), Distance 3349.9 AU\n  - sb984 (Starbase - HOSTILE/ENEMY): Position (7783.1, 2060.4), Distance 3405.2 AU\n  - sb6059 (Starbase - HOSTILE/ENEMY): Position (6230.2, 4927.3), Distance 3669.4 AU\n  - sb8182 (Starbase - HOSTILE/ENEMY): Position (9487.2, 8566.8), Distance 3856.4 AU\n  - sb2091 (Starbase - HOSTILE/ENEMY): Position (5965.4, 5174.0), Distance 3953.8 AU\n  - sb4039 (Starbase - HOSTILE/ENEMY): Position (6260.8, 2027.9), Distance 4529.4 AU\n  - sb1853 (Starbase - HOSTILE/ENEMY): Position (7945.3, 532.4), Distance 4629.8 AU\n  - sb6939 (Starbase - HOSTILE/ENEMY): Position (7769.0, 8858.2), Distance 4641.4 AU\n  - sb4809 (Starbase - HOSTILE/ENEMY): Position (7339.9, 805.5), Distance 4684.3 AU\n  - sb6707 (Starbase - HOSTILE/ENEMY): Position (7637.5, 24.0), Distance 5220.9 AU\n  - sb74 (Starbase - HOSTILE/ENEMY): Position (5101.7, 6837.6), Distance 5234.8 AU\n  - sb6718 (Starbase - HOSTILE/ENEMY): Position (4436.1, 4870.0), Distance 5460.0 AU\n  - sb754 (Starbase - HOSTILE/ENEMY): Position (4924.4, 2207.9), Distance 5574.2 AU\n  - sb2732 (Starbase - HOSTILE/ENEMY): Position (3918.5, 3300.1), Distance 6145.0 AU\n  - sb8457 (Starbase - HOSTILE/ENEMY): Position (5931.5, 9548.4), Distance 6237.2 AU\n  - sb6373 (Starbase - HOSTILE/ENEMY): Position (3671.9, 6456.9), Distance 6457.2 AU\n  - sb284 (Starbase - HOSTILE/ENEMY): Position (3455.0, 5224.5), Distance 6458.1 AU\n  - sb6842 (Starbase - HOSTILE/ENEMY): Position (3425.3, 5702.9), Distance 6541.6 AU\n  - sb9231 (Starbase - HOSTILE/ENEMY): Position (3236.4, 4484.5), Distance 6662.6 AU\n  - sb8127 (Starbase - HOSTILE/ENEMY): Position (5122.5, 9521.5), Distance 6760.9 AU\n  - sb4267 (Starbase - HOSTILE/ENEMY): Position (3101.5, 4114.7), Distance 6820.9 AU\n  - sb8433 (Starbase - HOSTILE/ENEMY): Position (3985.2, 8313.6), Distance 6909.9 AU\n  - sb697 (Starbase - HOSTILE/ENEMY): Position (5108.7, 9932.9), Distance 7067.7 AU\n  - sb3809 (Starbase - HOSTILE/ENEMY): Position (2908.9, 2810.9), Distance 7244.8 AU\n  - sb1023 (Starbase - HOSTILE/ENEMY): Position (2903.2, 1883.6), Distance 7549.2 AU\n  - sb9070 (Starbase - HOSTILE/ENEMY): Position (2454.7, 6189.4), Distance 7581.1 AU\n  - sb2114 (Starbase - HOSTILE/ENEMY): Position (2246.7, 4328.2), Distance 7658.3 AU\n  - sb8956 (Starbase - HOSTILE/ENEMY): Position (2545.9, 7243.0), Distance 7765.7 AU\n  - sb678 (Starbase - HOSTILE/ENEMY): Position (2368.5, 7664.8), Distance 8077.1 AU\n  - sb432 (Starbase - HOSTILE/ENEMY): Position (1762.7, 3963.9), Distance 8167.9 AU\n  - sb9256 (Starbase - HOSTILE/ENEMY): Position (3098.4, 58.0), Distance 8248.1 AU\n  - sb1806 (Starbase - HOSTILE/ENEMY): Position (1543.9, 2871.6), Distance 8555.2 AU\n  - sb3502 (Starbase - HOSTILE/ENEMY): Position (2126.8, 1087.3), Distance 8580.1 AU\n  - sb6968 (Starbase - HOSTILE/ENEMY): Position (2704.0, 9522.9), Distance 8640.3 AU\n  - sb8542 (Starbase - HOSTILE/ENEMY): Position (793.4, 5284.8), Distance 9117.7 AU\n  - sb6452 (Starbase - HOSTILE/ENEMY): Position (1827.4, 9316.1), Distance 9278.5 AU\n  - sb1167 (Starbase - HOSTILE/ENEMY): Position (871.8, 7285.4), Distance 9376.9 AU\n  - sb2982 (Starbase - HOSTILE/ENEMY): Position (1747.5, 9613.7), Distance 9497.5 AU\n  - sb435 (Starbase - HOSTILE/ENEMY): Position (981.9, 1037.9), Distance 9647.7 AU\n  - sb6272 (Starbase - HOSTILE/ENEMY): Position (488.6, 8983.0), Distance 10321.8 AU\n  - pl2430 (Planet): Position (9886.8, 4730.2), Distance 7.8 AU\n  - pl5131 (Planet): Position (9887.5, 4726.1), Distance 9.0 AU\n  - st9081 (Star): Position (9859.7, 4710.2), Distance 40.9 AU\n  - pl7047 (Planet): Position (9851.4, 4736.7), Distance 43.3 AU\n  - pl9339 (Planet): Position (9850.6, 4756.8), Distance 50.3 AU\n  - pl9909 (Planet): Position (9896.8, 4681.0), Distance 51.0 AU\n  - pl6592 (Planet): Position (9840.9, 4719.9), Distance 54.9 AU\n  - pl2101 (Planet): Position (9835.7, 4698.7), Distance 67.5 AU\n  - pl1045 (Planet): Position (9877.9, 4666.3), Distance 67.7 AU\n  - pl7391 (Planet): Position (9858.0, 4661.4), Distance 79.4 AU\n  - pl3534 (Planet): Position (9983.9, 4768.9), Distance 96.8 AU\n  - pl4412 (Planet): Position (9971.0, 4793.4), Distance 98.1 AU\n  - pl6662 (Planet): Position (9958.8, 4807.4), Distance 99.2 AU\n  - pl9371 (Planet): Position (9816.0, 4800.4), Distance 104.0 AU\n  - pl3314 (Planet): Position (9859.2, 4833.1), Distance 107.0 AU\n  - pl7995 (Planet): Position (9980.2, 4796.5), Distance 107.4 AU\n  - st2792 (Star): Position (9972.8, 4806.8), Distance 108.3 AU\n  - pl798 (Planet): Position (9969.2, 4810.3), Distance 108.4 AU\n  - st3383 (Star): Position (9842.0, 4835.6), Distance 116.1 AU\n  - pl240 (Planet): Position (9992.6, 4795.5), Distance 117.0 AU\n  - pl5695 (Planet): Position (9834.7, 4835.5), Distance 119.5 AU\n  - pl8499 (Planet): Position (9879.5, 4850.8), Distance 119.8 AU\n  - pl3853 (Planet): Position (9879.0, 4852.2), Distance 121.2 AU\n  - pl8364 (Planet): Position (9976.1, 4835.5), Distance 131.9 AU\n  - pl5366 (Planet): Position (9978.1, 4837.1), Distance 134.4 AU\n  - pl5167 (Planet): Position (10000.0, 4817.6), Distance 136.0 AU\n  - pl6685 (Planet): Position (9869.8, 4872.3), Distance 142.4 AU\n  - pl8000 (Planet): Position (9821.9, 4866.9), Distance 153.2 AU\n  - pl382 (Planet): Position (9834.2, 4875.2), Distance 155.3 AU\n  - pl4330 (Planet): Position (9813.3, 4865.6), Distance 156.3 AU\n  - pl6018 (Planet): Position (9650.7, 4570.9), Distance 292.1 AU\n  - pl4568 (Planet): Position (9642.9, 4568.9), Distance 299.8 AU\n  - pl9192 (Planet): Position (9612.0, 4621.5), Distance 303.2 AU\n  - pl7934 (Planet): Position (9633.2, 4573.9), Distance 305.3 AU\n  - st1293 (Star): Position (9616.2, 4580.1), Distance 316.9 AU\n  - pl1457 (Planet): Position (9608.3, 4559.2), Distance 334.3 AU\n  - pl5562 (Planet): Position (9595.0, 4580.7), Distance 335.5 AU\n  - pl1136 (Planet): Position (9606.0, 4556.2), Distance 337.8 AU\n  - pl7075 (Planet): Position (9613.8, 4535.2), Distance 342.8 AU\n  - pl1448 (Planet): Position (9589.5, 4572.8), Distance 344.0 AU\n  - pl9278 (Planet): Position (9586.0, 4572.5), Distance 347.2 AU\n  - pl2769 (Planet): Position (9580.3, 4584.0), Distance 347.2 AU\n  - pl1138 (Planet): Position (9573.4, 4573.6), Distance 357.9 AU\n  - st9429 (Star): Position (9589.1, 4532.7), Distance 364.6 AU\n  - pl74 (Planet): Position (9586.7, 4526.0), Distance 370.3 AU\n  - pl2256 (Planet): Position (9586.4, 4512.3), Distance 378.4 AU\n  - pl1514 (Planet): Position (9555.6, 4554.2), Distance 382.6 AU\n  - pl7563 (Planet): Position (9571.4, 4526.0), Distance 383.1 AU\n  - pl4092 (Planet): Position (9569.2, 4524.7), Distance 385.6 AU\n  - pl5678 (Planet): Position (9545.1, 4532.4), Distance 402.3 AU\n\n\nENEMY SHIPS:\n  - s3080: Position (9905.1, 4718.2), Distance 17.4 AU, Health 100.0%, Shields 100.0%\n  - s9287: Position (9906.9, 4693.7), Distance 40.3 AU, Health 100.0%, Shields 100.0%\n  - s8681: Position (9260.7, 4196.0), Distance 830.0 AU, Health 100.0%, Shields 100.0%\n  - s1182: Position (1804.2, 3161.0), Distance 8241.3 AU, Health 100.0%, Shields 100.0%\n  - s7444: Position (7807.9, 6465.5), Distance 2712.7 AU, Health 100.0%, Shields 100.0%\n  - s6236: Position (6712.6, 1386.0), Distance 4617.2 AU, Health 100.0%, Shields 100.0%\n  - s7798: Position (2693.3, 5133.9), Distance 7212.3 AU, Health 100.0%, Shields 100.0%\n  - s7545: Position (3340.7, 8830.5), Distance 7729.7 AU, Health 100.0%, Shields 100.0%\n  - s8007: Position (971.9, 6939.3), Distance 9191.4 AU, Health 100.0%, Shields 100.0%\n  - s8170: Position (6054.5, 4442.8), Distance 3850.7 AU, Health 100.0%, Shields 100.0%\n  - s8697: Position (9817.9, 8414.4), Distance 3683.3 AU, Health 100.0%, Shields 100.0%\n  - s6440: Position (6025.2, 1959.6), Distance 4759.9 AU, Health 100.0%, Shields 100.0%\n  - s1669: Position (7204.2, 6146.9), Distance 3039.6 AU, Health 100.0%, Shields 100.0%\n  - s713: Position (7374.8, 3966.9), Distance 2633.2 AU, Health 100.0%, Shields 100.0%\n  - s9778: Position (310.3, 8828.5), Distance 10422.8 AU, Health 100.0%, Shields 100.0%\n  - s9066: Position (6833.8, 8183.3), Distance 4612.9 AU, Health 100.0%, Shields 100.0%\n  - s3229: Position (9119.0, 7556.5), Distance 2929.1 AU, Health 100.0%, Shields 100.0%\n  - s3877: Position (7052.0, 7581.9), Distance 4025.1 AU, Health 100.0%, Shields 100.0%\n  - s7729: Position (3735.2, 7681.5), Distance 6829.0 AU, Health 100.0%, Shields 100.0%\n  - s1798: Position (5918.8, 805.7), Distance 5587.6 AU, Health 100.0%, Shields 100.0%\n  - s3624: Position (8801.3, 1631.7), Distance 3287.3 AU, Health 100.0%, Shields 100.0%\n  - s7811: Position (468.0, 3221.8), Distance 9546.6 AU, Health 100.0%, Shields 100.0%\n  - s4166: Position (7930.8, 4325.8), Distance 2005.2 AU, Health 100.0%, Shields 100.0%\n  - s702: Position (4394.4, 8472.8), Distance 6651.6 AU, Health 100.0%, Shields 100.0%\n  - s8225: Position (3647.4, 6887.1), Distance 6608.2 AU, Health 100.0%, Shields 100.0%\n  - s5838: Position (1226.6, 5857.4), Distance 8740.6 AU, Health 100.0%, Shields 100.0%\n  - s3705: Position (2125.3, 315.5), Distance 8936.7 AU, Health 100.0%, Shields 100.0%\n  - s1711: Position (3108.0, 7350.8), Distance 7274.1 AU, Health 100.0%, Shields 100.0%\n  - s452: Position (1669.1, 860.1), Distance 9091.1 AU, Health 100.0%, Shields 100.0%\n  - s4406: Position (4337.9, 3821.4), Distance 5630.6 AU, Health 100.0%, Shields 100.0%\n  - s913: Position (6505.5, 8158.6), Distance 4819.4 AU, Health 100.0%, Shields 100.0%\n  - s1203: Position (8446.6, 5690.1), Distance 1736.1 AU, Health 100.0%, Shields 100.0%\n  - s8441: Position (3438.5, 2844.7), Distance 6726.1 AU, Health 100.0%, Shields 100.0%\n  - s2934: Position (3910.0, 7990.2), Distance 6813.9 AU, Health 100.0%, Shields 100.0%\n  - s7346: Position (3874.2, 9534.5), Distance 7701.1 AU, Health 100.0%, Shields 100.0%\n  - s8893: Position (3947.1, 2883.0), Distance 6228.1 AU, Health 100.0%, Shields 100.0%\n  - s8377: Position (4858.1, 6521.8), Distance 5344.9 AU, Health 100.0%, Shields 100.0%\n  - s6436: Position (9746.8, 1997.8), Distance 2738.1 AU, Health 100.0%, Shields 100.0%\n  - s1151: Position (2688.0, 7237.4), Distance 7629.5 AU, Health 100.0%, Shields 100.0%\n  - s9731: Position (3372.8, 3719.5), Distance 6599.7 AU, Health 100.0%, Shields 100.0%\n  - s9057: Position (429.3, 1012.6), Distance 10169.7 AU, Health 100.0%, Shields 100.0%\n  - s11: Position (1448.3, 1231.4), Distance 9142.8 AU, Health 100.0%, Shields 100.0%\n  - s5117: Position (9891.1, 2777.6), Distance 1954.4 AU, Health 100.0%, Shields 100.0%\n  - s9537: Position (9384.7, 5784.9), Distance 1169.8 AU, Health 100.0%, Shields 100.0%\n  - s307: Position (498.6, 1199.0), Distance 10038.1 AU, Health 100.0%, Shields 100.0%\n  - s6910: Position (9321.6, 7942.4), Distance 3261.1 AU, Health 100.0%, Shields 100.0%\n  - s5684: Position (5116.6, 2183.2), Distance 5415.1 AU, Health 100.0%, Shields 100.0%\n  - s3153: Position (5825.4, 5252.4), Distance 4102.1 AU, Health 100.0%, Shields 100.0%\n  - s4765: Position (8075.9, 8280.4), Distance 3987.2 AU, Health 100.0%, Shields 100.0%\n  - s8242: Position (5414.0, 8201.1), Distance 5666.5 AU, Health 100.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. NOTE: Half are FRIENDLY to you, half are HOSTILE/ENEMY bases!\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Hostile vessels\n\nIMPORTANT NOTES:\n- When asked about \"npc base\" or \"hostile base\", look for Starbase objects marked as HOSTILE/ENEMY (not friendly).\n- When asked about \"friendly base\", look for Starbase objects marked as FRIENDLY.\n- Starbases can be either friendly or npc - check the status in the objects list.\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor npc bases/starbases, ONLY report starbases that are marked as HOSTILE/ENEMY.\nFor friendly bases, ONLY report starbases that are marked as FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvz8gnixQjgnQdjkqiQ0K2n64Zw3p",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "**Closest Enemy Bases:**\n\n1. **Object ID:** sb9768  \n   **Position:** (9868.3, 4482.4)  \n   **Distance:** 250.9 AU  \n\n2. **Object ID:** sb8766  \n   **Position:** (9194.7, 4752.0)  \n   **Distance:** 699.9 AU  \n\n3. **Object ID:** sb5657  \n   **Position:** (9972.8, 3999.1)  \n   **Distance:** 737.1 AU  \n\n4. **Object ID:** sb6584  \n   **Position:** (8450.2, 3779.2)  \n   **Distance:** 1730.2 AU  \n\n5. **Object ID:** sb2578  \n   **Position:** (8383.7, 3733.9)  \n   **Distance:** 1810.7 AU  "
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5634,
+    "completion_tokens": 193,
+    "total_tokens": 5827
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:15:55.772223
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s3080 in a space combat scenario.\n\nCAPTAIN PERSONALITY: NEUTRAL\nYou are a NEUTRAL captain. Your behavior:\n- Attack only if provoked (have taken damage) or target reputation < 50\n- Engage in combat until your ship damage > 50%\n- Balance between offense and defense\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (9905.1, 4718.2)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: neutral\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (9894.4, 4732.0)\n- Distance: 17.4 AU\n- Damage: 0.0%\n- Reputation: 78/100\n\nNearby NPC Ships (potential targets or threats):\n  - s9287 at 24.6 AU, Damage: 0.0%, Position: (9906.9, 4693.7)\n\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 50%\n\n\nMake a tactical decision based on your neutral personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (50%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvz8ky8xXa9KsFSNJfx5URIevmyLQ",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 5,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"Current situation shows no immediate threat or provocation. I will patrol the area to maintain readiness.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 697,
+    "completion_tokens": 72,
+    "total_tokens": 769
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:15:58.169738
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s9287 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (9906.9, 4693.7)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (9894.4, 4732.0)\n- Distance: 40.3 AU\n- Damage: 0.0%\n- Reputation: 78/100\n\nNearby NPC Ships (potential targets or threats):\n  - s3080 at 24.6 AU, Damage: 0.0%, Position: (9905.1, 4718.2)\n\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvz8lSD8vQkhtUMHTylc5mkKN9WhU",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"s3080\",\n    \"heading\": 270,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"s3080 is the closest target and poses no immediate threat; attacking with torpedos from a distance of 24.6 AU.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 693,
+    "completion_tokens": 83,
+    "total_tokens": 776
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:16:38.398931
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"show me the closest 5 ships ordered by distance\"\n\nCURRENT SITUATION:\nYour Ship Position: (9894.4, 4732.0)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - pl2430 (Planet): Position (9886.8, 4730.2), Distance 7.8 AU\n  - pl5131 (Planet): Position (9887.5, 4726.1), Distance 9.0 AU\n  - st9081 (Star): Position (9859.7, 4710.2), Distance 40.9 AU\n  - pl7047 (Planet): Position (9851.4, 4736.7), Distance 43.3 AU\n  - pl9339 (Planet): Position (9850.6, 4756.8), Distance 50.3 AU\n  - pl9909 (Planet): Position (9896.8, 4681.0), Distance 51.0 AU\n  - pl6592 (Planet): Position (9840.9, 4719.9), Distance 54.9 AU\n  - pl2101 (Planet): Position (9835.7, 4698.7), Distance 67.5 AU\n  - pl1045 (Planet): Position (9877.9, 4666.3), Distance 67.7 AU\n  - pl7391 (Planet): Position (9858.0, 4661.4), Distance 79.4 AU\n  - pl3534 (Planet): Position (9983.9, 4768.9), Distance 96.8 AU\n  - pl4412 (Planet): Position (9971.0, 4793.4), Distance 98.1 AU\n  - pl6662 (Planet): Position (9958.8, 4807.4), Distance 99.2 AU\n  - pl9371 (Planet): Position (9816.0, 4800.4), Distance 104.0 AU\n  - pl3314 (Planet): Position (9859.2, 4833.1), Distance 107.0 AU\n  - pl7995 (Planet): Position (9980.2, 4796.5), Distance 107.4 AU\n  - st2792 (Star): Position (9972.8, 4806.8), Distance 108.3 AU\n  - pl798 (Planet): Position (9969.2, 4810.3), Distance 108.4 AU\n  - st3383 (Star): Position (9842.0, 4835.6), Distance 116.1 AU\n  - pl240 (Planet): Position (9992.6, 4795.5), Distance 117.0 AU\n  - pl5695 (Planet): Position (9834.7, 4835.5), Distance 119.5 AU\n  - pl8499 (Planet): Position (9879.5, 4850.8), Distance 119.8 AU\n  - pl3853 (Planet): Position (9879.0, 4852.2), Distance 121.2 AU\n  - pl8364 (Planet): Position (9976.1, 4835.5), Distance 131.9 AU\n  - pl5366 (Planet): Position (9978.1, 4837.1), Distance 134.4 AU\n  - pl5167 (Planet): Position (10000.0, 4817.6), Distance 136.0 AU\n  - pl6685 (Planet): Position (9869.8, 4872.3), Distance 142.4 AU\n  - pl8000 (Planet): Position (9821.9, 4866.9), Distance 153.2 AU\n  - pl382 (Planet): Position (9834.2, 4875.2), Distance 155.3 AU\n  - pl4330 (Planet): Position (9813.3, 4865.6), Distance 156.3 AU\n  - sb9768 (Starbase - HOSTILE/ENEMY): Position (9868.3, 4482.4), Distance 250.9 AU\n  - pl6018 (Planet): Position (9650.7, 4570.9), Distance 292.1 AU\n  - pl4568 (Planet): Position (9642.9, 4568.9), Distance 299.8 AU\n  - pl9192 (Planet): Position (9612.0, 4621.5), Distance 303.2 AU\n  - pl7934 (Planet): Position (9633.2, 4573.9), Distance 305.3 AU\n  - st1293 (Star): Position (9616.2, 4580.1), Distance 316.9 AU\n  - pl1457 (Planet): Position (9608.3, 4559.2), Distance 334.3 AU\n  - pl5562 (Planet): Position (9595.0, 4580.7), Distance 335.5 AU\n  - pl1136 (Planet): Position (9606.0, 4556.2), Distance 337.8 AU\n  - pl7075 (Planet): Position (9613.8, 4535.2), Distance 342.8 AU\n  - pl1448 (Planet): Position (9589.5, 4572.8), Distance 344.0 AU\n  - pl9278 (Planet): Position (9586.0, 4572.5), Distance 347.2 AU\n  - pl2769 (Planet): Position (9580.3, 4584.0), Distance 347.2 AU\n  - pl1138 (Planet): Position (9573.4, 4573.6), Distance 357.9 AU\n  - st9429 (Star): Position (9589.1, 4532.7), Distance 364.6 AU\n  - pl74 (Planet): Position (9586.7, 4526.0), Distance 370.3 AU\n  - pl2256 (Planet): Position (9586.4, 4512.3), Distance 378.4 AU\n  - pl1514 (Planet): Position (9555.6, 4554.2), Distance 382.6 AU\n  - pl7563 (Planet): Position (9571.4, 4526.0), Distance 383.1 AU\n  - pl4092 (Planet): Position (9569.2, 4524.7), Distance 385.6 AU\n  - pl5678 (Planet): Position (9545.1, 4532.4), Distance 402.3 AU\n  - pl4170 (Planet): Position (9436.1, 4824.4), Distance 467.6 AU\n  - pl11 (Planet): Position (9419.4, 4785.1), Distance 478.0 AU\n  - pl2791 (Planet): Position (9426.3, 4842.5), Distance 481.0 AU\n  - pl1196 (Planet): Position (9418.3, 4824.9), Distance 485.1 AU\n  - pl5180 (Planet): Position (9405.7, 4807.6), Distance 494.5 AU\n  - pl7686 (Planet): Position (9408.4, 4853.8), Distance 501.0 AU\n  - st6651 (Star): Position (9396.3, 4811.7), Distance 504.4 AU\n  - pl1086 (Planet): Position (9391.4, 4804.6), Distance 508.2 AU\n  - pl8897 (Planet): Position (9367.9, 4817.7), Distance 533.4 AU\n  - pl1939 (Planet): Position (9352.3, 4832.3), Distance 551.3 AU\n  - pl6737 (Planet): Position (9487.6, 4280.5), Distance 607.7 AU\n  - pl4153 (Planet): Position (9455.2, 4295.8), Distance 619.0 AU\n  - pl2442 (Planet): Position (9442.2, 5156.2), Distance 620.0 AU\n  - pl9246 (Planet): Position (9481.2, 4265.8), Distance 622.9 AU\n  - pl5526 (Planet): Position (9475.3, 4258.6), Distance 632.2 AU\n  - pl1120 (Planet): Position (9378.5, 4353.5), Distance 639.8 AU\n  - pl4569 (Planet): Position (9458.6, 5202.5), Distance 641.4 AU\n  - bh9047 (BlackHole): Position (9579.7, 5294.9), Distance 644.9 AU\n  - pl8539 (Planet): Position (9359.2, 4366.8), Distance 647.9 AU\n  - pl8419 (Planet): Position (9403.7, 5155.7), Distance 648.4 AU\n  - pl3026 (Planet): Position (9433.8, 5191.9), Distance 650.9 AU\n  - st105 (Star): Position (9441.2, 4262.6), Distance 652.5 AU\n  - pl1510 (Planet): Position (9427.0, 5189.0), Distance 653.7 AU\n  - pl3046 (Planet): Position (9451.4, 4247.6), Distance 656.4 AU\n  - st3747 (Star): Position (9423.2, 5198.4), Distance 663.0 AU\n  - pl7086 (Planet): Position (9429.5, 5207.2), Distance 664.8 AU\n  - pl8063 (Planet): Position (9370.0, 4321.1), Distance 666.2 AU\n  - pl4532 (Planet): Position (9427.6, 4253.3), Distance 668.6 AU\n  - pl3461 (Planet): Position (9444.0, 4236.2), Distance 669.8 AU\n  - pl6171 (Planet): Position (9379.2, 4295.1), Distance 675.5 AU\n  - pl9178 (Planet): Position (9339.5, 4346.0), Distance 676.0 AU\n  - pl8113 (Planet): Position (9397.7, 5204.1), Distance 685.3 AU\n  - pl6373 (Planet): Position (9409.4, 5217.4), Distance 686.2 AU\n  - st2899 (Star): Position (9344.1, 4319.2), Distance 687.9 AU\n  - pl250 (Planet): Position (9423.2, 4230.7), Distance 688.0 AU\n  - pl4288 (Planet): Position (9338.6, 4322.4), Distance 690.4 AU\n  - pl7295 (Planet): Position (9429.6, 4220.3), Distance 691.2 AU\n  - pl7805 (Planet): Position (9403.5, 5226.6), Distance 696.9 AU\n  - sb8766 (Starbase - HOSTILE/ENEMY): Position (9194.7, 4752.0), Distance 699.9 AU\n  - pl5210 (Planet): Position (9407.4, 5236.0), Distance 700.8 AU\n  - pl7144 (Planet): Position (9415.0, 5245.1), Distance 702.2 AU\n  - pl9513 (Planet): Position (9394.0, 5227.8), Distance 704.5 AU\n  - pl1172 (Planet): Position (9313.1, 4331.6), Distance 705.9 AU\n  - pl4635 (Planet): Position (9428.9, 5263.6), Distance 706.6 AU\n  - pl2727 (Planet): Position (9381.0, 5225.4), Distance 712.0 AU\n  - bh4738 (BlackHole): Position (9476.0, 4155.0), Distance 712.7 AU\n  - pl978 (Planet): Position (9337.5, 4286.2), Distance 713.4 AU\n  - st5860 (Star): Position (9403.1, 5251.2), Distance 714.8 AU\n  - pl8112 (Planet): Position (9403.2, 5256.6), Distance 718.7 AU\n\n\nENEMY SHIPS:\n  - s3080: Position (9910.1, 4718.2), Distance 20.8 AU, Health 100.0%, Shields 100.0%\n  - s9287: Position (9906.9, 4693.7), Distance 40.3 AU, Health 100.0%, Shields 100.0%\n  - s8681: Position (9260.7, 4196.0), Distance 830.0 AU, Health 100.0%, Shields 100.0%\n  - s1182: Position (1804.2, 3161.0), Distance 8241.3 AU, Health 100.0%, Shields 100.0%\n  - s7444: Position (7807.9, 6465.5), Distance 2712.7 AU, Health 100.0%, Shields 100.0%\n  - s6236: Position (6712.6, 1386.0), Distance 4617.2 AU, Health 100.0%, Shields 100.0%\n  - s7798: Position (2693.3, 5133.9), Distance 7212.3 AU, Health 100.0%, Shields 100.0%\n  - s7545: Position (3339.7, 8824.6), Distance 7727.5 AU, Health 100.0%, Shields 100.0%\n  - s8007: Position (971.9, 6939.3), Distance 9191.4 AU, Health 100.0%, Shields 100.0%\n  - s8170: Position (6054.5, 4442.8), Distance 3850.7 AU, Health 100.0%, Shields 100.0%\n  - s8697: Position (9813.8, 8410.0), Distance 3678.9 AU, Health 100.0%, Shields 100.0%\n  - s6440: Position (6023.6, 1955.9), Distance 4763.3 AU, Health 100.0%, Shields 100.0%\n  - s1669: Position (7201.4, 6152.3), Distance 3044.5 AU, Health 100.0%, Shields 100.0%\n  - s713: Position (7374.8, 3966.9), Distance 2633.2 AU, Health 100.0%, Shields 100.0%\n  - s9778: Position (310.3, 8828.5), Distance 10422.8 AU, Health 100.0%, Shields 100.0%\n  - s9066: Position (6833.8, 8183.3), Distance 4612.9 AU, Health 100.0%, Shields 100.0%\n  - s3229: Position (9119.8, 7554.7), Distance 2927.1 AU, Health 100.0%, Shields 100.0%\n  - s3877: Position (7052.0, 7581.9), Distance 4025.1 AU, Health 100.0%, Shields 100.0%\n  - s7729: Position (3735.2, 7681.5), Distance 6829.0 AU, Health 100.0%, Shields 100.0%\n  - s1798: Position (5918.8, 805.7), Distance 5587.6 AU, Health 100.0%, Shields 100.0%\n  - s3624: Position (8801.3, 1631.7), Distance 3287.3 AU, Health 100.0%, Shields 100.0%\n  - s7811: Position (468.0, 3221.8), Distance 9546.6 AU, Health 100.0%, Shields 100.0%\n  - s4166: Position (7930.8, 4325.8), Distance 2005.2 AU, Health 100.0%, Shields 100.0%\n  - s702: Position (4394.4, 8472.8), Distance 6651.6 AU, Health 100.0%, Shields 100.0%\n  - s8225: Position (3647.4, 6887.1), Distance 6608.2 AU, Health 100.0%, Shields 100.0%\n  - s5838: Position (1223.4, 5855.0), Distance 8743.4 AU, Health 100.0%, Shields 100.0%\n  - s3705: Position (2125.3, 315.5), Distance 8936.7 AU, Health 100.0%, Shields 100.0%\n  - s1711: Position (3108.0, 7350.8), Distance 7274.1 AU, Health 100.0%, Shields 100.0%\n  - s452: Position (1668.6, 862.0), Distance 9090.7 AU, Health 100.0%, Shields 100.0%\n  - s4406: Position (4337.5, 3825.4), Distance 5630.4 AU, Health 100.0%, Shields 100.0%\n  - s913: Position (6500.0, 8156.3), Distance 4821.6 AU, Health 100.0%, Shields 100.0%\n  - s1203: Position (8446.6, 5690.1), Distance 1736.1 AU, Health 100.0%, Shields 100.0%\n  - s8441: Position (3438.5, 2844.7), Distance 6726.1 AU, Health 100.0%, Shields 100.0%\n  - s2934: Position (3910.0, 7990.2), Distance 6813.9 AU, Health 100.0%, Shields 100.0%\n  - s7346: Position (3874.2, 9534.5), Distance 7701.1 AU, Health 100.0%, Shields 100.0%\n  - s8893: Position (3947.1, 2883.0), Distance 6228.1 AU, Health 100.0%, Shields 100.0%\n  - s8377: Position (4858.1, 6521.8), Distance 5344.9 AU, Health 100.0%, Shields 100.0%\n  - s6436: Position (9746.8, 1997.8), Distance 2738.1 AU, Health 100.0%, Shields 100.0%\n  - s1151: Position (2688.0, 7237.4), Distance 7629.5 AU, Health 100.0%, Shields 100.0%\n  - s9731: Position (3372.8, 3719.5), Distance 6599.7 AU, Health 100.0%, Shields 100.0%\n  - s9057: Position (429.3, 1012.6), Distance 10169.7 AU, Health 100.0%, Shields 100.0%\n  - s11: Position (1448.3, 1231.4), Distance 9142.8 AU, Health 100.0%, Shields 100.0%\n  - s5117: Position (9891.1, 2777.6), Distance 1954.4 AU, Health 100.0%, Shields 100.0%\n  - s9537: Position (9384.7, 5784.9), Distance 1169.8 AU, Health 100.0%, Shields 100.0%\n  - s307: Position (498.6, 1199.0), Distance 10038.1 AU, Health 100.0%, Shields 100.0%\n  - s6910: Position (9321.6, 7942.4), Distance 3261.1 AU, Health 100.0%, Shields 100.0%\n  - s5684: Position (5116.6, 2183.2), Distance 5415.1 AU, Health 100.0%, Shields 100.0%\n  - s3153: Position (5818.3, 5256.1), Distance 4109.7 AU, Health 100.0%, Shields 100.0%\n  - s4765: Position (8075.9, 8280.4), Distance 3987.2 AU, Health 100.0%, Shields 100.0%\n  - s8242: Position (5414.0, 8201.1), Distance 5666.5 AU, Health 100.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. NOTE: Half are FRIENDLY to you, half are HOSTILE/ENEMY bases!\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Hostile vessels\n\nIMPORTANT NOTES:\n- When asked about \"npc base\" or \"hostile base\", look for Starbase objects marked as HOSTILE/ENEMY (not friendly).\n- When asked about \"friendly base\", look for Starbase objects marked as FRIENDLY.\n- Starbases can be either friendly or npc - check the status in the objects list.\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor npc bases/starbases, ONLY report starbases that are marked as HOSTILE/ENEMY.\nFor friendly bases, ONLY report starbases that are marked as FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvz9NVj1qShmTwUWdliJYAbHqeHqD",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "**Closest 5 Ships (Ordered by Distance):**\n\n1. **s3080**  \n   - Position: (9910.1, 4718.2)  \n   - Distance: 20.8 AU  \n\n2. **s9287**  \n   - Position: (9906.9, 4693.7)  \n   - Distance: 40.3 AU  \n\n3. **s5117**  \n   - Position: (9891.1, 2777.6)  \n   - Distance: 1954.4 AU  \n\n4. **s1203**  \n   - Position: (8446.6, 5690.1)  \n   - Distance: 1736.1 AU  \n\n5. **s4166**  \n   - Position: (7930.8, 4325.8)  \n   - Distance: 2005.2 AU  "
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5263,
+    "completion_tokens": 189,
+    "total_tokens": 5452
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:16:40.021227
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s3080 in a space combat scenario.\n\nCAPTAIN PERSONALITY: NEUTRAL\nYou are a NEUTRAL captain. Your behavior:\n- Attack only if provoked (have taken damage) or target reputation < 50\n- Engage in combat until your ship damage > 50%\n- Balance between offense and defense\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (9910.1, 4718.2)\n- Damage: 0.0%\n- Energy: 99.8%\n- Shields: 100.0%\n- Behavior Type: neutral\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (9894.4, 4732.0)\n- Distance: 20.8 AU\n- Damage: 0.0%\n- Reputation: 78/100\n\nNearby NPC Ships (potential targets or threats):\n  - s9287 at 24.8 AU, Damage: 0.0%, Position: (9906.9, 4693.7)\n\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 50%\n\n\nMake a tactical decision based on your neutral personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (50%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvz9SCMHOJTo4IzCcuXnTtqsn1Z7H",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 10,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"Both the PLAYER and nearby NPC ships are at full health and pose no immediate threat. I will patrol the area to monitor any changes in the situation.\" \n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 697,
+    "completion_tokens": 84,
+    "total_tokens": 781
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-08T21:16:41.561515
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s9287 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (9906.9, 4693.7)\n- Damage: 0.0%\n- Energy: 99.0%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (9894.4, 4732.0)\n- Distance: 40.3 AU\n- Damage: 0.0%\n- Reputation: 78/100\n\nNearby NPC Ships (potential targets or threats):\n  - s3080 at 24.8 AU, Damage: 0.0%, Position: (9910.1, 4718.2)\n\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-Cvz9UTfOcSebhHnY5WwZfI1N4C7mm",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"s3080\",\n    \"heading\": 70,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"s3080 is a nearby target within torpedo range and poses no immediate threat. It is an aggressive move to engage and eliminate a potential enemy.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 693,
+    "completion_tokens": 85,
+    "total_tokens": 778
+  }
+}
+================================================================================
+
