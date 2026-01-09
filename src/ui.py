@@ -191,16 +191,28 @@ class GameUI:
                 screen_x = self.map_rect.centerx + rel_x * pixels_per_au_x
                 screen_y = self.map_rect.centery + rel_y * pixels_per_au_y
                 
+                # Determine color based on stance toward player
+                stance = npc_ship.stances.get(self.engine.player_ship.id, 'neutral')
+                if stance == 'hostile':
+                    ship_color = Colors.RED
+                    outline_color = (139, 0, 0)
+                elif stance == 'friendly':
+                    ship_color = Colors.GREEN
+                    outline_color = (0, 139, 0)
+                else:  # neutral
+                    ship_color = Colors.YELLOW
+                    outline_color = (139, 139, 0)
+                
                 # Draw npc ship as Klingon Bird of Prey (top-down view)
                 # Circular bridge/command pod at front
                 bridge_radius = 4
-                pygame.draw.circle(self.screen, Colors.RED, (int(screen_x), int(screen_y - 6)), bridge_radius)
-                pygame.draw.circle(self.screen, (139, 0, 0), (int(screen_x), int(screen_y - 6)), bridge_radius, 1)
+                pygame.draw.circle(self.screen, ship_color, (int(screen_x), int(screen_y - 6)), bridge_radius)
+                pygame.draw.circle(self.screen, outline_color, (int(screen_x), int(screen_y - 6)), bridge_radius, 1)
                 
                 # Thin neck connecting bridge to rear
                 neck = pygame.Rect(screen_x - 1.5, screen_y - 2, 3, 8)
-                pygame.draw.rect(self.screen, Colors.RED, neck)
-                pygame.draw.rect(self.screen, (139, 0, 0), neck, 1)
+                pygame.draw.rect(self.screen, ship_color, neck)
+                pygame.draw.rect(self.screen, outline_color, neck, 1)
                 
                 # Rear engineering section (small triangle)
                 rear_section = [
@@ -208,8 +220,8 @@ class GameUI:
                     (screen_x + 3, screen_y + 6),
                     (screen_x, screen_y + 10),
                 ]
-                pygame.draw.polygon(self.screen, Colors.RED, rear_section)
-                pygame.draw.polygon(self.screen, (139, 0, 0), rear_section, 1)
+                pygame.draw.polygon(self.screen, ship_color, rear_section)
+                pygame.draw.polygon(self.screen, outline_color, rear_section, 1)
                 
                 # Wing extensions (Bird of Prey style)
                 # Left wing - swept back
@@ -219,8 +231,8 @@ class GameUI:
                     (screen_x - 10, screen_y + 3),
                     (screen_x - 3, screen_y + 4),
                 ]
-                pygame.draw.polygon(self.screen, Colors.RED, left_wing)
-                pygame.draw.polygon(self.screen, (139, 0, 0), left_wing, 1)
+                pygame.draw.polygon(self.screen, ship_color, left_wing)
+                pygame.draw.polygon(self.screen, outline_color, left_wing, 1)
                 
                 # Right wing - swept back
                 right_wing = [
@@ -229,8 +241,8 @@ class GameUI:
                     (screen_x + 10, screen_y + 3),
                     (screen_x + 3, screen_y + 4),
                 ]
-                pygame.draw.polygon(self.screen, Colors.RED, right_wing)
-                pygame.draw.polygon(self.screen, (139, 0, 0), right_wing, 1)
+                pygame.draw.polygon(self.screen, ship_color, right_wing)
+                pygame.draw.polygon(self.screen, outline_color, right_wing, 1)
                 
                 # Draw npc label with info
                 label = f"{npc_id}"
@@ -239,7 +251,7 @@ class GameUI:
                 if hasattr(npc_ship, 'shields'):
                     label += f" S:{npc_ship.shields:.0f}%"
                 
-                text_surface = self.font_small.render(label, True, Colors.RED)
+                text_surface = self.font_small.render(label, True, ship_color)
                 self.screen.blit(text_surface, (screen_x + 15, screen_y - 5))
         
         # Draw active torpedos from player ship
@@ -402,8 +414,14 @@ class GameUI:
             pygame.draw.circle(self.screen, Colors.CYAN, (int(x), int(y)), 2)
         
         elif isinstance(obj, Starbase):
-            # Draw starbase as green/red square or hexagon
-            color = Colors.GREEN if getattr(obj, 'friendly_to_player', True) else Colors.RED
+            # Draw starbase as square - color based on stance toward player
+            stance = obj.stances.get(self.engine.player_ship.id, 'neutral')
+            if stance == 'hostile':
+                color = Colors.RED
+            elif stance == 'friendly':
+                color = Colors.GREEN
+            else:  # neutral
+                color = Colors.YELLOW
             size = 6
             pygame.draw.rect(self.screen, color, (int(x) - size, int(y) - size, size * 2, size * 2))
             pygame.draw.rect(self.screen, Colors.LIGHT_GRAY, (int(x) - size, int(y) - size, size * 2, size * 2), 1)
@@ -455,8 +473,14 @@ class GameUI:
             pygame.draw.circle(self.screen, Colors.MAGENTA, (int(x), int(y)), 1)
         
         elif isinstance(obj, Starbase):
-            # Draw starbase as small colored square
-            color = Colors.GREEN if getattr(obj, 'friendly_to_player', True) else Colors.RED
+            # Draw starbase as small colored square - color based on stance toward player
+            stance = obj.stances.get(self.engine.player_ship.id, 'neutral')
+            if stance == 'hostile':
+                color = Colors.RED
+            elif stance == 'friendly':
+                color = Colors.GREEN
+            else:  # neutral
+                color = Colors.YELLOW
             pygame.draw.rect(self.screen, color, (int(x) - 2, int(y) - 2, 4, 4))
         
         elif isinstance(obj, AsteroidField):
@@ -719,14 +743,23 @@ class GameUI:
             
             if (self.minimap_rect.left <= screen_x <= self.minimap_rect.right and
                 self.minimap_rect.top <= screen_y <= self.minimap_rect.bottom):
-                # Draw npc ship as red triangle (same size as player ship)
+                # Determine color based on stance toward player
+                stance = npc_ship.stances.get(self.engine.player_ship.id, 'neutral')
+                if stance == 'hostile':
+                    ship_color = Colors.RED
+                elif stance == 'friendly':
+                    ship_color = Colors.GREEN
+                else:  # neutral
+                    ship_color = Colors.YELLOW
+                
+                # Draw npc ship as triangle (same size as player ship)
                 size = 5
                 points = [
                     (screen_x, screen_y - size),  # Top point
                     (screen_x + size, screen_y + size),  # Bottom right
                     (screen_x - size, screen_y + size)  # Bottom left
                 ]
-                pygame.draw.polygon(self.screen, Colors.RED, points)
+                pygame.draw.polygon(self.screen, ship_color, points)
                 
                 # Draw yellow circle if this is the navigation target
                 if self.nav_target_id == npc_id:

@@ -38,6 +38,9 @@ class GameEngine:
         self.npc_ships: Dict[str, Ship] = {}
         self._spawn_initial_npcs()
         
+        # Initialize stances for all NPC ships and starbases
+        self._initialize_stances()
+        
         # Active projectiles
         self.active_phasers: List[dict] = []
         self.active_torpedos: List[dict] = []
@@ -99,6 +102,132 @@ class GameEngine:
         npc_ship.cash = random.randint(500, 2000)
         npc_ship.behavior_trait = random.choice(['aggressive', 'neutral', 'timid'])
         self.npc_ships[npc_id] = npc_ship
+        
+        # Initialize stances for this new NPC ship
+        self._initialize_npc_stance(npc_ship)
+    
+    def _initialize_stances(self) -> None:
+        """Initialize random stances for all NPC ships and starbases toward all ships."""
+        # Initialize stances for each NPC ship
+        for npc_ship in self.npc_ships.values():
+            self._initialize_npc_stance(npc_ship)
+        
+        # Initialize stances for each starbase
+        starbases = [obj for obj in self.universe_objects.values() if isinstance(obj, Starbase)]
+        for starbase in starbases:
+            self._initialize_starbase_stance(starbase)
+    
+    def _initialize_npc_stance(self, npc_ship: Ship) -> None:
+        """Initialize random stances for a single NPC ship toward all other ships."""
+        # Set stance toward player
+        npc_ship.stances[self.player_ship.id] = random.choice(['hostile', 'neutral', 'friendly'])
+        
+        # Set stance toward all other NPC ships
+        for other_npc_id in self.npc_ships.keys():
+            if other_npc_id != npc_ship.id:
+                npc_ship.stances[other_npc_id] = random.choice(['hostile', 'neutral', 'friendly'])
+    
+    def _initialize_starbase_stance(self, starbase: Starbase) -> None:
+        """Initialize random stances for a starbase toward all ships."""
+        # Set stance toward player
+        starbase.stances[self.player_ship.id] = random.choice(['hostile', 'neutral', 'friendly'])
+        
+        # Set stance toward all NPC ships
+        for npc_id in self.npc_ships.keys():
+            starbase.stances[npc_id] = random.choice(['hostile', 'neutral', 'friendly'])
+    
+    def _process_starbase_actions(self) -> None:
+        """Process actions for all starbases - hostile starbases attack nearby ships."""
+        starbases = [obj for obj in self.universe_objects.values() if isinstance(obj, Starbase)]
+        
+        for starbase in starbases:
+            # Skip if starbase is heavily damaged
+            if starbase.damage > 70:
+                continue
+            
+            # Check stance toward player and attack if hostile and in range
+            stance_to_player = starbase.stances.get(self.player_ship.id, 'neutral')
+            if stance_to_player == 'hostile':
+                distance_to_player = starbase.position.distance_to(self.player_ship.position)
+                if distance_to_player <= starbase.defense_range:
+                    # Attack player with phasers (starbase has powerful weapons)
+                    if starbase.torpedos > 0 and random.random() < 0.3:
+                        # Fire torpedo at player
+                        self._starbase_fire_torpedo(starbase, self.player_ship)
+                    elif random.random() < 0.5:
+                        # Fire phasers at player
+                        self._starbase_fire_phaser(starbase, self.player_ship)
+            
+            # Check stance toward NPC ships
+            for npc_id, npc_ship in self.npc_ships.items():
+                if npc_ship.is_destroyed:
+                    continue
+                
+                stance_to_npc = starbase.stances.get(npc_id, 'neutral')
+                if stance_to_npc == 'hostile':
+                    distance_to_npc = starbase.position.distance_to(npc_ship.position)
+                    if distance_to_npc <= starbase.defense_range:
+                        # Attack NPC ship
+                        if starbase.torpedos > 0 and random.random() < 0.2:
+                            self._starbase_fire_torpedo(starbase, npc_ship)
+                        elif random.random() < 0.3:
+                            self._starbase_fire_phaser(starbase, npc_ship)
+    
+    def _starbase_fire_phaser(self, starbase: Starbase, target_ship: Ship) -> None:
+        """Fire phaser from starbase at target ship."""
+        # Starbase phasers are more powerful (10% damage)
+        damage = 10.0
+        
+        # Record that starbase fired upon the target
+        target_ship.fired_upon_by.add(starbase.id)
+        
+        # Apply damage
+        shields_before = target_ship.shields
+        target_ship.take_shield_hit(damage)
+        shields_after = target_ship.shields
+        
+        # Determine damage type
+        if shields_before > shields_after:
+            damage_type = 'shield'
+            actual_damage = shields_before - shields_after
+        else:
+            damage_type = 'ship'
+            actual_damage = damage
+        
+        target_name = "you" if target_ship == self.player_ship else target_ship.id
+        self.messages.append(f"{starbase.id} fires phasers at {target_name}! Hit for {actual_damage:.1f}% {damage_type} damage!")
+    
+    def _starbase_fire_torpedo(self, starbase: Starbase, target_ship: Ship) -> None:
+        """Fire torpedo from starbase at target ship."""
+        if starbase.torpedos <= 0:
+            return
+        
+        starbase.torpedos -= 1
+        
+        # Starbase torpedos hit immediately and do 15% damage
+        damage = 15.0
+        
+        # Record that starbase fired upon the target
+        target_ship.fired_upon_by.add(starbase.id)
+        
+        # Apply damage
+        shields_before = target_ship.shields
+        target_ship.take_damage(damage, bypass_shields=False)
+        shields_after = target_ship.shields
+        
+        # Determine damage type
+        if shields_before > shields_after:
+            damage_type = 'shield'
+        else:
+            damage_type = 'ship'
+        
+        target_name = "you" if target_ship == self.player_ship else target_ship.id
+        self.messages.append(f"{starbase.id} launches torpedo at {target_name}! Hit for {damage:.1f}% damage!")
+        
+        # Track torpedo hit for player stats
+        if target_ship == self.player_ship:
+            # Could add starbase torpedo tracking here if desired
+            pass
     
     def _handle_ship_destruction(self, destroyer: Ship, destroyed: Ship, destroyed_id: str) -> None:
         """
@@ -192,6 +321,9 @@ class GameEngine:
         # Generate and execute npc commands (simplified for now)
         for npc_id, npc_ship in list(self.npc_ships.items()):
             self._execute_npc_command(npc_ship, show_debug=(npc_id in closest_npcs))
+        
+        # Process hostile starbase actions
+        self._process_starbase_actions()
         
         # Update all objects
         self._update_all_objects()
@@ -563,13 +695,18 @@ class GameEngine:
         behavior = ship.behavior_trait if ship.behavior_trait else 'neutral'
         player_rep = self.player_ship.reputation
         
+        # Get stance toward player
+        stance_to_player = ship.stances.get(self.player_ship.id, 'neutral')
+        
         # Find nearby npc ships as potential targets
         nearby_enemies = []
         for npc_id, npc_ship in self.npc_ships.items():
             if npc_id != ship.id and not npc_ship.is_destroyed:
                 dist = ship.position.distance_to(npc_ship.position)
                 if dist < 50:  # Within sensor range
-                    nearby_enemies.append((npc_id, npc_ship, dist))
+                    # Get stance toward this NPC ship
+                    stance_to_npc = ship.stances.get(npc_id, 'neutral')
+                    nearby_enemies.append((npc_id, npc_ship, dist, stance_to_npc))
         
         # Sort by distance
         nearby_enemies.sort(key=lambda x: x[2])
@@ -579,11 +716,32 @@ class GameEngine:
         target_distance = distance_to_player
         target_is_player = True
         
-        # Consider attacking nearby npc ships based on behavior and tactical situation
-        if nearby_enemies:
+        # Priority 1: Attack hostile targets based on stance
+        # If this ship is hostile to the player and player is in range, prioritize player
+        if stance_to_player == 'hostile' and distance_to_player < 50:
+            target_ship = self.player_ship
+            target_distance = distance_to_player
+            target_is_player = True
+            if show_debug and distance_to_player < 25:
+                self.messages.append(f"[DEBUG] {ship.id}: Hostile stance toward player, targeting")
+        else:
+            # Look for hostile NPC ships nearby
+            for npc_id, npc_ship, dist, stance_to_npc in nearby_enemies:
+                if stance_to_npc == 'hostile':
+                    # Attack hostile NPC ships
+                    target_ship = npc_ship
+                    target_distance = dist
+                    target_is_player = False
+                    if show_debug and dist < 25:
+                        self.messages.append(f"[DEBUG] {ship.id}: Hostile stance toward {npc_id}, targeting")
+                    break
+        
+        # Priority 2: Consider attacking nearby damaged enemies based on behavior
+        # Only if not already targeting based on hostile stance
+        if target_is_player and stance_to_player != 'hostile' and nearby_enemies:
             # Aggressive enemies are opportunistic - attack any nearby damaged npc
             if behavior == 'aggressive':
-                for npc_id, npc_ship, dist in nearby_enemies[:5]:  # Check 5 closest
+                for npc_id, npc_ship, dist, stance_to_npc in nearby_enemies[:5]:  # Check 5 closest
                     # Target damaged enemies that are close
                     if npc_ship.damage > 30 and dist < 25:
                         target_ship = npc_ship
@@ -603,7 +761,7 @@ class GameEngine:
             
             # Neutral enemies target damaged nearby enemies if they're easier than player
             elif behavior == 'neutral':
-                for npc_id, npc_ship, dist in nearby_enemies[:3]:
+                for npc_id, npc_ship, dist, stance_to_npc in nearby_enemies[:3]:
                     # Target heavily damaged enemies that are closer
                     if npc_ship.damage > 40 and dist < distance_to_player * 0.8:
                         target_ship = npc_ship
@@ -615,7 +773,7 @@ class GameEngine:
             
             # Timid enemies only attack very damaged enemies or if cornered
             elif behavior == 'timid':
-                for npc_id, npc_ship, dist in nearby_enemies[:2]:
+                for npc_id, npc_ship, dist, stance_to_npc in nearby_enemies[:2]:
                     # Only target very damaged enemies
                     if npc_ship.damage > 60 and dist < 20:
                         target_ship = npc_ship
@@ -626,38 +784,59 @@ class GameEngine:
                         break
         
         if player_in_range or target_distance < 50:
-            # Determine if npc should attack based on behavior trait
+            # Determine if npc should attack based on stance, behavior trait, and condition
             should_attack = False
             should_flee = False
             
-            # Check attack conditions based on behavior trait
-            if behavior == 'aggressive':
-                # Aggressive: attack if player reputation < 70 or targeting any damaged npc
-                if (target_is_player and player_rep < 70) or (not target_is_player and target_ship.damage > 20):
-                    should_attack = True
-                # Flee only if own damage > 80%
-                if ship.damage > 80.0:
-                    should_flee = True
+            # Check stance first - hostile stance increases likelihood of attack
+            stance_bonus = 0
+            if target_is_player:
+                if stance_to_player == 'hostile':
+                    stance_bonus = 2  # Increase attack likelihood
+                elif stance_to_player == 'friendly':
+                    should_attack = False  # Never attack friendly targets
+                    # But flee if heavily damaged
+                    if ship.damage > 70.0:
+                        should_flee = True
+            else:
+                # Get stance toward target NPC
+                target_stance = ship.stances.get(target_ship.id, 'neutral')
+                if target_stance == 'hostile':
+                    stance_bonus = 2
+                elif target_stance == 'friendly':
                     should_attack = False
+                    if ship.damage > 70.0:
+                        should_flee = True
             
-            elif behavior == 'neutral':
-                # Neutral: attack only if provoked or player reputation < 50, or targeting damaged npc
-                # For now, consider "provoked" if player has attacked (damage > 0)
-                if (ship.damage > 0 or (target_is_player and player_rep < 50)) or (not target_is_player and target_ship.damage > 30):
-                    should_attack = True
-                # Flee if own damage > 50%
-                if ship.damage > 50.0:
-                    should_flee = True
-                    should_attack = False
-            
-            elif behavior == 'timid':
-                # Timid: attack only if provoked or player reputation < 25, or very damaged npc
-                if (ship.damage > 0 or (target_is_player and player_rep < 25)) or (not target_is_player and target_ship.damage > 50):
-                    should_attack = True
-                # Flee if own damage > 30%, unless player reputation < 10
-                if ship.damage > 30.0 and player_rep >= 10:
-                    should_flee = True
-                    should_attack = False
+            # Only continue with attack logic if not friendly stance
+            if stance_bonus >= 0 or (target_is_player and stance_to_player != 'friendly') or (not target_is_player and ship.stances.get(target_ship.id, 'neutral') != 'friendly'):
+                # Check attack conditions based on behavior trait and ship condition
+                if behavior == 'aggressive':
+                    # Aggressive: attack if hostile stance OR player reputation < 70 or targeting any damaged npc
+                    if stance_bonus > 0 or (target_is_player and player_rep < 70) or (not target_is_player and target_ship.damage > 20):
+                        should_attack = True
+                    # Flee only if own damage > 80%
+                    if ship.damage > 80.0:
+                        should_flee = True
+                        should_attack = False
+                
+                elif behavior == 'neutral':
+                    # Neutral: attack if hostile stance OR provoked or player reputation < 50, or targeting damaged npc
+                    if stance_bonus > 0 or (ship.damage > 0 or (target_is_player and player_rep < 50)) or (not target_is_player and target_ship.damage > 30):
+                        should_attack = True
+                    # Flee if own damage > 50%
+                    if ship.damage > 50.0:
+                        should_flee = True
+                        should_attack = False
+                
+                elif behavior == 'timid':
+                    # Timid: attack if hostile stance OR provoked or player reputation < 25, or very damaged npc
+                    if stance_bonus > 0 or (ship.damage > 0 or (target_is_player and player_rep < 25)) or (not target_is_player and target_ship.damage > 50):
+                        should_attack = True
+                    # Flee if own damage > 30%, unless player reputation < 10
+                    if ship.damage > 30.0 and player_rep >= 10:
+                        should_flee = True
+                        should_attack = False
             
             # Execute flee behavior
             if should_flee:

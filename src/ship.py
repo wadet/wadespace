@@ -5,7 +5,7 @@ Core ship implementation with all onboard systems.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Dict
 import random
 from src.universe_objects import Position
 
@@ -78,6 +78,11 @@ class Ship:
         
         # Track ships that have fired upon this ship (for return fire logic)
         self.fired_upon_by = set()  # Set of ship IDs that have fired upon this ship
+        
+        # Stance tracking: For NPC ships and starbases - tracks stance toward other ships
+        # Keys are ship/starbase IDs, values are 'hostile', 'neutral', or 'friendly'
+        # Only used for NPC ships (not player ship)
+        self.stances: Dict[str, str] = {} if not is_player else {}
         
         # Systems
         self.weapons = ShipWeaponSystem()

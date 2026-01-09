@@ -5,7 +5,7 @@ Base classes and implementations for all objects in the universe.
 """
 
 from dataclasses import dataclass
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Dict
 import random
 from abc import ABC, abstractmethod
 
@@ -141,6 +141,10 @@ class Starbase(UniverseObject):
         self.torpedos = 500
         self.service_range = 1.0  # AU
         self.defense_range = 10.0  # AU
+        
+        # Stance tracking: tracks stance toward ships
+        # Keys are ship IDs, values are 'hostile', 'neutral', or 'friendly'
+        self.stances: Dict[str, str] = {}
     
     def update(self) -> None:
         """Update starbase state - regenerate energy."""
