@@ -456,8 +456,8 @@ class GameEngine:
                         stance = target_obj.stances.get(ship.id, 'neutral')
                         target_type = f"{stance.capitalize()} Starbase"
                     else:
-                        # Other universe object
-                        target_type = "Object"
+                        # Other universe object - get the class name
+                        target_type = type(target_obj).__name__
                     
                     ship.auto_nav_target_id = target_id
                     self.messages.append(f"Auto-navigation engaged to {target_type} {target_id} ({distance:.1f} AU away)")
