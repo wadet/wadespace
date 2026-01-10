@@ -445,7 +445,20 @@ class GameEngine:
                 
                 if target_obj:
                     distance = ship.position.distance_to(target_obj.position)
-                    target_type = "Enemy Ship" if is_npc else "Object"
+                    
+                    # Determine target type and stance
+                    if is_npc:
+                        # NPC ship - check stance
+                        stance = target_obj.stances.get(ship.id, 'neutral')
+                        target_type = f"{stance.capitalize()} Ship"
+                    elif isinstance(target_obj, Starbase):
+                        # Starbase - check stance
+                        stance = target_obj.stances.get(ship.id, 'neutral')
+                        target_type = f"{stance.capitalize()} Starbase"
+                    else:
+                        # Other universe object
+                        target_type = "Object"
+                    
                     ship.auto_nav_target_id = target_id
                     self.messages.append(f"Auto-navigation engaged to {target_type} {target_id} ({distance:.1f} AU away)")
                 else:
