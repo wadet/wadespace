@@ -46,7 +46,7 @@ class GameUI:
     """Main UI system for Wade Space using Pygame."""
     
     FONT_SIZE = 30
-    VIEWPORT_SIZE = 20.0  # AU visible on main map
+    # VIEWPORT_SIZE is now dynamic based on player sensor range
     MINIMAP_BASE_SIZE = 500.0  # AU visible on minimap (before zoom)
     MAX_ZOOM_ADJUSTMENT = 300.0  # AU zoom range
     
@@ -158,25 +158,28 @@ class GameUI:
         pygame.draw.rect(self.screen, color, rect, 2)
     
     def _draw_2d_map(self):
-        """Draw the 2D map showing 20x20 AU around player."""
+        """Draw the 2D map showing objects within player sensor range."""
         # Fill background
         pygame.draw.rect(self.screen, Colors.DARK_GRAY, self.map_rect)
         
+        # Get viewport size from player sensor range
+        viewport_size = self.engine.player_ship.sensors.sensor_range * 2
+        
         # Draw grid (optional, for reference)
-        self._draw_map_grid()
+        self._draw_map_grid(viewport_size)
         
         # Draw universe objects
         player_pos = self.engine.player_ship.position
         
         # Get all objects in range
         nearby_objects = self.engine.get_objects_in_range(
-            player_pos, self.VIEWPORT_SIZE / 2
+            player_pos, viewport_size / 2
         )
         
         # Draw objects
         for obj_tuple in nearby_objects:
             obj = obj_tuple[1]  # Extract object from (id, obj, distance) tuple
-            self._draw_map_object(obj, player_pos)
+            self._draw_map_object(obj, player_pos, viewport_size)
         
         # Draw npc ships
         for npc_id, npc_ship in self.engine.npc_ships.items():
@@ -184,9 +187,9 @@ class GameUI:
             rel_y = npc_ship.position.y - player_pos.y
             
             # Check if npc is in viewport
-            if abs(rel_x) <= self.VIEWPORT_SIZE / 2 and abs(rel_y) <= self.VIEWPORT_SIZE / 2:
-                pixels_per_au_x = self.map_area_width / self.VIEWPORT_SIZE
-                pixels_per_au_y = self.map_area_height / self.VIEWPORT_SIZE
+            if abs(rel_x) <= viewport_size / 2 and abs(rel_y) <= viewport_size / 2:
+                pixels_per_au_x = self.map_area_width / viewport_size
+                pixels_per_au_y = self.map_area_height / viewport_size
                 
                 screen_x = self.map_rect.centerx + rel_x * pixels_per_au_x
                 screen_y = self.map_rect.centery + rel_y * pixels_per_au_y
@@ -260,9 +263,9 @@ class GameUI:
             rel_y = torpedo['current_pos'].y - player_pos.y
             
             # Check if torpedo is in viewport
-            if abs(rel_x) <= self.VIEWPORT_SIZE / 2 and abs(rel_y) <= self.VIEWPORT_SIZE / 2:
-                pixels_per_au_x = self.map_area_width / self.VIEWPORT_SIZE
-                pixels_per_au_y = self.map_area_height / self.VIEWPORT_SIZE
+            if abs(rel_x) <= viewport_size / 2 and abs(rel_y) <= viewport_size / 2:
+                pixels_per_au_x = self.map_area_width / viewport_size
+                pixels_per_au_y = self.map_area_height / viewport_size
                 
                 screen_x = self.map_rect.centerx + rel_x * pixels_per_au_x
                 screen_y = self.map_rect.centery + rel_y * pixels_per_au_y
@@ -279,9 +282,9 @@ class GameUI:
                 rel_y = torpedo['current_pos'].y - player_pos.y
                 
                 # Check if torpedo is in viewport
-                if abs(rel_x) <= self.VIEWPORT_SIZE / 2 and abs(rel_y) <= self.VIEWPORT_SIZE / 2:
-                    pixels_per_au_x = self.map_area_width / self.VIEWPORT_SIZE
-                    pixels_per_au_y = self.map_area_height / self.VIEWPORT_SIZE
+                if abs(rel_x) <= viewport_size / 2 and abs(rel_y) <= viewport_size / 2:
+                    pixels_per_au_x = self.map_area_width / viewport_size
+                    pixels_per_au_y = self.map_area_height / viewport_size
                     
                     screen_x = self.map_rect.centerx + rel_x * pixels_per_au_x
                     screen_y = self.map_rect.centery + rel_y * pixels_per_au_y
@@ -299,10 +302,10 @@ class GameUI:
         # Draw border
         self._draw_border(self.map_rect)
     
-    def _draw_map_grid(self):
+    def _draw_map_grid(self, viewport_size):
         """Draw optional grid on map for reference."""
-        grid_spacing = (self.VIEWPORT_SIZE / 4)  # Show 5x5 grid
-        pixels_per_au = self.map_area_width / self.VIEWPORT_SIZE
+        grid_spacing = (viewport_size / 4)  # Show 5x5 grid
+        pixels_per_au = self.map_area_width / viewport_size
         
         for i in range(5):
             # Vertical lines
@@ -320,14 +323,14 @@ class GameUI:
                 (self.map_rect.right, y), 1
             )
     
-    def _draw_map_object(self, obj, player_pos):
+    def _draw_map_object(self, obj, player_pos, viewport_size):
         """Draw a single object on the map."""
         # Calculate relative position
         rel_x = obj.position.x - player_pos.x
         rel_y = obj.position.y - player_pos.y
         
         # Convert AU to pixels
-        pixels_per_au = self.map_area_width / self.VIEWPORT_SIZE
+        pixels_per_au = self.map_area_width / viewport_size
         screen_x = self.map_rect.centerx + rel_x * pixels_per_au
         screen_y = self.map_rect.centery + rel_y * pixels_per_au
         
