@@ -662,11 +662,11 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
             
             # Apply starbase filtering if specified
             if obj_type == 'Starbase' and starbase_filter:
-                is_friendly = obj_data.get('friendly', True)
-                if starbase_filter == 'friendly' and not is_friendly:
-                    continue  # Skip hostile starbases when asking for friendly
-                elif starbase_filter == 'hostile' and is_friendly:
-                    continue  # Skip friendly starbases when asking for hostile
+                stance = obj_data.get('stance', 'neutral')
+                if starbase_filter == 'friendly' and stance != 'friendly':
+                    continue  # Skip non-friendly starbases when asking for friendly
+                elif starbase_filter == 'hostile' and stance != 'hostile':
+                    continue  # Skip non-hostile starbases when asking for hostile
             
             if obj_type in priority_types:
                 priority_objects.append((obj_id, obj_data))
@@ -686,9 +686,16 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
         
         # Build object counts summary
         object_count_by_type = {}
+        starbase_counts_by_stance = {'hostile': 0, 'friendly': 0, 'neutral': 0}
+        
         for obj_id, obj_data in all_objects:
             obj_type = obj_data['type']
             object_count_by_type[obj_type] = object_count_by_type.get(obj_type, 0) + 1
+            
+            # Track starbase counts by stance
+            if obj_type == 'Starbase':
+                stance = obj_data.get('stance', 'neutral')
+                starbase_counts_by_stance[stance] = starbase_counts_by_stance.get(stance, 0) + 1
         
         # Build nearby objects summary  
         nearby_desc = ""
@@ -697,7 +704,13 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
             nearby_desc += f"TOTAL OBJECTS SCANNED: {len(all_objects)}\n"
             nearby_desc += "Object counts by type:\n"
             for obj_type, count in sorted(object_count_by_type.items()):
-                nearby_desc += f"  - {obj_type}: {count}\n"
+                if obj_type == 'Starbase':
+                    nearby_desc += f"  - {obj_type}: {count} total "
+                    nearby_desc += f"(Hostile: {starbase_counts_by_stance['hostile']}, "
+                    nearby_desc += f"Friendly: {starbase_counts_by_stance['friendly']}, "
+                    nearby_desc += f"Neutral: {starbase_counts_by_stance['neutral']})\n"
+                else:
+                    nearby_desc += f"  - {obj_type}: {count}\n"
             nearby_desc += f"\nShowing {len(display_objects)} most relevant objects (prioritized by question):\n"
         
         # Show individual objects
@@ -708,8 +721,8 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
             
             # Add starbase status
             if obj_type == 'Starbase':
-                is_friendly = obj_data.get('friendly', True)
-                status = 'FRIENDLY' if is_friendly else 'HOSTILE/ENEMY'
+                stance = obj_data.get('stance', 'neutral')
+                status = stance.upper()
                 nearby_desc += f"  - {obj_id} ({obj_type} - {status}): Position ({pos[0]:.1f}, {pos[1]:.1f}), Distance {distance:.1f} AU\n"
             else:
                 nearby_desc += f"  - {obj_id} ({obj_type}): Position ({pos[0]:.1f}, {pos[1]:.1f}), Distance {distance:.1f} AU\n"
@@ -739,23 +752,24 @@ ENEMY SHIPS:
 AVAILABLE OBJECT TYPES IN UNIVERSE:
 - Stars (st####): Energy sources
 - Planets (pl####): Some are inhabited  
-- Starbases (sb####): Repairs and supplies. NOTE: Half are FRIENDLY to you, half are HOSTILE/ENEMY bases!
+- Starbases (sb####): Repairs and supplies. Each starbase has a stance: FRIENDLY, NEUTRAL, or HOSTILE
 - Black Holes (bh####): Dangerous gravitational anomalies
 - Pulsars (pu####): Disrupt sensors
 - Wormholes (wh####): Teleport to paired wormhole
 - Asteroid Fields (af####): Mining opportunities
-- NPC Ships (s####): Hostile vessels
+- NPC Ships (s####): Enemy vessels
 
 IMPORTANT NOTES:
-- When asked about "npc base" or "hostile base", look for Starbase objects marked as HOSTILE/ENEMY (not friendly).
-- When asked about "friendly base", look for Starbase objects marked as FRIENDLY.
-- Starbases can be either friendly or npc - check the status in the objects list.
+- When asked about "enemy base", "hostile base", or "npc base", look for Starbase objects with stance HOSTILE.
+- When asked about "friendly base", look for Starbase objects with stance FRIENDLY.
+- When asked about "neutral base", look for Starbase objects with stance NEUTRAL.
+- Starbases show their stance in the object list (e.g., "sb1234 (Starbase - HOSTILE)").
 - The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.
 
 Based on the available data, answer the captain's question concisely and accurately. 
 If asking for "nearest" or "closest" object, search through all listed objects and identify the closest one of that type.
-For npc bases/starbases, ONLY report starbases that are marked as HOSTILE/ENEMY.
-For friendly bases, ONLY report starbases that are marked as FRIENDLY.
+For enemy/hostile bases, ONLY report starbases with stance HOSTILE.
+For friendly bases, ONLY report starbases with stance FRIENDLY.
 Always include the object ID, position coordinates, and distance in your answer.
 If you don't have enough data to answer, say so clearly."""
         

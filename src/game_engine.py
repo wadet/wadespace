@@ -114,8 +114,29 @@ class GameEngine:
         
         # Initialize stances for each starbase
         starbases = [obj for obj in self.universe_objects.values() if isinstance(obj, Starbase)]
-        for starbase in starbases:
-            self._initialize_starbase_stance(starbase)
+        
+        # Ensure at least 10% of starbases are friendly to the player
+        min_friendly = max(1, int(len(starbases) * 0.1))
+        friendly_count = 0
+        
+        # Shuffle starbases to randomize which ones get friendly stance
+        shuffled_starbases = list(starbases)
+        random.shuffle(shuffled_starbases)
+        
+        for i, starbase in enumerate(shuffled_starbases):
+            # Force first min_friendly starbases to be friendly to player
+            if i < min_friendly:
+                starbase.stances[self.player_ship.id] = 'friendly'
+                friendly_count += 1
+            else:
+                # Randomly assign stance for remaining starbases
+                starbase.stances[self.player_ship.id] = random.choice(['hostile', 'neutral', 'friendly'])
+                if starbase.stances[self.player_ship.id] == 'friendly':
+                    friendly_count += 1
+            
+            # Set stance toward all NPC ships (random)
+            for npc_id in self.npc_ships.keys():
+                starbase.stances[npc_id] = random.choice(['hostile', 'neutral', 'friendly'])
     
     def _initialize_npc_stance(self, npc_ship: Ship) -> None:
         """Initialize random stances for a single NPC ship toward all other ships."""
@@ -126,15 +147,6 @@ class GameEngine:
         for other_npc_id in self.npc_ships.keys():
             if other_npc_id != npc_ship.id:
                 npc_ship.stances[other_npc_id] = random.choice(['hostile', 'neutral', 'friendly'])
-    
-    def _initialize_starbase_stance(self, starbase: Starbase) -> None:
-        """Initialize random stances for a starbase toward all ships."""
-        # Set stance toward player
-        starbase.stances[self.player_ship.id] = random.choice(['hostile', 'neutral', 'friendly'])
-        
-        # Set stance toward all NPC ships
-        for npc_id in self.npc_ships.keys():
-            starbase.stances[npc_id] = random.choice(['hostile', 'neutral', 'friendly'])
     
     def _process_starbase_actions(self) -> None:
         """Process actions for all starbases - hostile starbases attack nearby ships."""
@@ -1077,10 +1089,11 @@ class GameEngine:
         # First, try using LLM for natural language understanding
         if self.llm_handler.enabled:
             try:
-                # Check if question is asking for "nearest" or "closest" - search entire universe
+                # Check if question requires searching entire universe (not just sensor range)
                 lower_q = question.lower()
                 search_entire_universe = any(keyword in lower_q for keyword in 
-                    ['nearest', 'closest', 'where is', 'find', 'locate'])
+                    ['nearest', 'closest', 'where is', 'find', 'locate', 'show me all', 
+                     'show all', 'list all', 'all the', 'how many', 'count', 'in the universe'])
                 
                 universe_data = self._get_universe_data_for_llm(ship, search_entire_universe)
                 answer = self.llm_handler.answer_player_question(question, universe_data)
@@ -1107,8 +1120,19 @@ class GameEngine:
         elif 'neutral' in lower_q:
             stance_filter = 'neutral'
         
+        # Detect list/show all queries
+        is_list_query = any(keyword in lower_q for keyword in ['show me all', 'list all', 'show all', 'all the'])
+        
+        # Query: List all starbases (check for list queries first)
+        if is_list_query and any(keyword in lower_q for keyword in ['starbase', 'base']):
+            self._query_list_objects(ship, 'sb', 'starbase', stance_filter)
+        
+        # Query: List all npc ships
+        elif is_list_query and any(keyword in lower_q for keyword in ['npc', 'ship', 'enemy', 'enemies', 'hostile', 'friendly', 'neutral']):
+            self._query_list_npcs(ship, stance_filter)
+        
         # Query: Nearest starbase (check FIRST before npc/ship to avoid partial match)
-        if any(keyword in lower_q for keyword in ['starbase', 'base']):
+        elif any(keyword in lower_q for keyword in ['starbase', 'base']):
             self._query_nearest_object(ship, 'sb', 'starbase', stance_filter)
         
         # Query: Nearest npc ship
@@ -1169,6 +1193,7 @@ class GameEngine:
         else:
             self.messages.append("I don't understand that question. Try asking:")
             self.messages.append("  - 'nearest npc', 'nearest starbase', 'nearest planet'")
+            self.messages.append("  - 'show me all hostile starbases', 'list all friendly npcs'")
             self.messages.append("  - 'how many enemies left', 'where am i'")
             self.messages.append("  - 'distance to <id>', 'nearby objects'")
             self.messages.append("  - 'what is <id>', 'how many stars'")
@@ -1192,7 +1217,8 @@ class GameEngine:
         elif target_id in self.universe_objects:
             obj = self.universe_objects[target_id]
             if isinstance(obj, Starbase):
-                if not obj.friendly_to_player:
+                stance = obj.stances.get(ship.id, 'neutral')
+                if stance != 'friendly':
                     target_entity = obj
                     entity_type = 'starbase'
                 else:
@@ -1295,32 +1321,115 @@ class GameEngine:
             if obj_id.startswith(prefix):
                 # Apply stance filter if specified and object is a starbase
                 if stance_filter and isinstance(obj, Starbase):
-                    # Use friendly_to_player attribute for filtering, not stances
-                    # hostile = enemy starbase (not friendly to player)
-                    # friendly = friendly starbase (friendly to player)
-                    # neutral doesn't apply to starbases (they're either friendly or hostile)
+                    # Use stance attribute to determine relationship
+                    starbase_stance = obj.stances.get(ship.id, 'neutral')
                     if stance_filter == 'hostile':
-                        if obj.friendly_to_player:
-                            continue  # Skip friendly starbases
+                        if starbase_stance != 'hostile':
+                            continue  # Skip non-hostile starbases
                     elif stance_filter == 'friendly':
-                        if not obj.friendly_to_player:
-                            continue  # Skip hostile starbases
-                    # else: neutral filter doesn't make sense for starbases, skip filtering
+                        if starbase_stance != 'friendly':
+                            continue  # Skip non-friendly starbases
+                    elif stance_filter == 'neutral':
+                        if starbase_stance != 'neutral':
+                            continue  # Skip non-neutral starbases
                 objects.append((obj_id, obj, dist))
         
         if objects:
             nearest_id, nearest_obj, distance = objects[0]
             stance_label = ""
             if isinstance(nearest_obj, Starbase):
-                # Display whether starbase is friendly or hostile
-                starbase_type = "friendly" if nearest_obj.friendly_to_player else "hostile"
-                stance_label = f" ({starbase_type})" if stance_filter else f" - Type: {starbase_type}"
+                # Display starbase's stance toward player
+                starbase_stance = nearest_obj.stances.get(ship.id, 'neutral')
+                stance_label = f" ({starbase_stance})" if stance_filter else f" - Stance: {starbase_stance}"
             self.messages.append(f"Nearest {obj_name}{stance_label}: {nearest_id}")
             self.messages.append(f"  Location: ({nearest_obj.position.x:.1f}, {nearest_obj.position.y:.1f})")
             self.messages.append(f"  Distance: {distance:.1f} AU")
         else:
             filter_label = f" {stance_filter}" if stance_filter else ""
             self.messages.append(f"No{filter_label} {obj_name}s found in the universe.")
+    
+    def _query_list_objects(self, ship: Ship, prefix: str, obj_name: str, stance_filter: Optional[str] = None, max_results: int = 20) -> None:
+        """List multiple objects of a given type.
+        
+        Args:
+            ship: The player's ship
+            prefix: Object ID prefix to filter by
+            obj_name: Display name for the object type
+            stance_filter: Optional stance to filter by ('hostile', 'neutral', 'friendly') - only applies to starbases
+            max_results: Maximum number of results to return
+        """
+        nearby = self.get_objects_in_range(ship.position, 10000.0)  # Search entire universe
+        objects = []
+        
+        for obj_id, obj, dist in nearby:
+            if obj_id.startswith(prefix):
+                # Apply stance filter if specified and object is a starbase
+                if stance_filter and isinstance(obj, Starbase):
+                    starbase_stance = obj.stances.get(ship.id, 'neutral')
+                    if starbase_stance != stance_filter:
+                        continue  # Skip starbases that don't match the filter
+                objects.append((obj_id, obj, dist))
+        
+        if objects:
+            # Sort by distance and limit results
+            objects = objects[:max_results]
+            filter_label = f" {stance_filter}" if stance_filter else ""
+            self.messages.append(f"Found {len(objects)}{filter_label} {obj_name}(s):")
+            
+            for obj_id, obj, distance in objects:
+                stance_label = ""
+                if isinstance(obj, Starbase):
+                    starbase_stance = obj.stances.get(ship.id, 'neutral')
+                    stance_label = f" ({starbase_stance})"
+                self.messages.append(f"  {obj_id}{stance_label}: {distance:.1f} AU away at ({obj.position.x:.1f}, {obj.position.y:.1f})")
+            
+            if len(objects) == max_results:
+                self.messages.append(f"  ... (showing first {max_results} results)")
+        else:
+            filter_label = f" {stance_filter}" if stance_filter else ""
+            self.messages.append(f"No{filter_label} {obj_name}s found in the universe.")
+    
+    def _query_list_npcs(self, ship: Ship, stance_filter: Optional[str] = None, max_results: int = 20) -> None:
+        """List multiple npc ships.
+        
+        Args:
+            ship: The player's ship
+            stance_filter: Optional stance to filter by ('hostile', 'neutral', 'friendly')
+            max_results: Maximum number of results to return
+        """
+        npc_list = []
+        
+        for npc_id, npc_ship in self.npc_ships.items():
+            if npc_ship.is_destroyed:
+                continue
+            
+            # Apply stance filter if specified
+            if stance_filter:
+                npc_stance_to_player = npc_ship.stances.get(ship.id, 'neutral')
+                if npc_stance_to_player != stance_filter:
+                    continue
+            
+            distance = ship.position.distance_to(npc_ship.position)
+            npc_stance = npc_ship.stances.get(ship.id, 'neutral')
+            npc_list.append((npc_id, npc_ship, distance, npc_stance))
+        
+        if npc_list:
+            # Sort by distance and limit results
+            npc_list.sort(key=lambda x: x[2])
+            npc_list = npc_list[:max_results]
+            
+            filter_label = f" {stance_filter}" if stance_filter else ""
+            self.messages.append(f"Found {len(npc_list)}{filter_label} npc ship(s):")
+            
+            for npc_id, npc_ship, distance, npc_stance in npc_list:
+                health = 100.0 - npc_ship.damage
+                self.messages.append(f"  {npc_id} ({npc_stance}): {distance:.1f} AU away | HP: {health:.0f}% | Shields: {npc_ship.shields:.0f}%")
+            
+            if len(npc_list) == max_results:
+                self.messages.append(f"  ... (showing first {max_results} results)")
+        else:
+            filter_label = f" {stance_filter}" if stance_filter else ""
+            self.messages.append(f"No{filter_label} active npc ships detected.")
     
     def _query_object_count(self, query: str) -> None:
         """Count objects of a specific type."""
@@ -1454,7 +1563,7 @@ class GameEngine:
             }
             # Add starbase-specific info
             if isinstance(obj, Starbase):
-                obj_data['friendly'] = obj.friendly_to_player
+                obj_data['stance'] = obj.stances.get(ship.id, 'neutral')
                 obj_data['stance_to_player'] = obj.stances.get(ship.id, 'neutral')
             nearby_formatted.append((obj_id, obj_data))
         
@@ -1576,8 +1685,9 @@ class GameEngine:
                 self.messages.append(f"Repairing {target_id}: {repair_amount:.1f}% damage repaired (Damage: {target_obj.damage:.1f}%)")
             elif target_type == 'starbase':
                 # Can only repair friendly starbases at 2% per turn
-                if not target_obj.friendly_to_player:
-                    self.messages.append(f"Repair error: Cannot repair npc starbase {target_id}")
+                starbase_stance = target_obj.stances.get(ship.id, 'neutral')
+                if starbase_stance != 'friendly':
+                    self.messages.append(f"Repair error: Cannot repair non-friendly starbase {target_id}")
                     return
                 repair_rate = 2.0
                 repair_amount = min(repair_rate, target_obj.damage)
@@ -1899,8 +2009,9 @@ class GameEngine:
         
         # Find friendly starbase within 1 AU
         for obj_id, obj in self.universe_objects.items():
-            if isinstance(obj, Starbase) and obj.friendly_to_player:
-                if self.player_ship.position.distance_to(obj.position) < 1.0:
+            if isinstance(obj, Starbase):
+                stance = obj.stances.get(self.player_ship.id, 'neutral')
+                if stance == 'friendly' and self.player_ship.position.distance_to(obj.position) < 1.0:
                     docked_starbase = obj
                     self.player_ship.is_docked_with = obj_id
                     break

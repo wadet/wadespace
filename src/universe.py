@@ -269,37 +269,21 @@ class UniverseGenerator:
         return wormholes
     
     def _generate_starbases(self, total_count: int) -> Dict[str, Starbase]:
-        """Generate starbases distributed across the universe."""
+        """Generate starbases distributed across the universe using sector-based distribution."""
         starbases = {}
-        friendly_count = total_count // 2
-        hostile_count = total_count - friendly_count
+        sectors = int(math.sqrt(total_count / 10)) or 1
+        starbases_per_sector = (total_count // (sectors * sectors)) + 1
         
-        # Generate friendly starbases with sector distribution
-        friendly_sectors = int(math.sqrt(friendly_count / 10)) or 1
-        for sector in range(friendly_sectors * friendly_sectors):
-            for _ in range((friendly_count // (friendly_sectors * friendly_sectors)) + 1):
-                if len([s for s in starbases.values() if s.friendly_to_player]) >= friendly_count:
+        for sector in range(sectors * sectors):
+            for _ in range(starbases_per_sector):
+                if len(starbases) >= total_count:
                     break
                 
-                position = self._get_distributed_position(sector, friendly_sectors * friendly_sectors)
+                position = self._get_distributed_position(sector, sectors * sectors)
                 
                 if self._is_valid_position(position, min_distance=12.0):
                     sb_id = self.id_generator.generate('starbase')
-                    sb = Starbase(sb_id, position, friendly_to_player=True)
-                    starbases[sb_id] = sb
-        
-        # Generate npc starbases
-        hostile_sectors = int(math.sqrt(hostile_count / 10)) or 1
-        for sector in range(hostile_sectors * hostile_sectors):
-            for _ in range((hostile_count // (hostile_sectors * hostile_sectors)) + 1):
-                if len([s for s in starbases.values() if not s.friendly_to_player]) >= hostile_count:
-                    break
-                
-                position = self._get_distributed_position(sector, hostile_sectors * hostile_sectors)
-                
-                if self._is_valid_position(position, min_distance=12.0):
-                    sb_id = self.id_generator.generate('starbase')
-                    sb = Starbase(sb_id, position, friendly_to_player=False)
+                    sb = Starbase(sb_id, position)
                     starbases[sb_id] = sb
         
         return starbases

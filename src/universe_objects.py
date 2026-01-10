@@ -132,9 +132,8 @@ class WormHole(UniverseObject):
 class Starbase(UniverseObject):
     """A starbase that provides repairs, refueling, and supplies."""
     
-    def __init__(self, obj_id: str, position: Position, friendly_to_player: bool = True):
+    def __init__(self, obj_id: str, position: Position):
         super().__init__(obj_id, position, energy=100.0)
-        self.friendly_to_player = friendly_to_player
         self.shields = 100.0
         self.damage = 0.0
         self.max_torpedos = 500
@@ -142,8 +141,10 @@ class Starbase(UniverseObject):
         self.service_range = 1.0  # AU
         self.defense_range = 10.0  # AU
         
-        # Stance tracking: tracks stance toward ships
+        # Stance tracking: tracks stance toward all ships (player and NPCs)
         # Keys are ship IDs, values are 'hostile', 'neutral', or 'friendly'
+        # Stances are randomly initialized when the universe is created
+        # Stances control how the starbase reacts to approaching ships (attack or not)
         self.stances: Dict[str, str] = {}
     
     def update(self) -> None:
