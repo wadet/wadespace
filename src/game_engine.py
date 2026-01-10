@@ -1014,8 +1014,17 @@ class GameEngine:
                         self.messages.append(f"  Shields: {shields_status} ({target_obj.shields:.1f}%), Crew: {target_obj.crew}{behavior}")
                         self.messages.append(f"  Speed: {target_obj.propulsion.current_speed:.1f} AU/turn, Heading: {target_obj.propulsion.current_heading:.0f}°")
                         self.messages.append(f"  Stance: {stance}")
+                    elif isinstance(target_obj, Starbase):
+                        # For starbases, show detailed information
+                        stance = target_obj.stances.get(ship.id, 'neutral')
+                        status = "operational"  # Starbases don't get destroyed currently
+                        self.messages.append(f"Scan of {target_id}: Starbase at {distance:.1f} AU")
+                        self.messages.append(f"  Status: {status}, Damage: {target_obj.damage:.1f}%, Energy: {target_obj.energy:.1f}%")
+                        self.messages.append(f"  Shields: {target_obj.shields:.1f}%, Torpedos: {target_obj.torpedos}/{target_obj.max_torpedos}")
+                        self.messages.append(f"  Service range: {target_obj.service_range:.1f} AU, Defense range: {target_obj.defense_range:.1f} AU")
+                        self.messages.append(f"  Stance: {stance}")
                     else:
-                        # For universe objects
+                        # For other universe objects
                         self.messages.append(f"Scan of {target_id}: {target_obj.get_display_symbol()} at {distance:.1f} AU")
             else:
                 self.messages.append(f"Object {target_id} not found")
