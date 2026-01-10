@@ -740,15 +740,21 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
             else:
                 nearby_desc += f"  - {obj_id} ({obj_type}): Position ({pos[0]:.1f}, {pos[1]:.1f}), Distance {distance:.1f} AU\n"
         
-        # Build npc ships summary
+        # Build npc ships summary (with stance information)
         npc_desc = ""
-        for npc_id, npc_data in npc_ships.items():
-            if not npc_data.get('is_destroyed', False):
-                pos = npc_data.get('position', (0, 0))
-                distance = npc_data.get('distance', 0)
-                health = 100.0 - npc_data.get('damage', 0)
-                shields = npc_data.get('shields', 0)
-                npc_desc += f"  - {npc_id}: Position ({pos[0]:.1f}, {pos[1]:.1f}), Distance {distance:.1f} AU, Health {health:.1f}%, Shields {shields:.1f}%\n"
+        npc_ships_by_distance = sorted(
+            [(npc_id, npc_data) for npc_id, npc_data in npc_ships.items() if not npc_data.get('is_destroyed', False)],
+            key=lambda x: x[1].get('distance', 0)
+        )
+        
+        for npc_id, npc_data in npc_ships_by_distance:
+            pos = npc_data.get('position', (0, 0))
+            distance = npc_data.get('distance', 0)
+            health = 100.0 - npc_data.get('damage', 0)
+            shields = npc_data.get('shields', 0)
+            stance = npc_data.get('stance_to_player', 'neutral')
+            stance_label = stance.upper()
+            npc_desc += f"  - {npc_id} (Stance: {stance_label}): Position ({pos[0]:.1f}, {pos[1]:.1f}), Distance {distance:.1f} AU, Health {health:.1f}%, Shields {shields:.1f}%\n"
         
         prompt = f"""The captain asks: "{question}"
 
@@ -759,7 +765,7 @@ Search Scope: {search_scope}
 OBJECTS (sorted by distance from your ship, filtered by relevance to question):
 {nearby_desc if nearby_desc else "  None detected"}
 
-ENEMY SHIPS:
+NPC SHIPS (sorted by distance, with their stance toward you):
 {npc_desc if npc_desc else "  None detected"}
 
 AVAILABLE OBJECT TYPES IN UNIVERSE:
@@ -770,19 +776,25 @@ AVAILABLE OBJECT TYPES IN UNIVERSE:
 - Pulsars (pu####): Disrupt sensors
 - Wormholes (wh####): Teleport to paired wormhole
 - Asteroid Fields (af####): Mining opportunities
-- NPC Ships (s####): Enemy vessels
+- NPC Ships (s####): Other vessels with varying stances (HOSTILE, NEUTRAL, or FRIENDLY)
 
 IMPORTANT NOTES:
 - When asked about "enemy base", "hostile base", or "npc base", look for Starbase objects with stance HOSTILE.
 - When asked about "friendly base", look for Starbase objects with stance FRIENDLY.
 - When asked about "neutral base", look for Starbase objects with stance NEUTRAL.
+- When asked about "enemy ship", "hostile ship", look for NPC Ships with stance HOSTILE.
+- When asked about "friendly ship", look for NPC Ships with stance FRIENDLY.
+- When asked about "neutral ship", look for NPC Ships with stance NEUTRAL.
 - Starbases show their stance in the object list (e.g., "sb1234 (Starbase - HOSTILE)").
+- NPC Ships show their stance in the ship list (e.g., "s1234 (Stance: HOSTILE)").
 - The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.
 
 Based on the available data, answer the captain's question concisely and accurately. 
 If asking for "nearest" or "closest" object, search through all listed objects and identify the closest one of that type.
 For enemy/hostile bases, ONLY report starbases with stance HOSTILE.
 For friendly bases, ONLY report starbases with stance FRIENDLY.
+For enemy/hostile ships, ONLY report NPC ships with stance HOSTILE.
+For friendly ships, ONLY report NPC ships with stance FRIENDLY.
 Always include the object ID, position coordinates, and distance in your answer.
 If you don't have enough data to answer, say so clearly."""
         
