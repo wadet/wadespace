@@ -979,10 +979,13 @@ class GameEngine:
                         status = "destroyed" if target_obj.is_destroyed else "operational"
                         shields_status = "up" if target_obj.shields_active else "down"
                         behavior = f", Behavior: {target_obj.behavior_trait}" if target_obj.behavior_trait else ""
+                        # Get stance toward player
+                        stance = target_obj.stances.get(ship.id, 'neutral')
                         self.messages.append(f"Scan of {target_id}: Ship at {distance:.1f} AU")
                         self.messages.append(f"  Status: {status}, Damage: {target_obj.damage:.1f}%, Energy: {target_obj.energy:.1f}%")
                         self.messages.append(f"  Shields: {shields_status} ({target_obj.shields:.1f}%), Crew: {target_obj.crew}{behavior}")
                         self.messages.append(f"  Speed: {target_obj.propulsion.current_speed:.1f} AU/turn, Heading: {target_obj.propulsion.current_heading:.0f}°")
+                        self.messages.append(f"  Stance: {stance}")
                     else:
                         # For universe objects
                         self.messages.append(f"Scan of {target_id}: {target_obj.get_display_symbol()} at {distance:.1f} AU")
@@ -1006,7 +1009,16 @@ class GameEngine:
                         symbol = obj.get_display_symbol()
                     else:
                         symbol = "SHIP"
-                    self.messages.append(f"  {obj_id}: {symbol} @ {distance:.1f} AU")
+                    # Add stance and behavior info for ships and starbases
+                    extra_info = ""
+                    if isinstance(obj, Ship):
+                        stance = obj.stances.get(ship.id, 'neutral')
+                        behavior = f", {obj.behavior_trait}" if obj.behavior_trait else ""
+                        extra_info = f" [{stance}{behavior}]"
+                    elif isinstance(obj, Starbase):
+                        stance = obj.stances.get(ship.id, 'neutral')
+                        extra_info = f" [{stance}]"
+                    self.messages.append(f"  {obj_id}: {symbol} @ {distance:.1f} AU{extra_info}")
                 if len(all_nearby) > 20:
                     self.messages.append(f"  ... and {len(all_nearby) - 20} more objects")
     
@@ -1521,16 +1533,23 @@ class GameEngine:
             self.messages.append(f"  Location: ({obj.position.x:.1f}, {obj.position.y:.1f})")
             distance = self.player_ship.position.distance_to(obj.position)
             self.messages.append(f"  Distance from you: {distance:.1f} AU")
+            # Add stance for starbases
+            if isinstance(obj, Starbase):
+                stance = obj.stances.get(self.player_ship.id, 'neutral')
+                self.messages.append(f"  Stance: {stance}")
         # Check npc ships
         elif target_id in self.npc_ships:
             npc = self.npc_ships[target_id]
-            self.messages.append(f"Enemy ship {target_id}:")
+            stance = npc.stances.get(self.player_ship.id, 'neutral')
+            behavior = f" ({npc.behavior_trait})" if npc.behavior_trait else ""
+            self.messages.append(f"Enemy ship {target_id}{behavior}:")
             self.messages.append(f"  Location: ({npc.position.x:.1f}, {npc.position.y:.1f})")
             distance = self.player_ship.position.distance_to(npc.position)
             self.messages.append(f"  Distance from you: {distance:.1f} AU")
             self.messages.append(f"  Health: {100 - npc.damage:.1f}%")
             self.messages.append(f"  Shields: {npc.shields:.1f}%")
             self.messages.append(f"  Status: {'DESTROYED' if npc.is_destroyed else 'ACTIVE'}")
+            self.messages.append(f"  Stance: {stance}")
         else:
             self.messages.append(f"Object {target_id} not found.")
     
@@ -1579,7 +1598,8 @@ class GameEngine:
                 'shields': npc_ship.shields,
                 'energy': npc_ship.energy,
                 'is_destroyed': npc_ship.is_destroyed,
-                'stance_to_player': stance_to_player
+                'stance_to_player': stance_to_player,
+                'behavior_trait': npc_ship.behavior_trait if npc_ship.behavior_trait else 'neutral'
             }
         
         return {

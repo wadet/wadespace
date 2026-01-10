@@ -28372,3 +28372,1602 @@ RESPONSE:
 }
 ================================================================================
 
+================================================================================
+TIMESTAMP: 2026-01-09T19:25:41.758931
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s232 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (5289.8, 2769.7)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (5325.6, 2775.2)\n- Distance: 36.2 AU\n- Damage: 0.0%\n- Reputation: 75/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwJtcAyDTHayxUjRMHOkhgJ9WXEov",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 45,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The PLAYER ship has a reputation of 75, making it a valid target for aggressive engagement. Torpedoes are within range to maximize damage.\" \n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 662,
+    "completion_tokens": 83,
+    "total_tokens": 745
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:25:52.033190
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s232 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (5289.8, 2769.7)\n- Damage: 0.0%\n- Energy: 99.0%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (5316.7, 2773.8)\n- Distance: 27.2 AU\n- Damage: 0.0%\n- Reputation: 75/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwJtlgpIkIUxMmjH7qk1CpkzkfD6o",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The player has a reputation of 75, making them a legitimate target. I will engage from a distance using torpedoes.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 662,
+    "completion_tokens": 79,
+    "total_tokens": 741
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:26:17.620816
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s232 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 3):\nYour Ship Status:\n- Position: (5289.8, 2769.7)\n- Damage: 0.0%\n- Energy: 98.0%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (5307.8, 2772.5)\n- Distance: 18.2 AU\n- Damage: 10.0%\n- Reputation: 75/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwJuB7Pk5mxCNYMSFgezHfI8Bixu8",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 270,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"The PLAYER ship has damage and is within phaser range, making it an ideal target for a direct confrontation.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 662,
+    "completion_tokens": 75,
+    "total_tokens": 737
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:26:35.507823
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s232 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 4):\nYour Ship Status:\n- Position: (5289.8, 2749.7)\n- Damage: 0.0%\n- Energy: 97.6%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (5303.8, 2771.9)\n- Distance: 26.2 AU\n- Damage: 19.0%\n- Reputation: 75/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwJuTVH7Wg2rN3fxNttAn2ATgFPq1",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 30,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"Engaging the PLAYER due to their lower damage and my aggressive stance, using phasers as they are within range.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 662,
+    "completion_tokens": 76,
+    "total_tokens": 738
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:35:01.792043
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"show me starbases within 150 au of my position\"\n\nCURRENT SITUATION:\nYour Ship Position: (7010.7, 5283.0)\nSearch Scope: SENSOR RANGE (50.0 AU)\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\n  - st845 (Star): Position (6980.5, 5252.5), Distance 42.9 AU\n  - pl8721 (Planet): Position (6996.1, 5264.2), Distance 23.8 AU\n  - pl4350 (Planet): Position (6988.1, 5299.2), Distance 27.8 AU\n  - pl7532 (Planet): Position (7024.1, 5258.3), Distance 28.1 AU\n  - pl2540 (Planet): Position (6978.9, 5262.6), Distance 37.8 AU\n  - pl3108 (Planet): Position (6995.4, 5323.6), Distance 43.4 AU\n  - pl7458 (Planet): Position (7017.3, 5237.3), Distance 46.2 AU\n\n\nENEMY SHIPS:\n  - s7385: Position (7019.5, 5273.4), Distance 13.0 AU, Health 100.0%, Shields 100.0%\n  - s8304: Position (1899.2, 5126.9), Distance 5113.9 AU, Health 100.0%, Shields 100.0%\n  - s5389: Position (5613.0, 3981.2), Distance 1910.0 AU, Health 100.0%, Shields 100.0%\n  - s6359: Position (2571.6, 1111.0), Distance 6091.8 AU, Health 100.0%, Shields 100.0%\n  - s512: Position (9529.0, 6759.6), Distance 2919.3 AU, Health 100.0%, Shields 100.0%\n  - s1251: Position (8530.9, 574.7), Distance 4947.6 AU, Health 100.0%, Shields 100.0%\n  - s121: Position (774.0, 5920.6), Distance 6269.2 AU, Health 100.0%, Shields 100.0%\n  - s5385: Position (9843.9, 4014.2), Distance 3104.3 AU, Health 100.0%, Shields 100.0%\n  - s2004: Position (3464.8, 1374.0), Distance 5277.7 AU, Health 100.0%, Shields 100.0%\n  - s1559: Position (2112.3, 547.0), Distance 6813.5 AU, Health 100.0%, Shields 100.0%\n  - s3268: Position (1402.8, 5077.4), Distance 5611.7 AU, Health 100.0%, Shields 100.0%\n  - s4363: Position (6699.8, 7294.5), Distance 2035.4 AU, Health 100.0%, Shields 100.0%\n  - s1679: Position (4458.4, 2951.8), Distance 3456.7 AU, Health 100.0%, Shields 100.0%\n  - s9391: Position (1259.3, 9523.9), Distance 7145.9 AU, Health 100.0%, Shields 100.0%\n  - s2542: Position (8035.8, 1946.8), Distance 3490.1 AU, Health 100.0%, Shields 100.0%\n  - s1115: Position (2382.6, 1879.6), Distance 5744.8 AU, Health 100.0%, Shields 100.0%\n  - s6763: Position (5808.4, 7818.0), Distance 2805.6 AU, Health 100.0%, Shields 100.0%\n  - s9922: Position (5789.9, 8589.0), Distance 3524.3 AU, Health 100.0%, Shields 100.0%\n  - s6992: Position (6239.9, 5291.6), Distance 770.9 AU, Health 100.0%, Shields 100.0%\n  - s4663: Position (9703.7, 3210.3), Distance 3398.3 AU, Health 100.0%, Shields 100.0%\n  - s7120: Position (2429.1, 1294.6), Distance 6074.4 AU, Health 100.0%, Shields 100.0%\n  - s831: Position (178.5, 5703.2), Distance 6845.1 AU, Health 100.0%, Shields 100.0%\n  - s9648: Position (4521.6, 6891.7), Distance 2963.7 AU, Health 100.0%, Shields 100.0%\n  - s212: Position (1043.9, 5553.1), Distance 5972.9 AU, Health 100.0%, Shields 100.0%\n  - s472: Position (8357.7, 3600.1), Distance 2155.6 AU, Health 100.0%, Shields 100.0%\n  - s3716: Position (5828.9, 244.0), Distance 5175.7 AU, Health 100.0%, Shields 100.0%\n  - s7044: Position (5853.7, 8074.2), Distance 3021.5 AU, Health 100.0%, Shields 100.0%\n  - s6811: Position (6034.6, 5211.5), Distance 978.7 AU, Health 100.0%, Shields 100.0%\n  - s1169: Position (3030.1, 7775.3), Distance 4696.5 AU, Health 100.0%, Shields 100.0%\n  - s334: Position (2418.3, 5195.4), Distance 4593.3 AU, Health 100.0%, Shields 100.0%\n  - s618: Position (2848.2, 3571.1), Distance 4500.8 AU, Health 100.0%, Shields 100.0%\n  - s7567: Position (2048.1, 9098.9), Distance 6260.1 AU, Health 100.0%, Shields 100.0%\n  - s4605: Position (595.3, 9692.1), Distance 7784.4 AU, Health 100.0%, Shields 100.0%\n  - s7168: Position (3746.8, 3468.6), Distance 3734.3 AU, Health 100.0%, Shields 100.0%\n  - s4591: Position (8882.8, 3171.6), Distance 2821.8 AU, Health 100.0%, Shields 100.0%\n  - s9816: Position (2075.4, 4431.3), Distance 5008.2 AU, Health 100.0%, Shields 100.0%\n  - s40: Position (2503.5, 7642.1), Distance 5087.2 AU, Health 100.0%, Shields 100.0%\n  - s6233: Position (2729.9, 6083.3), Distance 4354.9 AU, Health 100.0%, Shields 100.0%\n  - s1308: Position (3595.1, 3785.0), Distance 3729.6 AU, Health 100.0%, Shields 100.0%\n  - s3943: Position (285.8, 279.3), Distance 8382.2 AU, Health 100.0%, Shields 100.0%\n  - s3512: Position (7746.8, 9838.1), Distance 4614.2 AU, Health 100.0%, Shields 100.0%\n  - s8923: Position (1275.6, 2001.4), Distance 6607.6 AU, Health 100.0%, Shields 100.0%\n  - s879: Position (9197.8, 8009.3), Distance 3495.2 AU, Health 100.0%, Shields 100.0%\n  - s9367: Position (5985.8, 4225.1), Distance 1472.9 AU, Health 100.0%, Shields 100.0%\n  - s544: Position (6534.0, 4081.6), Distance 1292.5 AU, Health 100.0%, Shields 100.0%\n  - s749: Position (1589.3, 8382.7), Distance 6244.9 AU, Health 100.0%, Shields 100.0%\n  - s4308: Position (1148.1, 1182.4), Distance 7154.4 AU, Health 100.0%, Shields 100.0%\n  - s8510: Position (3548.1, 7682.0), Distance 4212.5 AU, Health 100.0%, Shields 100.0%\n  - s8404: Position (3924.2, 9573.8), Distance 5285.6 AU, Health 100.0%, Shields 100.0%\n  - s6712: Position (5807.5, 7816.7), Distance 2804.9 AU, Health 100.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. Each starbase has a stance: FRIENDLY, NEUTRAL, or HOSTILE\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Enemy vessels\n\nIMPORTANT NOTES:\n- When asked about \"enemy base\", \"hostile base\", or \"npc base\", look for Starbase objects with stance HOSTILE.\n- When asked about \"friendly base\", look for Starbase objects with stance FRIENDLY.\n- When asked about \"neutral base\", look for Starbase objects with stance NEUTRAL.\n- Starbases show their stance in the object list (e.g., \"sb1234 (Starbase - HOSTILE)\").\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor enemy/hostile bases, ONLY report starbases with stance HOSTILE.\nFor friendly bases, ONLY report starbases with stance FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK2dEasOYDWVCmrYUWfr2KZxGMmW",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "There are no starbases within 150 AU of your position. The closest objects are as follows:\n\n- **st845 (Star)**: Position (6980.5, 5252.5), Distance 42.9 AU\n- **pl8721 (Planet)**: Position (6996.1, 5264.2), Distance 23.8 AU\n- **pl4350 (Planet)**: Position (6988.1, 5299.2), Distance 27.8 AU\n\nPlease let me know if you need information on other types of objects or further assistance."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 2581,
+    "completion_tokens": 123,
+    "total_tokens": 2704
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:35:03.372902
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (7019.5, 5273.4)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7010.7, 5283.0)\n- Distance: 13.0 AU\n- Damage: 0.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK2fO96zZjcMOmjjLPl56MQzh7V6",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 0,\n    \"speed\": 13,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"The PLAYER ship is within phaser range and represents a high-value target despite its reputation. I will engage directly and aggressively.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 78,
+    "total_tokens": 741
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:35:31.290796
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (7032.5, 5273.4)\n- Damage: 0.0%\n- Energy: 99.7%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7010.7, 5283.0)\n- Distance: 23.8 AU\n- Damage: 0.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK37IpHyoBGnyrWpo7rFs2wolerl",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"Engaging the PLAYER ship directly as it poses a potential threat, despite its high reputation. My aggressive nature dictates an offensive approach.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 79,
+    "total_tokens": 742
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:36:12.287928
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"where is the nearest enemy ship?\"\n\nCURRENT SITUATION:\nYour Ship Position: (7010.7, 5283.0)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100 total (Hostile: 36, Friendly: 36, Neutral: 28)\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - pl8721 (Planet): Position (6996.1, 5264.2), Distance 23.8 AU\n  - pl4350 (Planet): Position (6988.1, 5299.2), Distance 27.8 AU\n  - pl7532 (Planet): Position (7024.1, 5258.3), Distance 28.1 AU\n  - pl2540 (Planet): Position (6978.9, 5262.6), Distance 37.8 AU\n  - st845 (Star): Position (6980.5, 5252.5), Distance 42.9 AU\n  - pl3108 (Planet): Position (6995.4, 5323.6), Distance 43.4 AU\n  - pl7458 (Planet): Position (7017.3, 5237.3), Distance 46.2 AU\n  - pl2733 (Planet): Position (6992.3, 5329.8), Distance 50.3 AU\n  - pl2920 (Planet): Position (6963.8, 5260.7), Distance 52.0 AU\n  - pl5035 (Planet): Position (6995.4, 5232.3), Distance 53.0 AU\n  - pl8125 (Planet): Position (6974.5, 5326.6), Distance 56.7 AU\n  - pl7649 (Planet): Position (6977.5, 5236.0), Distance 57.6 AU\n  - pl2151 (Planet): Position (6999.4, 5342.4), Distance 60.5 AU\n  - pl9179 (Planet): Position (6970.8, 5334.2), Distance 64.9 AU\n  - pl8452 (Planet): Position (7006.8, 5351.1), Distance 68.2 AU\n  - st5605 (Star): Position (6982.6, 5352.0), Distance 74.5 AU\n  - pl9647 (Planet): Position (6991.9, 5209.2), Distance 76.1 AU\n  - pl6308 (Planet): Position (6953.7, 5334.5), Distance 76.8 AU\n  - pl5135 (Planet): Position (6997.7, 5360.8), Distance 78.9 AU\n  - pl3104 (Planet): Position (7003.4, 5376.8), Distance 94.1 AU\n  - pl4988 (Planet): Position (6965.7, 5382.5), Distance 109.2 AU\n  - pl7183 (Planet): Position (6997.8, 5392.5), Distance 110.3 AU\n  - pl3296 (Planet): Position (7034.8, 5391.7), Distance 111.4 AU\n  - pl5331 (Planet): Position (6966.3, 5387.6), Distance 113.7 AU\n  - pl909 (Planet): Position (7073.3, 5395.6), Distance 128.9 AU\n  - st7838 (Star): Position (7052.4, 5404.9), Distance 128.9 AU\n  - pl2355 (Planet): Position (7056.2, 5409.5), Distance 134.4 AU\n  - pl4217 (Planet): Position (7062.3, 5407.6), Distance 134.9 AU\n  - pl7146 (Planet): Position (7034.6, 5421.0), Distance 140.1 AU\n  - pl8925 (Planet): Position (6994.1, 5422.6), Distance 140.6 AU\n  - st1422 (Star): Position (6984.3, 5421.9), Distance 141.4 AU\n  - pl2291 (Planet): Position (7038.0, 5424.3), Distance 144.0 AU\n  - pl256 (Planet): Position (7069.0, 5419.0), Distance 147.9 AU\n  - pl2335 (Planet): Position (7007.6, 5435.7), Distance 152.8 AU\n  - pl9589 (Planet): Position (6950.3, 5424.6), Distance 153.9 AU\n  - pl1122 (Planet): Position (6983.1, 5435.1), Distance 154.7 AU\n  - pl6991 (Planet): Position (7079.2, 5434.1), Distance 165.9 AU\n  - pl2407 (Planet): Position (7069.7, 5440.8), Distance 168.5 AU\n  - pl5927 (Planet): Position (7003.1, 5455.8), Distance 173.0 AU\n  - pl9050 (Planet): Position (6943.7, 5443.4), Distance 173.9 AU\n  - sb1859 (Starbase - FRIENDLY): Position (7199.3, 5309.4), Distance 190.5 AU\n  - pl4052 (Planet): Position (7210.4, 5228.5), Distance 207.0 AU\n  - pl8045 (Planet): Position (7210.5, 5210.2), Distance 212.6 AU\n  - pl2912 (Planet): Position (7224.8, 5243.7), Distance 217.7 AU\n  - pl6344 (Planet): Position (7229.3, 5247.8), Distance 221.4 AU\n  - st5446 (Star): Position (7230.5, 5238.8), Distance 224.2 AU\n  - pl7620 (Planet): Position (7232.7, 5232.7), Distance 227.6 AU\n  - pl8136 (Planet): Position (7247.5, 5231.0), Distance 242.5 AU\n  - pl5665 (Planet): Position (7258.4, 5257.0), Distance 249.1 AU\n  - pl3189 (Planet): Position (7250.6, 5196.5), Distance 255.0 AU\n  - pl1890 (Planet): Position (7269.0, 5222.4), Distance 265.3 AU\n  - pl601 (Planet): Position (6844.3, 5059.6), Distance 278.6 AU\n  - pl708 (Planet): Position (6833.6, 5063.0), Distance 282.4 AU\n  - pl743 (Planet): Position (6858.5, 5044.5), Distance 282.9 AU\n  - pl7135 (Planet): Position (6731.0, 5352.2), Distance 288.1 AU\n  - pl2097 (Planet): Position (7113.7, 5556.8), Distance 292.6 AU\n  - pl4170 (Planet): Position (7152.6, 5540.1), Distance 293.7 AU\n  - pl1904 (Planet): Position (6730.2, 5378.0), Distance 296.1 AU\n  - pl270 (Planet): Position (6738.0, 5398.8), Distance 296.3 AU\n  - pl8542 (Planet): Position (6720.8, 5380.7), Distance 305.9 AU\n  - pl5413 (Planet): Position (6827.5, 5034.4), Distance 308.8 AU\n  - pl3342 (Planet): Position (6718.0, 5386.0), Distance 310.3 AU\n  - st743 (Star): Position (6715.2, 5381.5), Distance 311.5 AU\n  - pl7888 (Planet): Position (7118.0, 5575.8), Distance 311.9 AU\n  - pl3961 (Planet): Position (6711.1, 5371.8), Distance 312.5 AU\n  - pl1576 (Planet): Position (6820.5, 5034.5), Distance 312.9 AU\n  - pl5421 (Planet): Position (6712.0, 5385.7), Distance 315.8 AU\n  - st5648 (Star): Position (6825.9, 5026.0), Distance 316.5 AU\n  - pl6257 (Planet): Position (6833.9, 5018.5), Distance 318.1 AU\n  - pl1232 (Planet): Position (6865.7, 4996.4), Distance 321.2 AU\n  - st6566 (Star): Position (7136.8, 5580.6), Distance 323.3 AU\n  - pl9390 (Planet): Position (6818.4, 5022.9), Distance 323.4 AU\n  - pl7665 (Planet): Position (6952.0, 4961.6), Distance 326.7 AU\n  - pl939 (Planet): Position (7139.3, 5589.5), Distance 332.4 AU\n  - pl9895 (Planet): Position (6710.3, 5425.6), Distance 332.5 AU\n  - pl6541 (Planet): Position (7107.7, 5607.4), Distance 338.7 AU\n  - pl2514 (Planet): Position (6803.5, 5014.4), Distance 339.2 AU\n  - pl4180 (Planet): Position (7171.9, 5582.4), Distance 340.0 AU\n  - pl698 (Planet): Position (7135.3, 5600.1), Distance 340.7 AU\n  - pl3659 (Planet): Position (6926.2, 4948.6), Distance 344.8 AU\n  - pl6921 (Planet): Position (6679.9, 5388.0), Distance 347.1 AU\n  - pl6827 (Planet): Position (6960.6, 4933.8), Distance 352.8 AU\n  - pl2249 (Planet): Position (6682.6, 5414.1), Distance 353.3 AU\n  - pl2136 (Planet): Position (6675.1, 5395.2), Distance 353.9 AU\n  - pl4709 (Planet): Position (6939.8, 4933.1), Distance 357.0 AU\n  - pl4110 (Planet): Position (7166.4, 5608.5), Distance 360.8 AU\n  - pl6817 (Planet): Position (6977.7, 4922.0), Distance 362.5 AU\n  - pl5319 (Planet): Position (6955.3, 4924.1), Distance 363.1 AU\n  - pl5110 (Planet): Position (6953.8, 4921.2), Distance 366.2 AU\n  - pl3086 (Planet): Position (6659.3, 5388.5), Distance 366.9 AU\n  - pl1176 (Planet): Position (6929.0, 4922.9), Distance 369.3 AU\n  - pl4929 (Planet): Position (7154.8, 5624.5), Distance 370.7 AU\n  - pl5003 (Planet): Position (6936.0, 4919.1), Distance 371.5 AU\n  - pl9889 (Planet): Position (6940.3, 4916.3), Distance 373.4 AU\n  - pl5876 (Planet): Position (6940.8, 4915.9), Distance 373.6 AU\n  - pl366 (Planet): Position (6923.8, 4919.5), Distance 373.7 AU\n  - pl3485 (Planet): Position (6970.2, 4911.3), Distance 373.9 AU\n  - st7167 (Star): Position (6945.7, 4914.2), Distance 374.5 AU\n  - pl8896 (Planet): Position (6643.9, 5414.1), Distance 389.5 AU\n  - pl2269 (Planet): Position (6918.0, 4903.5), Distance 390.6 AU\n\n\nENEMY SHIPS:\n  - s7385: Position (7052.5, 5273.4), Distance 42.9 AU, Health 100.0%, Shields 100.0%\n  - s8304: Position (1899.2, 5126.9), Distance 5113.9 AU, Health 100.0%, Shields 100.0%\n  - s5389: Position (5607.6, 3986.2), Distance 1910.6 AU, Health 100.0%, Shields 100.0%\n  - s6359: Position (2571.8, 1107.0), Distance 6094.4 AU, Health 100.0%, Shields 100.0%\n  - s512: Position (9535.4, 6764.4), Distance 2927.3 AU, Health 100.0%, Shields 100.0%\n  - s1251: Position (8534.7, 573.5), Distance 4950.0 AU, Health 100.0%, Shields 100.0%\n  - s121: Position (775.2, 5924.5), Distance 6268.4 AU, Health 100.0%, Shields 100.0%\n  - s5385: Position (9843.9, 4014.2), Distance 3104.3 AU, Health 100.0%, Shields 100.0%\n  - s2004: Position (3462.8, 1385.9), Distance 5270.2 AU, Health 100.0%, Shields 100.0%\n  - s1559: Position (2112.3, 547.0), Distance 6813.5 AU, Health 100.0%, Shields 100.0%\n  - s3268: Position (1410.6, 5068.3), Distance 5604.2 AU, Health 100.0%, Shields 100.0%\n  - s4363: Position (6707.9, 7285.6), Distance 2025.4 AU, Health 100.0%, Shields 100.0%\n  - s1679: Position (4458.4, 2951.8), Distance 3456.7 AU, Health 100.0%, Shields 100.0%\n  - s9391: Position (1259.3, 9523.9), Distance 7145.9 AU, Health 100.0%, Shields 100.0%\n  - s2542: Position (8035.9, 1942.8), Distance 3493.9 AU, Health 100.0%, Shields 100.0%\n  - s1115: Position (2377.5, 1890.4), Distance 5742.5 AU, Health 100.0%, Shields 100.0%\n  - s6763: Position (5804.8, 7813.1), Distance 2802.8 AU, Health 96.0%, Shields 100.0%\n  - s9922: Position (5787.3, 8594.4), Distance 3530.2 AU, Health 100.0%, Shields 100.0%\n  - s6992: Position (6239.9, 5291.6), Distance 770.9 AU, Health 100.0%, Shields 100.0%\n  - s4663: Position (9701.7, 3210.2), Distance 3396.8 AU, Health 100.0%, Shields 100.0%\n  - s7120: Position (2421.1, 1294.9), Distance 6080.2 AU, Health 100.0%, Shields 100.0%\n  - s831: Position (175.2, 5701.0), Distance 6848.3 AU, Health 100.0%, Shields 100.0%\n  - s9648: Position (4513.7, 6890.5), Distance 2969.7 AU, Health 100.0%, Shields 100.0%\n  - s212: Position (1045.2, 5555.3), Distance 5971.7 AU, Health 100.0%, Shields 100.0%\n  - s472: Position (8357.7, 3600.1), Distance 2155.6 AU, Health 100.0%, Shields 100.0%\n  - s3716: Position (5828.9, 244.0), Distance 5175.7 AU, Health 100.0%, Shields 100.0%\n  - s7044: Position (5855.1, 8076.9), Distance 3023.5 AU, Health 100.0%, Shields 100.0%\n  - s6811: Position (6034.6, 5211.5), Distance 978.7 AU, Health 100.0%, Shields 100.0%\n  - s1169: Position (3030.1, 7775.3), Distance 4696.5 AU, Health 100.0%, Shields 100.0%\n  - s334: Position (2419.4, 5197.0), Distance 4592.1 AU, Health 100.0%, Shields 100.0%\n  - s618: Position (2848.2, 3571.1), Distance 4500.8 AU, Health 100.0%, Shields 100.0%\n  - s7567: Position (2051.2, 9083.2), Distance 6248.1 AU, Health 100.0%, Shields 100.0%\n  - s4605: Position (591.6, 9693.5), Distance 7788.3 AU, Health 100.0%, Shields 100.0%\n  - s7168: Position (3746.8, 3468.6), Distance 3734.3 AU, Health 100.0%, Shields 100.0%\n  - s4591: Position (8890.6, 3170.1), Distance 2828.1 AU, Health 100.0%, Shields 100.0%\n  - s9816: Position (2070.4, 4437.5), Distance 5012.1 AU, Health 100.0%, Shields 100.0%\n  - s40: Position (2503.5, 7642.1), Distance 5087.2 AU, Health 100.0%, Shields 100.0%\n  - s6233: Position (2729.9, 6083.3), Distance 4354.9 AU, Health 100.0%, Shields 100.0%\n  - s1308: Position (3599.8, 3772.1), Distance 3730.6 AU, Health 100.0%, Shields 100.0%\n  - s3943: Position (285.8, 279.3), Distance 8382.2 AU, Health 100.0%, Shields 100.0%\n  - s3512: Position (7746.8, 9838.1), Distance 4614.2 AU, Health 100.0%, Shields 100.0%\n  - s8923: Position (1275.6, 2001.4), Distance 6607.6 AU, Health 100.0%, Shields 100.0%\n  - s879: Position (9197.8, 8009.3), Distance 3495.2 AU, Health 100.0%, Shields 100.0%\n  - s9367: Position (5985.8, 4225.1), Distance 1472.9 AU, Health 100.0%, Shields 100.0%\n  - s544: Position (6534.0, 4081.6), Distance 1292.5 AU, Health 100.0%, Shields 100.0%\n  - s749: Position (1579.0, 8388.7), Distance 6256.9 AU, Health 100.0%, Shields 100.0%\n  - s4308: Position (1151.5, 1184.6), Distance 7150.4 AU, Health 100.0%, Shields 100.0%\n  - s8510: Position (3548.1, 7682.0), Distance 4212.5 AU, Health 100.0%, Shields 100.0%\n  - s8404: Position (3921.7, 9570.6), Distance 5284.5 AU, Health 100.0%, Shields 100.0%\n  - s6712: Position (5807.5, 7816.7), Distance 2804.9 AU, Health 100.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. Each starbase has a stance: FRIENDLY, NEUTRAL, or HOSTILE\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Enemy vessels\n\nIMPORTANT NOTES:\n- When asked about \"enemy base\", \"hostile base\", or \"npc base\", look for Starbase objects with stance HOSTILE.\n- When asked about \"friendly base\", look for Starbase objects with stance FRIENDLY.\n- When asked about \"neutral base\", look for Starbase objects with stance NEUTRAL.\n- Starbases show their stance in the object list (e.g., \"sb1234 (Starbase - HOSTILE)\").\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor enemy/hostile bases, ONLY report starbases with stance HOSTILE.\nFor friendly bases, ONLY report starbases with stance FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK3mCgeYBIi8on8ggyvtkQeMSjtI",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "The nearest enemy ship is:\n\n- **Object ID:** s7385  \n- **Position:** (7052.5, 5273.4)  \n- **Distance:** 42.9 AU  \n- **Health:** 100.0%  \n- **Shields:** 100.0%  "
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5274,
+    "completion_tokens": 63,
+    "total_tokens": 5337
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:36:14.083307
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 3):\nYour Ship Status:\n- Position: (7052.5, 5273.4)\n- Damage: 0.0%\n- Energy: 99.2%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7010.7, 5283.0)\n- Distance: 42.9 AU\n- Damage: 0.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK3oQTuGWQWlVDTUEEviNogKMkyS",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 90,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The PLAYER ship has a reputation above 70, but I prioritize aggressive action and will attack with torpedoes as they are within range.\" \n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 82,
+    "total_tokens": 745
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:37:00.154690
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"show me the closest 5 enemy starbases\"\n\nCURRENT SITUATION:\nYour Ship Position: (7019.6, 5281.6)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100 total (Hostile: 36, Friendly: 36, Neutral: 28)\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - st845 (Star): Position (6980.5, 5252.5), Distance 48.8 AU\n  - st5605 (Star): Position (6982.6, 5352.0), Distance 79.5 AU\n  - st7838 (Star): Position (7052.4, 5404.9), Distance 127.6 AU\n  - st1422 (Star): Position (6984.3, 5421.9), Distance 144.6 AU\n  - st5446 (Star): Position (7230.5, 5238.8), Distance 215.2 AU\n  - st743 (Star): Position (6715.2, 5381.5), Distance 320.4 AU\n  - st5648 (Star): Position (6825.9, 5026.0), Distance 320.7 AU\n  - st6566 (Star): Position (7136.8, 5580.6), Distance 321.2 AU\n  - st7167 (Star): Position (6945.7, 4914.2), Distance 374.8 AU\n  - st9484 (Star): Position (6905.9, 4906.1), Distance 392.3 AU\n  - st1551 (Star): Position (6638.3, 5408.5), Distance 401.9 AU\n  - st4137 (Star): Position (6861.7, 5783.6), Distance 526.2 AU\n  - st8674 (Star): Position (7488.0, 5542.0), Distance 535.9 AU\n  - st3623 (Star): Position (7303.0, 5754.1), Distance 551.0 AU\n  - st414 (Star): Position (7574.8, 5394.4), Distance 566.5 AU\n  - st4434 (Star): Position (6610.4, 5716.7), Distance 597.3 AU\n  - st3708 (Star): Position (6809.8, 4657.5), Distance 658.5 AU\n  - st4823 (Star): Position (6605.4, 4757.5), Distance 668.1 AU\n  - st316 (Star): Position (6790.0, 4641.3), Distance 680.2 AU\n  - st3442 (Star): Position (7705.5, 5233.8), Distance 687.6 AU\n  - st7141 (Star): Position (7162.4, 5970.4), Distance 703.4 AU\n  - st2174 (Star): Position (6504.0, 5826.9), Distance 750.4 AU\n  - st4726 (Star): Position (7766.2, 5557.1), Distance 795.8 AU\n  - st412 (Star): Position (6558.0, 5992.0), Distance 847.2 AU\n  - st7256 (Star): Position (7163.5, 6154.1), Distance 884.2 AU\n  - st5886 (Star): Position (7756.5, 4703.3), Distance 936.7 AU\n  - st8566 (Star): Position (7851.6, 5835.3), Distance 999.4 AU\n  - st9846 (Star): Position (6012.3, 5419.0), Distance 1016.6 AU\n  - st7209 (Star): Position (6585.5, 4358.7), Distance 1019.9 AU\n  - st7484 (Star): Position (6628.1, 6225.7), Distance 1022.1 AU\n  - st1799 (Star): Position (6121.5, 4760.8), Distance 1038.2 AU\n  - st7771 (Star): Position (7217.5, 4252.7), Distance 1047.8 AU\n  - st4778 (Star): Position (6329.4, 4487.8), Distance 1051.9 AU\n  - st6283 (Star): Position (6540.1, 4335.1), Distance 1061.0 AU\n  - st9935 (Star): Position (6750.9, 4252.5), Distance 1063.6 AU\n  - st7803 (Star): Position (7475.0, 4300.0), Distance 1082.1 AU\n  - st2891 (Star): Position (6087.6, 5851.4), Distance 1092.4 AU\n  - st7044 (Star): Position (6001.7, 4876.9), Distance 1095.4 AU\n  - st6819 (Star): Position (6528.9, 6287.7), Distance 1119.3 AU\n  - st2838 (Star): Position (7696.6, 4384.7), Distance 1123.7 AU\n  - st3481 (Star): Position (6021.0, 4716.0), Distance 1147.6 AU\n  - st4559 (Star): Position (6081.3, 4620.5), Distance 1147.8 AU\n  - st1739 (Star): Position (7099.4, 4130.1), Distance 1154.3 AU\n  - st5429 (Star): Position (6553.9, 4208.5), Distance 1169.8 AU\n  - st977 (Star): Position (7828.4, 6150.3), Distance 1186.9 AU\n  - st7980 (Star): Position (6098.1, 4530.9), Distance 1188.6 AU\n  - st9797 (Star): Position (7081.3, 6505.6), Distance 1225.5 AU\n  - st8131 (Star): Position (8231.7, 5602.5), Distance 1253.8 AU\n  - st1808 (Star): Position (7095.1, 6536.5), Distance 1257.1 AU\n  - st4120 (Star): Position (8287.9, 5379.7), Distance 1272.1 AU\n  - st8005 (Star): Position (6999.5, 3998.1), Distance 1283.6 AU\n  - st800 (Star): Position (8237.8, 5688.6), Distance 1284.4 AU\n  - st6806 (Star): Position (8192.7, 5812.1), Distance 1287.4 AU\n  - st99 (Star): Position (6488.4, 4103.8), Distance 1292.1 AU\n  - st1649 (Star): Position (6960.9, 3982.9), Distance 1300.0 AU\n  - st5641 (Star): Position (8006.2, 6137.0), Distance 1305.8 AU\n  - st9328 (Star): Position (7435.8, 6522.2), Distance 1308.5 AU\n  - st1519 (Star): Position (5768.9, 4802.1), Distance 1339.5 AU\n  - st3060 (Star): Position (8308.6, 5665.6), Distance 1345.0 AU\n  - st1713 (Star): Position (5654.4, 5208.9), Distance 1367.2 AU\n  - st5814 (Star): Position (7823.4, 4160.5), Distance 1379.5 AU\n  - st9842 (Star): Position (6969.2, 3902.5), Distance 1380.0 AU\n  - st5087 (Star): Position (8371.2, 4902.8), Distance 1403.7 AU\n  - st7697 (Star): Position (7113.3, 6682.5), Distance 1404.0 AU\n  - st7265 (Star): Position (8324.3, 5802.1), Distance 1404.7 AU\n  - st196 (Star): Position (8324.9, 5805.2), Distance 1406.4 AU\n  - st6308 (Star): Position (8438.9, 5440.3), Distance 1428.1 AU\n  - st5405 (Star): Position (8323.3, 4698.6), Distance 1428.1 AU\n  - st2 (Star): Position (6225.8, 4066.6), Distance 1451.3 AU\n  - st1266 (Star): Position (7770.2, 4034.9), Distance 1455.2 AU\n  - st9667 (Star): Position (7007.3, 3826.1), Distance 1455.6 AU\n  - st1592 (Star): Position (5533.2, 5177.9), Distance 1490.0 AU\n  - st2410 (Star): Position (7431.4, 6720.3), Distance 1496.4 AU\n  - st4111 (Star): Position (8509.7, 5093.7), Distance 1502.0 AU\n  - st3826 (Star): Position (5512.7, 5482.4), Distance 1520.2 AU\n  - st2674 (Star): Position (6683.8, 3774.2), Distance 1544.4 AU\n  - st8891 (Star): Position (6956.6, 3724.7), Distance 1558.2 AU\n  - st5348 (Star): Position (7437.8, 3775.8), Distance 1562.8 AU\n  - st3843 (Star): Position (5713.2, 6145.3), Distance 1566.1 AU\n  - st7644 (Star): Position (7241.5, 3728.2), Distance 1569.1 AU\n  - sb6788 (Starbase - HOSTILE): Position (5478.4, 4982.1), Distance 1570.1 AU\n  - st2792 (Star): Position (7739.1, 3885.2), Distance 1570.9 AU\n  - st8483 (Star): Position (6125.9, 3966.9), Distance 1589.7 AU\n  - st2477 (Star): Position (8599.9, 5078.8), Distance 1593.2 AU\n  - st43 (Star): Position (6395.6, 3809.3), Distance 1599.1 AU\n  - st8169 (Star): Position (6351.7, 6771.1), Distance 1632.4 AU\n  - st5121 (Star): Position (8185.6, 4136.1), Distance 1634.6 AU\n  - st928 (Star): Position (8511.2, 4607.9), Distance 1636.8 AU\n  - st5586 (Star): Position (6403.7, 6801.2), Distance 1639.7 AU\n  - st3054 (Star): Position (5506.7, 4576.4), Distance 1669.2 AU\n  - st2016 (Star): Position (5344.9, 4973.8), Distance 1702.7 AU\n  - st2834 (Star): Position (7297.0, 6977.7), Distance 1718.6 AU\n  - st6543 (Star): Position (5675.7, 4207.4), Distance 1720.5 AU\n  - st199 (Star): Position (6800.5, 3556.4), Distance 1739.1 AU\n  - st4881 (Star): Position (8738.4, 5005.8), Distance 1740.8 AU\n  - sb4331 (Starbase - HOSTILE): Position (6552.3, 6968.8), Distance 1750.7 AU\n  - st6190 (Star): Position (5362.3, 4672.8), Distance 1765.5 AU\n  - st3471 (Star): Position (8601.4, 4465.5), Distance 1779.9 AU\n  - st5178 (Star): Position (6198.5, 6868.5), Distance 1786.7 AU\n  - st1657 (Star): Position (5450.8, 4355.0), Distance 1822.0 AU\n\n\nENEMY SHIPS:\n  - s7385: Position (7092.5, 5273.4), Distance 73.4 AU, Health 100.0%, Shields 100.0%\n  - s8304: Position (1891.3, 5125.5), Distance 5130.6 AU, Health 100.0%, Shields 100.0%\n  - s5389: Position (5607.3, 3987.1), Distance 1915.8 AU, Health 100.0%, Shields 100.0%\n  - s6359: Position (2572.0, 1103.1), Distance 6102.6 AU, Health 100.0%, Shields 100.0%\n  - s512: Position (9541.9, 6769.2), Distance 2928.2 AU, Health 100.0%, Shields 100.0%\n  - s1251: Position (8542.4, 571.1), Distance 4950.6 AU, Health 100.0%, Shields 100.0%\n  - s121: Position (777.4, 5932.1), Distance 6276.0 AU, Health 100.0%, Shields 100.0%\n  - s5385: Position (9843.9, 4014.2), Distance 3095.6 AU, Health 100.0%, Shields 100.0%\n  - s2004: Position (3460.9, 1397.7), Distance 5267.8 AU, Health 100.0%, Shields 100.0%\n  - s1559: Position (2115.5, 554.4), Distance 6811.5 AU, Health 100.0%, Shields 100.0%\n  - s3268: Position (1418.4, 5059.2), Distance 5605.6 AU, Health 100.0%, Shields 100.0%\n  - s4363: Position (6715.9, 7276.7), Distance 2018.0 AU, Health 100.0%, Shields 100.0%\n  - s1679: Position (4458.4, 2951.8), Distance 3462.3 AU, Health 100.0%, Shields 100.0%\n  - s9391: Position (1259.3, 9523.9), Distance 7153.9 AU, Health 100.0%, Shields 100.0%\n  - s2542: Position (8035.9, 1938.8), Distance 3493.9 AU, Health 100.0%, Shields 100.0%\n  - s1115: Position (2372.4, 1901.3), Distance 5746.6 AU, Health 100.0%, Shields 100.0%\n  - s6763: Position (5812.0, 7822.8), Distance 2813.5 AU, Health 98.0%, Shields 100.0%\n  - s9922: Position (5782.1, 8605.2), Distance 3546.6 AU, Health 100.0%, Shields 100.0%\n  - s6992: Position (6239.9, 5291.6), Distance 779.8 AU, Health 100.0%, Shields 100.0%\n  - s4663: Position (9697.7, 3209.9), Distance 3385.9 AU, Health 100.0%, Shields 100.0%\n  - s7120: Position (2422.8, 1298.5), Distance 6082.4 AU, Health 100.0%, Shields 100.0%\n  - s831: Position (177.5, 5697.7), Distance 6854.8 AU, Health 100.0%, Shields 100.0%\n  - s9648: Position (4520.7, 6886.6), Distance 2969.9 AU, Health 100.0%, Shields 100.0%\n  - s212: Position (1049.2, 5556.7), Distance 5976.7 AU, Health 100.0%, Shields 100.0%\n  - s472: Position (8357.7, 3600.1), Distance 2148.9 AU, Health 100.0%, Shields 100.0%\n  - s3716: Position (5828.9, 244.0), Distance 5176.4 AU, Health 100.0%, Shields 100.0%\n  - s7044: Position (5852.8, 8073.2), Distance 3025.6 AU, Health 100.0%, Shields 100.0%\n  - s6811: Position (6034.6, 5211.5), Distance 987.5 AU, Health 100.0%, Shields 100.0%\n  - s1169: Position (3030.1, 7775.3), Distance 4704.8 AU, Health 100.0%, Shields 100.0%\n  - s334: Position (2421.6, 5200.4), Distance 4598.7 AU, Health 100.0%, Shields 100.0%\n  - s618: Position (2840.2, 3570.3), Distance 4516.1 AU, Health 100.0%, Shields 100.0%\n  - s7567: Position (2049.5, 9077.7), Distance 6253.9 AU, Health 100.0%, Shields 100.0%\n  - s4605: Position (596.6, 9691.5), Distance 7791.2 AU, Health 100.0%, Shields 100.0%\n  - s7168: Position (3747.7, 3470.3), Distance 3739.8 AU, Health 100.0%, Shields 100.0%\n  - s4591: Position (8898.5, 3168.9), Distance 2827.3 AU, Health 100.0%, Shields 100.0%\n  - s9816: Position (2067.3, 4444.6), Distance 5022.5 AU, Health 100.0%, Shields 100.0%\n  - s40: Position (2503.5, 7642.1), Distance 5095.7 AU, Health 100.0%, Shields 100.0%\n  - s6233: Position (2729.5, 6079.3), Distance 4363.6 AU, Health 100.0%, Shields 100.0%\n  - s1308: Position (3596.7, 3756.4), Distance 3747.3 AU, Health 100.0%, Shields 100.0%\n  - s3943: Position (285.8, 279.3), Distance 8388.5 AU, Health 100.0%, Shields 100.0%\n  - s3512: Position (7748.1, 9841.9), Distance 4618.1 AU, Health 100.0%, Shields 100.0%\n  - s8923: Position (1275.6, 2001.4), Distance 6614.6 AU, Health 100.0%, Shields 100.0%\n  - s879: Position (9205.3, 8012.1), Distance 3497.5 AU, Health 100.0%, Shields 100.0%\n  - s9367: Position (5984.9, 4222.3), Distance 1480.8 AU, Health 100.0%, Shields 100.0%\n  - s544: Position (6531.5, 4087.0), Distance 1290.5 AU, Health 100.0%, Shields 100.0%\n  - s749: Position (1568.6, 8394.8), Distance 6277.3 AU, Health 100.0%, Shields 100.0%\n  - s4308: Position (1156.8, 1178.6), Distance 7155.9 AU, Health 100.0%, Shields 100.0%\n  - s8510: Position (3548.1, 7682.0), Distance 4220.6 AU, Health 100.0%, Shields 100.0%\n  - s8404: Position (3919.3, 9567.5), Distance 5289.7 AU, Health 100.0%, Shields 100.0%\n  - s6712: Position (5807.5, 7816.7), Distance 2810.0 AU, Health 96.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. Each starbase has a stance: FRIENDLY, NEUTRAL, or HOSTILE\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Enemy vessels\n\nIMPORTANT NOTES:\n- When asked about \"enemy base\", \"hostile base\", or \"npc base\", look for Starbase objects with stance HOSTILE.\n- When asked about \"friendly base\", look for Starbase objects with stance FRIENDLY.\n- When asked about \"neutral base\", look for Starbase objects with stance NEUTRAL.\n- Starbases show their stance in the object list (e.g., \"sb1234 (Starbase - HOSTILE)\").\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor enemy/hostile bases, ONLY report starbases with stance HOSTILE.\nFor friendly bases, ONLY report starbases with stance FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK4YBAeTmi3git80ak3VzoAz1bf0",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "**Closest 5 Enemy Starbases:**\n\n1. **Object ID:** sb6788  \n   **Position:** (5478.4, 4982.1)  \n   **Distance:** 1570.1 AU  \n\n2. **Object ID:** sb4331  \n   **Position:** (6552.3, 6968.8)  \n   **Distance:** 1750.7 AU  \n\nCurrently, there are only 2 hostile starbases detected within the search scope."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5352,
+    "completion_tokens": 101,
+    "total_tokens": 5453
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:37:30.500808
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"show me the closest 5 friendly starbases\"\n\nCURRENT SITUATION:\nYour Ship Position: (7028.5, 5280.6)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100 total (Hostile: 36, Friendly: 36, Neutral: 28)\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - st845 (Star): Position (6980.5, 5252.5), Distance 55.7 AU\n  - st5605 (Star): Position (6982.6, 5352.0), Distance 84.9 AU\n  - st7838 (Star): Position (7052.4, 5404.9), Distance 126.6 AU\n  - st1422 (Star): Position (6984.3, 5421.9), Distance 148.0 AU\n  - sb1859 (Starbase - FRIENDLY): Position (7199.3, 5309.4), Distance 173.2 AU\n  - st5446 (Star): Position (7230.5, 5238.8), Distance 206.3 AU\n  - st6566 (Star): Position (7136.8, 5580.6), Distance 319.0 AU\n  - st5648 (Star): Position (6825.9, 5026.0), Distance 325.4 AU\n  - st743 (Star): Position (6715.2, 5381.5), Distance 329.2 AU\n  - st7167 (Star): Position (6945.7, 4914.2), Distance 375.6 AU\n  - st9484 (Star): Position (6905.9, 4906.1), Distance 394.1 AU\n  - st1551 (Star): Position (6638.3, 5408.5), Distance 410.7 AU\n  - sb755 (Starbase - FRIENDLY): Position (7142.5, 5774.1), Distance 506.5 AU\n  - st8674 (Star): Position (7488.0, 5542.0), Distance 528.6 AU\n  - st4137 (Star): Position (6861.7, 5783.6), Distance 530.0 AU\n  - st3623 (Star): Position (7303.0, 5754.1), Distance 547.3 AU\n  - st414 (Star): Position (7574.8, 5394.4), Distance 558.0 AU\n  - st4434 (Star): Position (6610.4, 5716.7), Distance 604.1 AU\n  - sb9633 (Starbase - FRIENDLY): Position (6483.2, 5639.0), Distance 652.6 AU\n  - st3708 (Star): Position (6809.8, 4657.5), Distance 660.4 AU\n  - st4823 (Star): Position (6605.4, 4757.5), Distance 672.9 AU\n  - st3442 (Star): Position (7705.5, 5233.8), Distance 678.6 AU\n  - st316 (Star): Position (6790.0, 4641.3), Distance 682.3 AU\n  - st7141 (Star): Position (7162.4, 5970.4), Distance 702.6 AU\n  - st2174 (Star): Position (6504.0, 5826.9), Distance 757.3 AU\n  - st4726 (Star): Position (7766.2, 5557.1), Distance 787.8 AU\n  - st412 (Star): Position (6558.0, 5992.0), Distance 853.0 AU\n  - st7256 (Star): Position (7163.5, 6154.1), Distance 883.8 AU\n  - st5886 (Star): Position (7756.5, 4703.3), Distance 929.1 AU\n  - sb9249 (Starbase - FRIENDLY): Position (8011.6, 5230.0), Distance 984.4 AU\n  - st8566 (Star): Position (7851.6, 5835.3), Distance 992.5 AU\n  - sb8775 (Starbase - FRIENDLY): Position (8014.9, 5088.4), Distance 1004.9 AU\n  - st7209 (Star): Position (6585.5, 4358.7), Distance 1022.9 AU\n  - st9846 (Star): Position (6012.3, 5419.0), Distance 1025.6 AU\n  - st7484 (Star): Position (6628.1, 6225.7), Distance 1026.4 AU\n  - st7771 (Star): Position (7217.5, 4252.7), Distance 1045.2 AU\n  - st1799 (Star): Position (6121.5, 4760.8), Distance 1045.5 AU\n  - st4778 (Star): Position (6329.4, 4487.8), Distance 1057.0 AU\n  - st6283 (Star): Position (6540.1, 4335.1), Distance 1064.2 AU\n  - st9935 (Star): Position (6750.9, 4252.5), Distance 1064.9 AU\n  - st7803 (Star): Position (7475.0, 4300.0), Distance 1077.5 AU\n  - st2891 (Star): Position (6087.6, 5851.4), Distance 1100.5 AU\n  - st7044 (Star): Position (6001.7, 4876.9), Distance 1103.3 AU\n  - st2838 (Star): Position (7696.6, 4384.7), Distance 1117.6 AU\n  - st6819 (Star): Position (6528.9, 6287.7), Distance 1124.2 AU\n  - st1739 (Star): Position (7099.4, 4130.1), Distance 1152.7 AU\n  - st4559 (Star): Position (6081.3, 4620.5), Distance 1154.5 AU\n  - st3481 (Star): Position (6021.0, 4716.0), Distance 1154.9 AU\n  - st5429 (Star): Position (6553.9, 4208.5), Distance 1172.5 AU\n  - st977 (Star): Position (7828.4, 6150.3), Distance 1181.6 AU\n  - st7980 (Star): Position (6098.1, 4530.9), Distance 1194.9 AU\n  - sb5374 (Starbase - FRIENDLY): Position (8060.4, 4661.8), Distance 1203.2 AU\n  - sb4981 (Starbase - FRIENDLY): Position (8109.2, 5823.5), Distance 1209.3 AU\n  - st9797 (Star): Position (7081.3, 6505.6), Distance 1226.1 AU\n  - st8131 (Star): Position (8231.7, 5602.5), Distance 1245.5 AU\n  - st1808 (Star): Position (7095.1, 6536.5), Distance 1257.6 AU\n  - st4120 (Star): Position (8287.9, 5379.7), Distance 1263.3 AU\n  - st800 (Star): Position (8237.8, 5688.6), Distance 1276.3 AU\n  - st6806 (Star): Position (8192.7, 5812.1), Distance 1279.7 AU\n  - st8005 (Star): Position (6999.5, 3998.1), Distance 1282.8 AU\n  - st99 (Star): Position (6488.4, 4103.8), Distance 1294.8 AU\n  - st1649 (Star): Position (6960.9, 3982.9), Distance 1299.4 AU\n  - st5641 (Star): Position (8006.2, 6137.0), Distance 1299.8 AU\n  - st9328 (Star): Position (7435.8, 6522.2), Distance 1306.7 AU\n  - st3060 (Star): Position (8308.6, 5665.6), Distance 1336.7 AU\n  - st1519 (Star): Position (5768.9, 4802.1), Distance 1347.5 AU\n  - st5814 (Star): Position (7823.4, 4160.5), Distance 1373.5 AU\n  - st1713 (Star): Position (5654.4, 5208.9), Distance 1376.0 AU\n  - st9842 (Star): Position (6969.2, 3902.5), Distance 1379.4 AU\n  - st5087 (Star): Position (8371.2, 4902.8), Distance 1394.8 AU\n  - st7265 (Star): Position (8324.3, 5802.1), Distance 1396.8 AU\n  - st196 (Star): Position (8324.9, 5805.2), Distance 1398.5 AU\n  - st7697 (Star): Position (7113.3, 6682.5), Distance 1404.4 AU\n  - st6308 (Star): Position (8438.9, 5440.3), Distance 1419.4 AU\n  - st5405 (Star): Position (8323.3, 4698.6), Distance 1419.6 AU\n  - sb1185 (Starbase - FRIENDLY): Position (6208.2, 6455.1), Distance 1432.6 AU\n  - st1266 (Star): Position (7770.2, 4034.9), Distance 1449.7 AU\n  - st9667 (Star): Position (7007.3, 3826.1), Distance 1454.7 AU\n  - st2 (Star): Position (6225.8, 4066.6), Distance 1455.4 AU\n  - st4111 (Star): Position (8509.7, 5093.7), Distance 1493.0 AU\n  - st2410 (Star): Position (7431.4, 6720.3), Distance 1495.0 AU\n  - st1592 (Star): Position (5533.2, 5177.9), Distance 1498.8 AU\n  - st3826 (Star): Position (5512.7, 5482.4), Distance 1529.2 AU\n  - st2674 (Star): Position (6683.8, 3774.2), Distance 1545.4 AU\n  - st8891 (Star): Position (6956.6, 3724.7), Distance 1557.6 AU\n  - st5348 (Star): Position (7437.8, 3775.8), Distance 1559.5 AU\n  - st2792 (Star): Position (7739.1, 3885.2), Distance 1565.9 AU\n  - st7644 (Star): Position (7241.5, 3728.2), Distance 1566.9 AU\n  - st3843 (Star): Position (5713.2, 6145.3), Distance 1574.1 AU\n  - st2477 (Star): Position (8599.9, 5078.8), Distance 1584.2 AU\n  - st8483 (Star): Position (6125.9, 3966.9), Distance 1593.9 AU\n  - st43 (Star): Position (6395.6, 3809.3), Distance 1601.7 AU\n  - st5121 (Star): Position (8185.6, 4136.1), Distance 1627.5 AU\n  - st928 (Star): Position (8511.2, 4607.9), Distance 1628.2 AU\n  - st8169 (Star): Position (6351.7, 6771.1), Distance 1637.0 AU\n  - st5586 (Star): Position (6403.7, 6801.2), Distance 1644.0 AU\n  - st3054 (Star): Position (5506.7, 4576.4), Distance 1676.9 AU\n  - st2016 (Star): Position (5344.9, 4973.8), Distance 1711.3 AU\n  - st2834 (Star): Position (7297.0, 6977.7), Distance 1718.2 AU\n  - st6543 (Star): Position (5675.7, 4207.4), Distance 1726.8 AU\n\n\nENEMY SHIPS:\n  - s7385: Position (7112.5, 5273.4), Distance 84.3 AU, Health 100.0%, Shields 100.0%\n  - s8304: Position (1883.5, 5124.0), Distance 5147.5 AU, Health 100.0%, Shields 100.0%\n  - s5389: Position (5610.6, 3984.9), Distance 1920.8 AU, Health 100.0%, Shields 100.0%\n  - s6359: Position (2572.1, 1101.1), Distance 6109.7 AU, Health 100.0%, Shields 100.0%\n  - s512: Position (9545.1, 6771.6), Distance 2925.0 AU, Health 100.0%, Shields 100.0%\n  - s1251: Position (8546.2, 569.9), Distance 4949.2 AU, Health 100.0%, Shields 100.0%\n  - s121: Position (778.5, 5936.0), Distance 6284.3 AU, Health 100.0%, Shields 100.0%\n  - s5385: Position (9843.9, 4014.2), Distance 3087.1 AU, Health 100.0%, Shields 100.0%\n  - s2004: Position (3459.9, 1403.6), Distance 5269.4 AU, Health 100.0%, Shields 100.0%\n  - s1559: Position (2118.7, 561.7), Distance 6809.9 AU, Health 100.0%, Shields 100.0%\n  - s3268: Position (1422.3, 5054.6), Distance 5610.8 AU, Health 100.0%, Shields 100.0%\n  - s4363: Position (6713.8, 7280.1), Distance 2024.1 AU, Health 100.0%, Shields 100.0%\n  - s1679: Position (4457.4, 2950.1), Distance 3470.2 AU, Health 100.0%, Shields 100.0%\n  - s9391: Position (1259.3, 9523.9), Distance 7161.7 AU, Health 100.0%, Shields 100.0%\n  - s2542: Position (8036.0, 1936.8), Distance 3492.2 AU, Health 100.0%, Shields 100.0%\n  - s1115: Position (2369.8, 1906.7), Distance 5752.1 AU, Health 100.0%, Shields 100.0%\n  - s6763: Position (5808.4, 7818.0), Distance 2815.5 AU, Health 94.0%, Shields 100.0%\n  - s9922: Position (5779.5, 8610.7), Distance 3556.6 AU, Health 100.0%, Shields 100.0%\n  - s6992: Position (6239.9, 5291.6), Distance 788.7 AU, Health 100.0%, Shields 100.0%\n  - s4663: Position (9696.0, 3211.0), Distance 3376.2 AU, Health 100.0%, Shields 100.0%\n  - s7120: Position (2423.7, 1300.3), Distance 6086.7 AU, Health 100.0%, Shields 100.0%\n  - s831: Position (177.2, 5701.7), Distance 6864.3 AU, Health 100.0%, Shields 100.0%\n  - s9648: Position (4525.8, 6889.6), Distance 2975.3 AU, Health 100.0%, Shields 100.0%\n  - s212: Position (1047.7, 5558.0), Distance 5987.3 AU, Health 100.0%, Shields 100.0%\n  - s472: Position (8359.7, 3600.5), Distance 2143.5 AU, Health 100.0%, Shields 100.0%\n  - s3716: Position (5829.4, 245.9), Distance 5175.5 AU, Health 100.0%, Shields 100.0%\n  - s7044: Position (5853.9, 8071.5), Distance 3028.0 AU, Health 100.0%, Shields 100.0%\n  - s6811: Position (6034.6, 5211.5), Distance 996.3 AU, Health 100.0%, Shields 100.0%\n  - s1169: Position (3030.1, 7775.3), Distance 4712.9 AU, Health 100.0%, Shields 100.0%\n  - s334: Position (2424.1, 5203.5), Distance 4605.1 AU, Health 100.0%, Shields 100.0%\n  - s618: Position (2838.9, 3571.8), Distance 4524.7 AU, Health 100.0%, Shields 100.0%\n  - s7567: Position (2046.2, 9079.9), Distance 6265.7 AU, Health 100.0%, Shields 100.0%\n  - s4605: Position (597.6, 9689.8), Distance 7797.3 AU, Health 100.0%, Shields 100.0%\n  - s7168: Position (3748.7, 3472.1), Distance 3745.4 AU, Health 100.0%, Shields 100.0%\n  - s4591: Position (8901.4, 3174.2), Distance 2818.6 AU, Health 100.0%, Shields 100.0%\n  - s9816: Position (2070.7, 4451.8), Distance 5026.7 AU, Health 100.0%, Shields 100.0%\n  - s40: Position (2507.3, 7635.1), Distance 5097.5 AU, Health 100.0%, Shields 100.0%\n  - s6233: Position (2729.3, 6077.4), Distance 4372.4 AU, Health 100.0%, Shields 100.0%\n  - s1308: Position (3595.2, 3748.5), Distance 3759.7 AU, Health 100.0%, Shields 100.0%\n  - s3943: Position (285.8, 279.3), Distance 8395.1 AU, Health 100.0%, Shields 100.0%\n  - s3512: Position (7749.5, 9845.7), Distance 4621.6 AU, Health 100.0%, Shields 100.0%\n  - s8923: Position (1275.6, 2001.4), Distance 6621.9 AU, Health 100.0%, Shields 100.0%\n  - s879: Position (9209.0, 8013.4), Distance 3496.1 AU, Health 100.0%, Shields 100.0%\n  - s9367: Position (5985.7, 4220.5), Distance 1487.1 AU, Health 100.0%, Shields 100.0%\n  - s544: Position (6529.0, 4092.5), Distance 1288.9 AU, Health 100.0%, Shields 100.0%\n  - s749: Position (1563.5, 8397.8), Distance 6291.6 AU, Health 100.0%, Shields 100.0%\n  - s4308: Position (1160.6, 1171.5), Distance 7163.6 AU, Health 100.0%, Shields 100.0%\n  - s8510: Position (3545.2, 7687.3), Distance 4233.9 AU, Health 100.0%, Shields 100.0%\n  - s8404: Position (3918.0, 9565.9), Distance 5295.2 AU, Health 100.0%, Shields 100.0%\n  - s6712: Position (5811.1, 7821.5), Distance 2817.5 AU, Health 97.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. Each starbase has a stance: FRIENDLY, NEUTRAL, or HOSTILE\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Enemy vessels\n\nIMPORTANT NOTES:\n- When asked about \"enemy base\", \"hostile base\", or \"npc base\", look for Starbase objects with stance HOSTILE.\n- When asked about \"friendly base\", look for Starbase objects with stance FRIENDLY.\n- When asked about \"neutral base\", look for Starbase objects with stance NEUTRAL.\n- Starbases show their stance in the object list (e.g., \"sb1234 (Starbase - HOSTILE)\").\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor enemy/hostile bases, ONLY report starbases with stance HOSTILE.\nFor friendly bases, ONLY report starbases with stance FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK50BQsRmL09iSc2qIpFdjGotPNG",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "Here are the closest 5 friendly starbases:\n\n1. **sb1859** (Starbase - FRIENDLY)\n   - Position: (7199.3, 5309.4)\n   - Distance: 173.2 AU\n\n2. **sb755** (Starbase - FRIENDLY)\n   - Position: (7142.5, 5774.1)\n   - Distance: 506.5 AU\n\n3. **sb9249** (Starbase - FRIENDLY)\n   - Position: (8011.6, 5230.0)\n   - Distance: 984.4 AU\n\n4. **sb8775** (Starbase - FRIENDLY)\n   - Position: (8014.9, 5088.4)\n   - Distance: 1004.9 AU\n\n5. **sb5374** (Starbase - FRIENDLY)\n   - Position: (8060.4, 4661.8)\n   - Distance: 1203.2 AU"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5372,
+    "completion_tokens": 210,
+    "total_tokens": 5582
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:38:52.368834
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"where is the nearest enemy ship?\"\n\nCURRENT SITUATION:\nYour Ship Position: (7082.5, 5277.7)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100 total (Hostile: 36, Friendly: 36, Neutral: 28)\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - pl7532 (Planet): Position (7024.1, 5258.3), Distance 61.4 AU\n  - pl7458 (Planet): Position (7017.3, 5237.3), Distance 76.6 AU\n  - pl8721 (Planet): Position (6996.1, 5264.2), Distance 87.4 AU\n  - pl4350 (Planet): Position (6988.1, 5299.2), Distance 96.8 AU\n  - pl5035 (Planet): Position (6995.4, 5232.3), Distance 98.2 AU\n  - pl3108 (Planet): Position (6995.4, 5323.6), Distance 98.4 AU\n  - pl2733 (Planet): Position (6992.3, 5329.8), Distance 104.2 AU\n  - pl2540 (Planet): Position (6978.9, 5262.6), Distance 104.7 AU\n  - st845 (Star): Position (6980.5, 5252.5), Distance 105.1 AU\n  - pl2151 (Planet): Position (6999.4, 5342.4), Distance 105.3 AU\n  - pl8452 (Planet): Position (7006.8, 5351.1), Distance 105.4 AU\n  - pl7649 (Planet): Position (6977.5, 5236.0), Distance 113.0 AU\n  - pl9647 (Planet): Position (6991.9, 5209.2), Distance 113.5 AU\n  - pl909 (Planet): Position (7073.3, 5395.6), Distance 118.3 AU\n  - pl8125 (Planet): Position (6974.5, 5326.6), Distance 118.5 AU\n  - pl5135 (Planet): Position (6997.7, 5360.8), Distance 118.7 AU\n  - pl2920 (Planet): Position (6963.8, 5260.7), Distance 119.9 AU\n  - sb1859 (Starbase - FRIENDLY): Position (7199.3, 5309.4), Distance 121.1 AU\n  - pl3296 (Planet): Position (7034.8, 5391.7), Distance 123.6 AU\n  - st5605 (Star): Position (6982.6, 5352.0), Distance 124.4 AU\n  - pl9179 (Planet): Position (6970.8, 5334.2), Distance 125.1 AU\n  - pl3104 (Planet): Position (7003.4, 5376.8), Distance 126.7 AU\n  - st7838 (Star): Position (7052.4, 5404.9), Distance 130.8 AU\n  - pl4217 (Planet): Position (7062.3, 5407.6), Distance 131.5 AU\n  - pl2355 (Planet): Position (7056.2, 5409.5), Distance 134.4 AU\n  - pl4052 (Planet): Position (7210.4, 5228.5), Distance 137.1 AU\n  - pl6308 (Planet): Position (6953.7, 5334.5), Distance 140.7 AU\n  - pl256 (Planet): Position (7069.0, 5419.0), Distance 141.9 AU\n  - pl7183 (Planet): Position (6997.8, 5392.5), Distance 142.6 AU\n  - pl8045 (Planet): Position (7210.5, 5210.2), Distance 144.7 AU\n  - pl2912 (Planet): Position (7224.8, 5243.7), Distance 146.4 AU\n  - pl6344 (Planet): Position (7229.3, 5247.8), Distance 149.9 AU\n  - pl7146 (Planet): Position (7034.6, 5421.0), Distance 151.1 AU\n  - st5446 (Star): Position (7230.5, 5238.8), Distance 153.1 AU\n  - pl2291 (Planet): Position (7038.0, 5424.3), Distance 153.2 AU\n  - pl6991 (Planet): Position (7079.2, 5434.1), Distance 156.4 AU\n  - pl7620 (Planet): Position (7232.7, 5232.7), Distance 156.8 AU\n  - pl4988 (Planet): Position (6965.7, 5382.5), Distance 156.9 AU\n  - pl5331 (Planet): Position (6966.3, 5387.6), Distance 160.0 AU\n  - pl2407 (Planet): Position (7069.7, 5440.8), Distance 163.6 AU\n  - pl8925 (Planet): Position (6994.1, 5422.6), Distance 169.7 AU\n  - pl8136 (Planet): Position (7247.5, 5231.0), Distance 171.6 AU\n  - st1422 (Star): Position (6984.3, 5421.9), Distance 174.4 AU\n  - pl2335 (Planet): Position (7007.6, 5435.7), Distance 174.9 AU\n  - pl5665 (Planet): Position (7258.4, 5257.0), Distance 177.2 AU\n  - pl1122 (Planet): Position (6983.1, 5435.1), Distance 186.2 AU\n  - pl3189 (Planet): Position (7250.6, 5196.5), Distance 186.7 AU\n  - pl1890 (Planet): Position (7269.0, 5222.4), Distance 194.6 AU\n  - pl5927 (Planet): Position (7003.1, 5455.8), Distance 195.0 AU\n  - pl9589 (Planet): Position (6950.3, 5424.6), Distance 197.6 AU\n  - pl9050 (Planet): Position (6943.7, 5443.4), Distance 216.2 AU\n  - pl4170 (Planet): Position (7152.6, 5540.1), Distance 271.6 AU\n  - pl2097 (Planet): Position (7113.7, 5556.8), Distance 280.9 AU\n  - pl7888 (Planet): Position (7118.0, 5575.8), Distance 300.3 AU\n  - st6566 (Star): Position (7136.8, 5580.6), Distance 307.8 AU\n  - pl939 (Planet): Position (7139.3, 5589.5), Distance 317.0 AU\n  - pl4180 (Planet): Position (7171.9, 5582.4), Distance 317.5 AU\n  - pl601 (Planet): Position (6844.3, 5059.6), Distance 322.9 AU\n  - pl743 (Planet): Position (6858.5, 5044.5), Distance 323.3 AU\n  - pl698 (Planet): Position (7135.3, 5600.1), Distance 326.7 AU\n  - pl708 (Planet): Position (6833.6, 5063.0), Distance 328.6 AU\n  - pl6541 (Planet): Position (7107.7, 5607.4), Distance 330.7 AU\n  - pl4110 (Planet): Position (7166.4, 5608.5), Distance 341.3 AU\n  - pl7665 (Planet): Position (6952.0, 4961.6), Distance 342.0 AU\n  - pl5413 (Planet): Position (6827.5, 5034.4), Distance 352.4 AU\n  - pl4929 (Planet): Position (7154.8, 5624.5), Distance 354.3 AU\n  - pl1232 (Planet): Position (6865.7, 4996.4), Distance 355.1 AU\n  - pl1576 (Planet): Position (6820.5, 5034.5), Distance 357.4 AU\n  - pl6257 (Planet): Position (6833.9, 5018.5), Distance 359.1 AU\n  - pl7135 (Planet): Position (6731.0, 5352.2), Distance 359.3 AU\n  - st5648 (Star): Position (6825.9, 5026.0), Distance 359.4 AU\n  - pl3659 (Planet): Position (6926.2, 4948.6), Distance 364.3 AU\n  - pl6827 (Planet): Position (6960.6, 4933.8), Distance 364.8 AU\n  - pl270 (Planet): Position (6738.0, 5398.8), Distance 365.2 AU\n  - pl1904 (Planet): Position (6730.2, 5378.0), Distance 366.2 AU\n  - pl9390 (Planet): Position (6818.4, 5022.9), Distance 366.9 AU\n  - pl6817 (Planet): Position (6977.7, 4922.0), Distance 370.8 AU\n  - pl4709 (Planet): Position (6939.8, 4933.1), Distance 373.0 AU\n  - pl5319 (Planet): Position (6955.3, 4924.1), Distance 375.7 AU\n  - bh1745 (BlackHole): Position (7196.3, 5635.8), Distance 375.8 AU\n  - pl8542 (Planet): Position (6720.8, 5380.7), Distance 376.0 AU\n  - pl5110 (Planet): Position (6953.8, 4921.2), Distance 379.0 AU\n  - pl3342 (Planet): Position (6718.0, 5386.0), Distance 380.2 AU\n  - st743 (Star): Position (6715.2, 5381.5), Distance 381.6 AU\n  - pl3961 (Planet): Position (6711.1, 5371.8), Distance 383.1 AU\n  - pl3485 (Planet): Position (6970.2, 4911.3), Distance 383.2 AU\n  - pl2514 (Planet): Position (6803.5, 5014.4), Distance 383.6 AU\n  - pl5421 (Planet): Position (6712.0, 5385.7), Distance 385.8 AU\n  - pl1176 (Planet): Position (6929.0, 4922.9), Distance 386.6 AU\n  - pl5003 (Planet): Position (6936.0, 4919.1), Distance 387.4 AU\n  - pl9889 (Planet): Position (6940.3, 4916.3), Distance 388.3 AU\n  - st7167 (Star): Position (6945.7, 4914.2), Distance 388.4 AU\n  - pl5876 (Planet): Position (6940.8, 4915.9), Distance 388.5 AU\n  - pl366 (Planet): Position (6923.8, 4919.5), Distance 391.7 AU\n  - pl9895 (Planet): Position (6710.3, 5425.6), Distance 400.4 AU\n  - pl5334 (Planet): Position (6963.9, 4893.2), Distance 402.4 AU\n  - pl2269 (Planet): Position (6918.0, 4903.5), Distance 408.7 AU\n  - st9484 (Star): Position (6905.9, 4906.1), Distance 411.4 AU\n  - pl6921 (Planet): Position (6679.9, 5388.0), Distance 417.5 AU\n  - pl2249 (Planet): Position (6682.6, 5414.1), Distance 422.4 AU\n\n\nENEMY SHIPS:\n  - s7385: Position (7232.5, 5273.4), Distance 150.1 AU, Health 100.0%, Shields 100.0%\n  - s8304: Position (1837.7, 5125.6), Distance 5247.0 AU, Health 100.0%, Shields 100.0%\n  - s5389: Position (5629.6, 3984.0), Distance 1945.3 AU, Health 100.0%, Shields 100.0%\n  - s6359: Position (2584.7, 1112.1), Distance 6130.4 AU, Health 100.0%, Shields 100.0%\n  - s512: Position (9557.2, 6785.8), Distance 2898.1 AU, Health 100.0%, Shields 100.0%\n  - s1251: Position (8564.2, 576.3), Distance 4929.4 AU, Health 100.0%, Shields 100.0%\n  - s121: Position (780.2, 5970.5), Distance 6340.2 AU, Health 100.0%, Shields 100.0%\n  - s5385: Position (9840.2, 4009.4), Distance 3035.5 AU, Health 100.0%, Shields 100.0%\n  - s2004: Position (3470.0, 1396.1), Distance 5302.5 AU, Health 100.0%, Shields 100.0%\n  - s1559: Position (2107.2, 579.6), Distance 6842.9 AU, Health 100.0%, Shields 85.0%\n  - s3268: Position (1428.2, 5065.9), Distance 5658.2 AU, Health 100.0%, Shields 100.0%\n  - s4363: Position (6726.8, 7252.1), Distance 2006.2 AU, Health 100.0%, Shields 100.0%\n  - s1679: Position (4453.9, 2939.8), Distance 3517.8 AU, Health 100.0%, Shields 100.0%\n  - s9391: Position (1268.0, 9515.6), Distance 7195.0 AU, Health 100.0%, Shields 100.0%\n  - s2542: Position (7997.0, 1930.1), Distance 3470.3 AU, Health 100.0%, Shields 100.0%\n  - s1115: Position (2374.4, 1928.9), Distance 5777.5 AU, Health 100.0%, Shields 100.0%\n  - s6763: Position (5808.4, 7818.0), Distance 2841.9 AU, Health 90.0%, Shields 100.0%\n  - s9922: Position (5768.8, 8615.7), Distance 3587.2 AU, Health 100.0%, Shields 100.0%\n  - s6992: Position (6224.2, 5288.8), Distance 858.3 AU, Health 100.0%, Shields 100.0%\n  - s4663: Position (9704.5, 3181.1), Distance 3357.2 AU, Health 100.0%, Shields 100.0%\n  - s7120: Position (2433.5, 1297.5), Distance 6120.0 AU, Health 100.0%, Shields 100.0%\n  - s831: Position (202.9, 5719.9), Distance 6893.8 AU, Health 100.0%, Shields 100.0%\n  - s9648: Position (4528.5, 6904.6), Distance 3028.2 AU, Health 100.0%, Shields 100.0%\n  - s212: Position (1034.2, 5582.1), Distance 6055.9 AU, Health 100.0%, Shields 100.0%\n  - s472: Position (8352.1, 3591.2), Distance 2111.0 AU, Health 100.0%, Shields 100.0%\n  - s3716: Position (5818.2, 250.3), Distance 5183.9 AU, Health 100.0%, Shields 100.0%\n  - s7044: Position (5856.1, 8058.3), Distance 3039.0 AU, Health 100.0%, Shields 100.0%\n  - s6811: Position (6008.4, 5199.4), Distance 1076.9 AU, Health 100.0%, Shields 100.0%\n  - s1169: Position (3030.1, 7775.3), Distance 4760.2 AU, Health 100.0%, Shields 100.0%\n  - s334: Position (2417.7, 5210.8), Distance 4665.3 AU, Health 100.0%, Shields 100.0%\n  - s618: Position (2830.7, 3580.6), Distance 4577.9 AU, Health 100.0%, Shields 100.0%\n  - s7567: Position (2037.4, 9074.8), Distance 6314.3 AU, Health 100.0%, Shields 100.0%\n  - s4605: Position (603.6, 9679.4), Distance 7832.6 AU, Health 100.0%, Shields 100.0%\n  - s7168: Position (3756.0, 3474.1), Distance 3784.0 AU, Health 100.0%, Shields 100.0%\n  - s4591: Position (8899.6, 3158.9), Distance 2791.3 AU, Health 100.0%, Shields 100.0%\n  - s9816: Position (2092.4, 4491.6), Distance 5051.5 AU, Health 100.0%, Shields 100.0%\n  - s40: Position (2511.6, 7613.0), Distance 5132.9 AU, Health 100.0%, Shields 100.0%\n  - s6233: Position (2724.1, 6058.6), Distance 4427.8 AU, Health 100.0%, Shields 100.0%\n  - s1308: Position (3585.7, 3728.0), Distance 3824.8 AU, Health 100.0%, Shields 100.0%\n  - s3943: Position (260.5, 281.4), Distance 8455.9 AU, Health 100.0%, Shields 100.0%\n  - s3512: Position (7759.8, 9851.7), Distance 4623.9 AU, Health 100.0%, Shields 100.0%\n  - s8923: Position (1276.2, 1997.5), Distance 6668.8 AU, Health 100.0%, Shields 100.0%\n  - s879: Position (9214.4, 8018.7), Distance 3472.5 AU, Health 100.0%, Shields 100.0%\n  - s9367: Position (5987.3, 4208.4), Distance 1530.7 AU, Health 100.0%, Shields 100.0%\n  - s544: Position (6514.0, 4125.2), Distance 1285.1 AU, Health 100.0%, Shields 100.0%\n  - s749: Position (1558.9, 8370.9), Distance 6330.7 AU, Health 100.0%, Shields 100.0%\n  - s4308: Position (1173.7, 1138.5), Distance 7214.3 AU, Health 100.0%, Shields 100.0%\n  - s8510: Position (3544.4, 7675.5), Distance 4274.0 AU, Health 100.0%, Shields 100.0%\n  - s8404: Position (3932.1, 9558.0), Distance 5314.7 AU, Health 100.0%, Shields 100.0%\n  - s6712: Position (5803.9, 7811.9), Distance 2838.4 AU, Health 93.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. Each starbase has a stance: FRIENDLY, NEUTRAL, or HOSTILE\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Enemy vessels\n\nIMPORTANT NOTES:\n- When asked about \"enemy base\", \"hostile base\", or \"npc base\", look for Starbase objects with stance HOSTILE.\n- When asked about \"friendly base\", look for Starbase objects with stance FRIENDLY.\n- When asked about \"neutral base\", look for Starbase objects with stance NEUTRAL.\n- Starbases show their stance in the object list (e.g., \"sb1234 (Starbase - HOSTILE)\").\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor enemy/hostile bases, ONLY report starbases with stance HOSTILE.\nFor friendly bases, ONLY report starbases with stance FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK6MYtN9nkoEdmDaK7XMYgG4DfTD",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "The nearest enemy ship is:\n\n- **Object ID**: s6992  \n- **Position**: (6224.2, 5288.8)  \n- **Distance**: 858.3 AU  \n- **Health**: 100.0%  \n- **Shields**: 100.0%  "
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5276,
+    "completion_tokens": 68,
+    "total_tokens": 5344
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:39:17.495852
+METHOD: answer_player_question
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are the ship's onboard computer AI assistant. Answer the captain's questions about the universe, objects, and tactical situation. Be concise and factual. Format your responses clearly with object IDs, coordinates, and distances."
+    },
+    {
+      "role": "user",
+      "content": "The captain asks: \"where is the nearest hostile ship?\"\n\nCURRENT SITUATION:\nYour Ship Position: (7091.4, 5277.4)\nSearch Scope: ENTIRE UNIVERSE\n\nOBJECTS (sorted by distance from your ship, filtered by relevance to question):\nTOTAL OBJECTS SCANNED: 10940\nObject counts by type:\n  - AsteroidField: 600\n  - BlackHole: 100\n  - Planet: 9000\n  - Pulsar: 100\n  - Star: 1000\n  - Starbase: 100 total (Hostile: 36, Friendly: 36, Neutral: 28)\n  - WormHole: 40\n\nShowing 100 most relevant objects (prioritized by question):\n  - pl7532 (Planet): Position (7024.1, 5258.3), Distance 70.0 AU\n  - pl7458 (Planet): Position (7017.3, 5237.3), Distance 84.3 AU\n  - pl8721 (Planet): Position (6996.1, 5264.2), Distance 96.3 AU\n  - pl4350 (Planet): Position (6988.1, 5299.2), Distance 105.6 AU\n  - pl5035 (Planet): Position (6995.4, 5232.3), Distance 106.2 AU\n  - pl3108 (Planet): Position (6995.4, 5323.6), Distance 106.5 AU\n  - pl2733 (Planet): Position (6992.3, 5329.8), Distance 112.2 AU\n  - pl8452 (Planet): Position (7006.8, 5351.1), Distance 112.2 AU\n  - sb1859 (Starbase - FRIENDLY): Position (7199.3, 5309.4), Distance 112.5 AU\n  - pl2151 (Planet): Position (6999.4, 5342.4), Distance 112.7 AU\n  - pl2540 (Planet): Position (6978.9, 5262.6), Distance 113.5 AU\n  - st845 (Star): Position (6980.5, 5252.5), Distance 113.8 AU\n  - pl909 (Planet): Position (7073.3, 5395.6), Distance 119.6 AU\n  - pl9647 (Planet): Position (6991.9, 5209.2), Distance 120.7 AU\n  - pl7649 (Planet): Position (6977.5, 5236.0), Distance 121.3 AU\n  - pl5135 (Planet): Position (6997.7, 5360.8), Distance 125.5 AU\n  - pl8125 (Planet): Position (6974.5, 5326.6), Distance 126.8 AU\n  - pl3296 (Planet): Position (7034.8, 5391.7), Distance 127.6 AU\n  - pl4052 (Planet): Position (7210.4, 5228.5), Distance 128.7 AU\n  - pl2920 (Planet): Position (6963.8, 5260.7), Distance 128.8 AU\n  - st5605 (Star): Position (6982.6, 5352.0), Distance 131.9 AU\n  - pl3104 (Planet): Position (7003.4, 5376.8), Distance 132.7 AU\n  - pl9179 (Planet): Position (6970.8, 5334.2), Distance 133.3 AU\n  - st7838 (Star): Position (7052.4, 5404.9), Distance 133.4 AU\n  - pl4217 (Planet): Position (7062.3, 5407.6), Distance 133.4 AU\n  - pl2355 (Planet): Position (7056.2, 5409.5), Distance 136.7 AU\n  - pl8045 (Planet): Position (7210.5, 5210.2), Distance 136.7 AU\n  - pl2912 (Planet): Position (7224.8, 5243.7), Distance 137.6 AU\n  - pl6344 (Planet): Position (7229.3, 5247.8), Distance 141.0 AU\n  - pl256 (Planet): Position (7069.0, 5419.0), Distance 143.3 AU\n  - st5446 (Star): Position (7230.5, 5238.8), Distance 144.3 AU\n  - pl7620 (Planet): Position (7232.7, 5232.7), Distance 148.1 AU\n  - pl7183 (Planet): Position (6997.8, 5392.5), Distance 148.4 AU\n  - pl6308 (Planet): Position (6953.7, 5334.5), Distance 149.1 AU\n  - pl7146 (Planet): Position (7034.6, 5421.0), Distance 154.4 AU\n  - pl2291 (Planet): Position (7038.0, 5424.3), Distance 156.3 AU\n  - pl6991 (Planet): Position (7079.2, 5434.1), Distance 157.1 AU\n  - pl8136 (Planet): Position (7247.5, 5231.0), Distance 162.9 AU\n  - pl4988 (Planet): Position (6965.7, 5382.5), Distance 163.9 AU\n  - pl2407 (Planet): Position (7069.7, 5440.8), Distance 164.8 AU\n  - pl5331 (Planet): Position (6966.3, 5387.6), Distance 166.8 AU\n  - pl5665 (Planet): Position (7258.4, 5257.0), Distance 168.2 AU\n  - pl8925 (Planet): Position (6994.1, 5422.6), Distance 174.8 AU\n  - pl3189 (Planet): Position (7250.6, 5196.5), Distance 178.5 AU\n  - pl2335 (Planet): Position (7007.6, 5435.7), Distance 179.1 AU\n  - st1422 (Star): Position (6984.3, 5421.9), Distance 179.8 AU\n  - pl1890 (Planet): Position (7269.0, 5222.4), Distance 185.9 AU\n  - pl1122 (Planet): Position (6983.1, 5435.1), Distance 191.4 AU\n  - pl5927 (Planet): Position (7003.1, 5455.8), Distance 199.1 AU\n  - pl9589 (Planet): Position (6950.3, 5424.6), Distance 203.9 AU\n  - pl9050 (Planet): Position (6943.7, 5443.4), Distance 222.2 AU\n  - pl4170 (Planet): Position (7152.6, 5540.1), Distance 269.7 AU\n  - pl2097 (Planet): Position (7113.7, 5556.8), Distance 280.3 AU\n  - pl7888 (Planet): Position (7118.0, 5575.8), Distance 299.6 AU\n  - st6566 (Star): Position (7136.8, 5580.6), Distance 306.6 AU\n  - pl4180 (Planet): Position (7171.9, 5582.4), Distance 315.4 AU\n  - pl939 (Planet): Position (7139.3, 5589.5), Distance 315.8 AU\n  - pl698 (Planet): Position (7135.3, 5600.1), Distance 325.6 AU\n  - pl743 (Planet): Position (6858.5, 5044.5), Distance 329.4 AU\n  - pl601 (Planet): Position (6844.3, 5059.6), Distance 329.5 AU\n  - pl6541 (Planet): Position (7107.7, 5607.4), Distance 330.4 AU\n  - pl708 (Planet): Position (6833.6, 5063.0), Distance 335.3 AU\n  - pl4110 (Planet): Position (7166.4, 5608.5), Distance 339.4 AU\n  - pl7665 (Planet): Position (6952.0, 4961.6), Distance 345.3 AU\n  - pl4929 (Planet): Position (7154.8, 5624.5), Distance 352.8 AU\n  - pl5413 (Planet): Position (6827.5, 5034.4), Distance 358.8 AU\n  - pl1232 (Planet): Position (6865.7, 4996.4), Distance 360.5 AU\n  - pl1576 (Planet): Position (6820.5, 5034.5), Distance 363.9 AU\n  - pl6257 (Planet): Position (6833.9, 5018.5), Distance 365.2 AU\n  - st5648 (Star): Position (6825.9, 5026.0), Distance 365.7 AU\n  - pl6827 (Planet): Position (6960.6, 4933.8), Distance 367.7 AU\n  - pl3659 (Planet): Position (6926.2, 4948.6), Distance 368.0 AU\n  - pl7135 (Planet): Position (6731.0, 5352.2), Distance 368.1 AU\n  - pl6817 (Planet): Position (6977.7, 4922.0), Distance 373.2 AU\n  - pl9390 (Planet): Position (6818.4, 5022.9), Distance 373.3 AU\n  - bh1745 (BlackHole): Position (7196.3, 5635.8), Distance 373.4 AU\n  - pl270 (Planet): Position (6738.0, 5398.8), Distance 373.7 AU\n  - pl1904 (Planet): Position (6730.2, 5378.0), Distance 375.0 AU\n  - pl4709 (Planet): Position (6939.8, 4933.1), Distance 376.3 AU\n  - pl5319 (Planet): Position (6955.3, 4924.1), Distance 378.6 AU\n  - pl5110 (Planet): Position (6953.8, 4921.2), Distance 381.9 AU\n  - pl8542 (Planet): Position (6720.8, 5380.7), Distance 384.7 AU\n  - pl3485 (Planet): Position (6970.2, 4911.3), Distance 385.7 AU\n  - pl3342 (Planet): Position (6718.0, 5386.0), Distance 388.9 AU\n  - pl2514 (Planet): Position (6803.5, 5014.4), Distance 390.0 AU\n  - pl1176 (Planet): Position (6929.0, 4922.9), Distance 390.0 AU\n  - st743 (Star): Position (6715.2, 5381.5), Distance 390.4 AU\n  - pl5003 (Planet): Position (6936.0, 4919.1), Distance 390.6 AU\n  - st7167 (Star): Position (6945.7, 4914.2), Distance 391.4 AU\n  - pl9889 (Planet): Position (6940.3, 4916.3), Distance 391.5 AU\n  - pl5876 (Planet): Position (6940.8, 4915.9), Distance 391.6 AU\n  - pl3961 (Planet): Position (6711.1, 5371.8), Distance 391.9 AU\n  - pl5421 (Planet): Position (6712.0, 5385.7), Distance 394.6 AU\n  - pl366 (Planet): Position (6923.8, 4919.5), Distance 395.2 AU\n  - pl5334 (Planet): Position (6963.9, 4893.2), Distance 404.9 AU\n  - pl9895 (Planet): Position (6710.3, 5425.6), Distance 408.9 AU\n  - pl2269 (Planet): Position (6918.0, 4903.5), Distance 412.2 AU\n  - st9484 (Star): Position (6905.9, 4906.1), Distance 415.1 AU\n  - pl6921 (Planet): Position (6679.9, 5388.0), Distance 426.2 AU\n  - pl5038 (Planet): Position (6896.6, 4895.2), Distance 429.0 AU\n\n\nENEMY SHIPS:\n  - s7385: Position (7228.1, 5277.5), Distance 136.6 AU, Health 100.0%, Shields 100.0%\n  - s8304: Position (1834.0, 5127.2), Distance 5259.6 AU, Health 100.0%, Shields 100.0%\n  - s5389: Position (5631.0, 3987.8), Distance 1948.3 AU, Health 100.0%, Shields 100.0%\n  - s6359: Position (2586.0, 1106.2), Distance 6139.9 AU, Health 100.0%, Shields 100.0%\n  - s512: Position (9565.2, 6786.1), Distance 2897.5 AU, Health 100.0%, Shields 100.0%\n  - s1251: Position (8564.7, 580.2), Distance 4922.8 AU, Health 100.0%, Shields 100.0%\n  - s121: Position (781.5, 5974.3), Distance 6348.3 AU, Health 100.0%, Shields 100.0%\n  - s5385: Position (9839.0, 4007.8), Distance 3026.7 AU, Health 100.0%, Shields 100.0%\n  - s2004: Position (3476.0, 1396.2), Distance 5304.3 AU, Health 100.0%, Shields 100.0%\n  - s1559: Position (2101.4, 585.1), Distance 6849.7 AU, Health 100.0%, Shields 85.0%\n  - s3268: Position (1424.2, 5066.3), Distance 5671.2 AU, Health 100.0%, Shields 100.0%\n  - s4363: Position (6728.0, 7244.2), Distance 2000.1 AU, Health 100.0%, Shields 100.0%\n  - s1679: Position (4455.3, 2938.4), Distance 3524.3 AU, Health 100.0%, Shields 100.0%\n  - s9391: Position (1270.8, 9512.8), Distance 7198.4 AU, Health 100.0%, Shields 100.0%\n  - s2542: Position (7989.0, 1929.5), Distance 3466.2 AU, Health 100.0%, Shields 100.0%\n  - s1115: Position (2378.3, 1927.9), Distance 5782.1 AU, Health 100.0%, Shields 100.0%\n  - s6763: Position (5804.8, 7813.1), Distance 2843.4 AU, Health 86.0%, Shields 100.0%\n  - s9922: Position (5767.4, 8614.2), Distance 3589.9 AU, Health 100.0%, Shields 100.0%\n  - s6992: Position (6220.3, 5287.9), Distance 871.2 AU, Health 100.0%, Shields 100.0%\n  - s4663: Position (9709.9, 3175.2), Distance 3358.0 AU, Health 100.0%, Shields 100.0%\n  - s7120: Position (2435.2, 1293.8), Distance 6127.8 AU, Health 100.0%, Shields 100.0%\n  - s831: Position (208.7, 5725.4), Distance 6897.3 AU, Health 100.0%, Shields 100.0%\n  - s9648: Position (4526.2, 6899.1), Distance 3034.9 AU, Health 100.0%, Shields 100.0%\n  - s212: Position (1031.6, 5587.5), Distance 6067.8 AU, Health 100.0%, Shields 100.0%\n  - s472: Position (8350.9, 3589.6), Distance 2105.9 AU, Health 100.0%, Shields 100.0%\n  - s3716: Position (5816.4, 251.0), Distance 5185.6 AU, Health 100.0%, Shields 100.0%\n  - s7044: Position (5856.0, 8060.3), Distance 3044.7 AU, Health 100.0%, Shields 100.0%\n  - s6811: Position (6003.2, 5205.5), Distance 1090.6 AU, Health 100.0%, Shields 100.0%\n  - s1169: Position (3030.6, 7777.2), Distance 4768.6 AU, Health 100.0%, Shields 100.0%\n  - s334: Position (2414.7, 5213.5), Distance 4677.2 AU, Health 100.0%, Shields 100.0%\n  - s618: Position (2829.4, 3582.1), Distance 4586.9 AU, Health 100.0%, Shields 100.0%\n  - s7567: Position (2037.8, 9070.8), Distance 6319.0 AU, Health 100.0%, Shields 100.0%\n  - s4605: Position (604.7, 9677.7), Distance 7838.4 AU, Health 100.0%, Shields 100.0%\n  - s7168: Position (3755.6, 3470.1), Distance 3794.0 AU, Health 100.0%, Shields 100.0%\n  - s4591: Position (8904.5, 3152.6), Distance 2793.2 AU, Health 100.0%, Shields 100.0%\n  - s9816: Position (2097.3, 4495.2), Distance 5055.1 AU, Health 100.0%, Shields 100.0%\n  - s40: Position (2510.2, 7609.3), Distance 5140.5 AU, Health 100.0%, Shields 100.0%\n  - s6233: Position (2721.7, 6055.3), Distance 4438.4 AU, Health 100.0%, Shields 100.0%\n  - s1308: Position (3584.1, 3726.8), Distance 3834.8 AU, Health 100.0%, Shields 100.0%\n  - s3943: Position (259.2, 283.0), Distance 8463.1 AU, Health 100.0%, Shields 100.0%\n  - s3512: Position (7761.6, 9852.7), Distance 4624.1 AU, Health 100.0%, Shields 100.0%\n  - s8923: Position (1276.8, 1993.5), Distance 6677.9 AU, Health 100.0%, Shields 100.0%\n  - s879: Position (9217.3, 8024.0), Distance 3473.1 AU, Health 100.0%, Shields 100.0%\n  - s9367: Position (5986.6, 4206.5), Distance 1538.7 AU, Health 100.0%, Shields 100.0%\n  - s544: Position (6511.5, 4130.6), Distance 1285.1 AU, Health 100.0%, Shields 100.0%\n  - s749: Position (1559.0, 8364.9), Distance 6335.6 AU, Health 100.0%, Shields 100.0%\n  - s4308: Position (1173.5, 1140.5), Distance 7220.5 AU, Health 100.0%, Shields 100.0%\n  - s8510: Position (3543.4, 7677.3), Distance 4283.4 AU, Health 100.0%, Shields 100.0%\n  - s8404: Position (3938.0, 9557.0), Distance 5315.9 AU, Health 100.0%, Shields 100.0%\n  - s6712: Position (5807.5, 7816.7), Distance 2845.4 AU, Health 94.0%, Shields 100.0%\n\n\nAVAILABLE OBJECT TYPES IN UNIVERSE:\n- Stars (st####): Energy sources\n- Planets (pl####): Some are inhabited  \n- Starbases (sb####): Repairs and supplies. Each starbase has a stance: FRIENDLY, NEUTRAL, or HOSTILE\n- Black Holes (bh####): Dangerous gravitational anomalies\n- Pulsars (pu####): Disrupt sensors\n- Wormholes (wh####): Teleport to paired wormhole\n- Asteroid Fields (af####): Mining opportunities\n- NPC Ships (s####): Enemy vessels\n\nIMPORTANT NOTES:\n- When asked about \"enemy base\", \"hostile base\", or \"npc base\", look for Starbase objects with stance HOSTILE.\n- When asked about \"friendly base\", look for Starbase objects with stance FRIENDLY.\n- When asked about \"neutral base\", look for Starbase objects with stance NEUTRAL.\n- Starbases show their stance in the object list (e.g., \"sb1234 (Starbase - HOSTILE)\").\n- The objects are already sorted by distance from your ship - the first matching object of any type is the nearest.\n\nBased on the available data, answer the captain's question concisely and accurately. \nIf asking for \"nearest\" or \"closest\" object, search through all listed objects and identify the closest one of that type.\nFor enemy/hostile bases, ONLY report starbases with stance HOSTILE.\nFor friendly bases, ONLY report starbases with stance FRIENDLY.\nAlways include the object ID, position coordinates, and distance in your answer.\nIf you don't have enough data to answer, say so clearly."
+    }
+  ],
+  "temperature": 0.3,
+  "max_tokens": 500,
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK6mb6VsAuEM1S9RLCIQke2EkIfu",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "The nearest hostile ship is:\n\n- **Object ID:** s7385\n- **Position:** (7228.1, 5277.5)\n- **Distance:** 136.6 AU\n- **Health:** 100.0%\n- **Shields:** 100.0%"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 5276,
+    "completion_tokens": 60,
+    "total_tokens": 5336
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:39:44.127046
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 21):\nYour Ship Status:\n- Position: (7197.1, 5313.6)\n- Damage: 0.0%\n- Energy: 92.6%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7161.6, 5290.0)\n- Distance: 42.6 AU\n- Damage: 0.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK7CZAUFsSXN96Y97RP86iyV5luB",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"Engaging the PLAYER ship at optimal range with torpedoes since they are the only target available and their reputation is high, indicating potential threat.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 82,
+    "total_tokens": 745
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:39:46.053155
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 22):\nYour Ship Status:\n- Position: (7193.7, 5318.6)\n- Damage: 0.0%\n- Energy: 91.4%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7169.1, 5295.0)\n- Distance: 34.2 AU\n- Damage: 0.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK7EWpwX5NCxKa6X8zsAvNHj5DkQ",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The player ship is within torpedo range and has a high reputation, but I will engage aggressively to assert dominance despite the risk.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 79,
+    "total_tokens": 742
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:39:50.627009
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 23):\nYour Ship Status:\n- Position: (7190.4, 5323.6)\n- Damage: 0.0%\n- Energy: 90.2%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7175.6, 5301.2)\n- Distance: 26.9 AU\n- Damage: 0.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK7I7iGfTyVh2xRrskG6o6Pc5hxr",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 90,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"The player ship is within phaser range and poses no immediate threat due to high reputation. However, my aggressive nature compels me to engage in direct confrontation.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 85,
+    "total_tokens": 748
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:40:00.269536
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 24):\nYour Ship Status:\n- Position: (7190.4, 5343.6)\n- Damage: 0.0%\n- Energy: 89.8%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7180.5, 5308.7)\n- Distance: 36.3 AU\n- Damage: 20.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK7SCxgeyP6KVZu8AYe6Z8HwcBJ9",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 120,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"The PLAYER ship is within phaser range and has taken damage, making it a suitable target for an aggressive attack.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 76,
+    "total_tokens": 739
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:40:08.481414
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 25):\nYour Ship Status:\n- Position: (7180.4, 5360.9)\n- Damage: 0.0%\n- Energy: 89.4%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7183.0, 5317.3)\n- Distance: 43.7 AU\n- Damage: 19.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK7a8PYne0ditebJmiZhURLXC0WY",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 270,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The player has 19% damage and is within torpedo range. They pose a potential threat given their high reputation, but I will engage aggressively due to my aggressive nature and the player's current vulnerability.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 93,
+    "total_tokens": 756
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:40:20.703738
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 27):\nYour Ship Status:\n- Position: (7173.0, 5383.7)\n- Damage: 0.0%\n- Energy: 87.8%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7180.4, 5335.1)\n- Distance: 49.2 AU\n- Damage: 17.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK7mZVfA3o4vNMsozgoMrI7ZHFiH",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 39,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The player ship has low damage and high reputation, but I prefer direct confrontation. Using torpedos at this distance maximizes my offensive capability.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 82,
+    "total_tokens": 745
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:40:25.602820
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 28):\nYour Ship Status:\n- Position: (7175.5, 5389.1)\n- Damage: 0.0%\n- Energy: 86.5%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7179.1, 5344.0)\n- Distance: 45.3 AU\n- Damage: 16.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK7svYB1oipscF0wfu8fY9tIZsAp",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 135,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The player ship is within torpedo range and has sustained damage, making it a prime target to eliminate.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 74,
+    "total_tokens": 737
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:40:31.572365
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 29):\nYour Ship Status:\n- Position: (7178.0, 5394.6)\n- Damage: 0.0%\n- Energy: 85.3%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7178.3, 5353.0)\n- Distance: 41.6 AU\n- Damage: 15.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK7x5RWkYK46YFcI3o0nRGe1POW1",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 180,\n    \"speed\": 20,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": true,\n    \"reason\": \"The PLAYER ship has a high reputation but is damaged (15.0%). I will launch torpedoes from a distance of 41.6 AU to engage aggressively.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 87,
+    "total_tokens": 750
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:40:34.677891
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 30):\nYour Ship Status:\n- Position: (7180.5, 5400.0)\n- Damage: 0.0%\n- Energy: 84.1%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7178.3, 5362.0)\n- Distance: 38.1 AU\n- Damage: 14.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK81PVz6iCZOZCVA5BmzAtg83hI2",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 315,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"Direct confrontation with the player is warranted due to their reputation being above my aggression threshold; I will close in and fire phasers as they are within range.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 84,
+    "total_tokens": 747
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:40:42.685312
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 31):\nYour Ship Status:\n- Position: (7194.7, 5385.9)\n- Damage: 0.0%\n- Energy: 83.7%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7178.8, 5371.0)\n- Distance: 21.8 AU\n- Damage: 13.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK87sq2BJi0GL0CuZApd6rHnwQ8L",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"The player ship is within phaser range and has taken damage, making it a viable target for an aggressive attack.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 76,
+    "total_tokens": 739
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:40:48.538181
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 32):\nYour Ship Status:\n- Position: (7214.7, 5385.9)\n- Damage: 0.0%\n- Energy: 83.3%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7185.4, 5377.1)\n- Distance: 30.6 AU\n- Damage: 12.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK8FoBlE9Tf7vUQxWKPWBQOoi9X1",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 270,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"The player ship is within phaser range and has taken damage, making it an ideal target for an aggressive attack.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 76,
+    "total_tokens": 739
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:40:54.392642
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 33):\nYour Ship Status:\n- Position: (7214.7, 5365.9)\n- Damage: 0.0%\n- Energy: 82.9%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7194.0, 5379.7)\n- Distance: 24.9 AU\n- Damage: 11.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK8KNEV2B42XCnkINIp4TUw0lbnt",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 90,\n    \"speed\": 10,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"The PLAYER ship has low damage and high reputation, but is within range for a direct phaser attack. As an aggressive captain, I will engage despite their reputation.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 86,
+    "total_tokens": 749
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:41:10.859340
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 34):\nYour Ship Status:\n- Position: (7214.7, 5375.9)\n- Damage: 30.0%\n- Energy: 82.6%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7201.5, 5374.7)\n- Distance: 13.3 AU\n- Damage: 10.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK8bgjSLCV4wA7288T2dsoQ1WcdT",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 0,\n    \"speed\": 10,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"Engaging the player ship due to aggressive stance and their lower damage makes them a viable target.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 72,
+    "total_tokens": 735
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:41:17.678797
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 35):\nYour Ship Status:\n- Position: (7224.7, 5375.9)\n- Damage: 29.0%\n- Energy: 82.3%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7205.5, 5375.0)\n- Distance: 19.2 AU\n- Damage: 9.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK8if750Kb4kQT1fimGMUXUne2N1",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"The PLAYER ship is within phaser range and has low damage, making it a viable target for an aggressive attack.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 76,
+    "total_tokens": 739
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:41:23.581834
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s7385 in a space combat scenario.\n\nCAPTAIN PERSONALITY: AGGRESSIVE\nYou are an AGGRESSIVE captain. Your behavior:\n- Attack any ship with reputation < 70\n- Only withdraw from combat if your ship damage > 80%\n- Prefer direct confrontation and offensive maneuvers\n\nCURRENT SITUATION (Turn 36):\nYour Ship Status:\n- Position: (7244.7, 5375.9)\n- Damage: 28.0%\n- Energy: 81.9%\n- Shields: 100.0%\n- Behavior Type: aggressive\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (7209.5, 5375.2)\n- Distance: 35.2 AU\n- Damage: 8.0%\n- Reputation: 86/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 80%\n\n\nMake a tactical decision based on your aggressive personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (80%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK8nTS2qHdsoynHD3JKDMZCyrpt2",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"attack\",\n    \"target_id\": \"PLAYER\",\n    \"heading\": 0,\n    \"speed\": 20,\n    \"fire_phasers\": true,\n    \"fire_torpedos\": false,\n    \"reason\": \"Engaging the PLAYER directly as they have a high reputation but low damage, presenting an opportunity for an aggressive confrontation.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 663,
+    "completion_tokens": 76,
+    "total_tokens": 739
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:41:43.441934
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s4693 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 1):\nYour Ship Status:\n- Position: (6293.1, 2688.0)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (6254.4, 2660.8)\n- Distance: 47.3 AU\n- Damage: 0.0%\n- Reputation: 88/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK98TC9Ds9ijfYLQu9mycsi8LCWo",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"No immediate threats detected, maintaining a cautious approach and patrolling the area.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 693,
+    "completion_tokens": 68,
+    "total_tokens": 761
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:41:49.942816
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s4693 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 2):\nYour Ship Status:\n- Position: (6293.1, 2688.0)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (6261.7, 2666.0)\n- Distance: 38.3 AU\n- Damage: 0.0%\n- Reputation: 88/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK9E2Occ88ykEOXCTYsv9HI93k6a",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"The player has a high reputation and no damage has been taken, making it prudent to patrol and avoid confrontation.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 693,
+    "completion_tokens": 75,
+    "total_tokens": 768
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:41:53.187370
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s4693 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 3):\nYour Ship Status:\n- Position: (6293.1, 2688.0)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (6269.1, 2671.2)\n- Distance: 29.3 AU\n- Damage: 0.0%\n- Reputation: 88/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK9HDDSHU0Nv7y1rRXsjihWETirZ",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"I feel too timid to engage the PLAYER given their high reputation, and there are no nearby threats. I'll patrol cautiously.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 693,
+    "completion_tokens": 77,
+    "total_tokens": 770
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:42:06.847749
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s4693 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 4):\nYour Ship Status:\n- Position: (6293.1, 2688.0)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (6276.5, 2676.3)\n- Distance: 20.3 AU\n- Damage: 0.0%\n- Reputation: 88/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK9V8JUjE1sH5XbLzjEMVD05PGz8",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"No immediate threats or damaged targets; prefer to cautiously patrol the area.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 693,
+    "completion_tokens": 67,
+    "total_tokens": 760
+  }
+}
+================================================================================
+
+================================================================================
+TIMESTAMP: 2026-01-09T19:42:33.006398
+METHOD: get_npc_decision
+--------------------------------------------------------------------------------
+REQUEST:
+{
+  "model": "gpt-4o-mini",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an AI captain of a hostile spacecraft engaged in combat. Make tactical decisions in JSON format."
+    },
+    {
+      "role": "user",
+      "content": "You are commanding npc spacecraft s4693 in a space combat scenario.\n\nCAPTAIN PERSONALITY: TIMID\nYou are a TIMID captain. Your behavior:\n- Only attack if provoked (have taken damage) or target reputation < 25\n- Flee if your ship damage > 30% (unless target reputation < 10)\n- Prefer evasive tactics and cautious approaches\n\nCURRENT SITUATION (Turn 5):\nYour Ship Status:\n- Position: (6293.1, 2688.0)\n- Damage: 0.0%\n- Energy: 100.0%\n- Shields: 100.0%\n- Behavior Type: timid\n\nPlayer Ship:\n- ID: PLAYER\n- Position: (6283.9, 2681.5)\n- Distance: 11.3 AU\n- Damage: 0.0%\n- Reputation: 88/100\n\nNearby NPC Ships (potential targets or threats):\n  None\n\nNearby Objects:\n  None\n\nTACTICAL CONTEXT:\n- Sensor range: 50 AU\n- Phaser range: 10 AU\n- Torpedo range: 50 AU (travels 1 AU/turn)\n- Warp range: 2-20 AU/turn\n- Impulse range: 1 AU/turn\n\nTARGET SELECTION:\n- You can attack the PLAYER or any nearby npc ships\n- PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky\n- Consider these factors when choosing targets:\n  * Distance: Closer targets are easier to engage\n  * Damage: Enemies with >30% damage are vulnerable and good targets\n  * Threat level: Who poses the biggest immediate threat?\n- Attack damaged nearby enemies BEFORE the player if they're easier targets\n- Heavily damaged enemies (>50% damage) should be prioritized for quick kills\n- If multiple threats exist, attack the weakest/closest first\n\nBEHAVIOR-SPECIFIC RULES:\n- Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)\n- Flee threshold: Your damage > 30%\n- Special rule: Continue attacking even when damaged if target is very weak (damage > 70%)\n\nMake a tactical decision based on your timid personality. Return ONLY valid JSON (no markdown, no code blocks):\n{\n    \"action\": \"attack\"|\"evade\"|\"patrol\"|\"dock\",\n    \"target_id\": \"PLAYER\"|\"<npc_ship_id>\"|null,\n    \"heading\": <0-359>,\n    \"speed\": <0-20>,\n    \"fire_phasers\": true|false,\n    \"fire_torpedos\": true|false,\n    \"reason\": \"brief tactical explanation\"\n}\n\nDecision priorities based on personality:\n1. Check if you should flee based on damage threshold (30%)\n2. Select best target: PLAYER or a nearby npc ship (consider distance, damage, threat level)\n3. If attacking: Use phasers if close (< 10 AU), torpedos for medium range (10-50 AU)\n4. If fleeing/evading: Move away from threats (return fire only if already fired upon by target)\n5. If not attacking or fleeing: patrol the area\n"
+    }
+  ],
+  "temperature": 0.7,
+  "max_tokens": 300,
+  "response_format": {
+    "type": "json_object"
+  },
+  "headers": {
+    "Authorization": "Bearer sk-proj-i7...2-wA",
+    "Content-Type": "application/json"
+  }
+}
+--------------------------------------------------------------------------------
+RESPONSE:
+{
+  "id": "chatcmpl-CwK9vPBC9eHL2ytYUsOnX15wdGxXl",
+  "model": "gpt-4o-mini-2024-07-18",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": "{\n    \"action\": \"patrol\",\n    \"target_id\": null,\n    \"heading\": 0,\n    \"speed\": 1,\n    \"fire_phasers\": false,\n    \"fire_torpedos\": false,\n    \"reason\": \"No immediate threats detected and the PLAYER has a high reputation. Maintaining a cautious approach by patrolling the area.\"\n}"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 693,
+    "completion_tokens": 75,
+    "total_tokens": 768
+  }
+}
+================================================================================
+
