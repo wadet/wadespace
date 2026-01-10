@@ -49,8 +49,7 @@ class LLMHandler:
                           npc_damage: float,
                           npc_energy: float,
                           npc_shields: float,
-                          npc_behavior: str,
-                          player_position: tuple,
+                          npc_behavior: str,                        stance_to_player: str,                          player_position: tuple,
                           player_damage: float,
                           player_reputation: int,
                           nearby_objects: list,
@@ -95,7 +94,7 @@ class LLMHandler:
             
             prompt = self._build_decision_prompt(
                 npc_ship_id, npc_position, npc_damage, npc_energy,
-                npc_shields, npc_behavior, player_position, player_damage, 
+                npc_shields, npc_behavior, stance_to_player, player_position, player_damage, 
                 player_reputation, distance_to_player, nearby_objects, nearby_npc_ships, turn_count
             )
             
@@ -163,6 +162,7 @@ class LLMHandler:
                                npc_energy: float,
                                npc_shields: float,
                                npc_behavior: str,
+                               stance_to_player: str,
                                player_position: tuple,
                                player_damage: float,
                                player_reputation: int,
@@ -206,10 +206,22 @@ class LLMHandler:
 - Engage in combat until your ship damage > 50%
 - Balance between offense and defense"""
         
+        # Format stance for display
+        stance_display = stance_to_player.upper()
+        stance_instruction = ""
+        if stance_to_player == 'friendly':
+            stance_instruction = "\n⚠️  CRITICAL: You are FRIENDLY toward the player. DO NOT attack them under any circumstances. Focus on patrolling or engaging other hostile NPCs."
+        elif stance_to_player == 'hostile':
+            stance_instruction = "\n⚠️  You are HOSTILE toward the player. Engage them according to your behavior trait."
+        else:
+            stance_instruction = "\n⚠️  You are NEUTRAL toward the player. Only engage if your behavior trait justifies it."
+        
         prompt = f"""You are commanding npc spacecraft {npc_ship_id} in a space combat scenario.
 
 CAPTAIN PERSONALITY: {npc_behavior.upper()}
 {behavior_desc}
+
+YOUR STANCE TOWARD PLAYER: {stance_display}{stance_instruction}
 
 CURRENT SITUATION (Turn {turn_count}):
 Your Ship Status:
@@ -218,6 +230,7 @@ Your Ship Status:
 - Energy: {npc_energy:.1f}%
 - Shields: {npc_shields:.1f}%
 - Behavior Type: {npc_behavior}
+- Stance to Player: {stance_display}
 
 Player Ship:
 - ID: PLAYER

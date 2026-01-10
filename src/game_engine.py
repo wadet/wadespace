@@ -601,6 +601,7 @@ class GameEngine:
         nearby_npc_ships.sort(key=lambda x: x[3])  # Sort by distance
         
         # Request decision from LLM
+        stance_to_player = ship.stances.get(self.player_ship.id, 'neutral')
         decision = self.llm_handler.get_npc_decision(
             npc_ship_id=ship.id,
             npc_position=(ship.position.x, ship.position.y),
@@ -608,6 +609,7 @@ class GameEngine:
             npc_energy=ship.energy,
             npc_shields=ship.shields,
             npc_behavior=ship.behavior_trait if ship.behavior_trait else 'neutral',
+            stance_to_player=stance_to_player,
             player_position=(self.player_ship.position.x, self.player_ship.position.y),
             player_damage=self.player_ship.damage,
             player_reputation=self.player_ship.reputation,
@@ -641,8 +643,18 @@ class GameEngine:
             target_ship = self.player_ship  # Default to player if invalid target
             target_distance = distance_to_player
         
-        # Priority 1: Fire phasers if requested and in range
-        if decision['fire_phasers'] and target_distance < 10:
+        # Check stance toward target - NEVER attack friendly targets
+        target_is_player = (target_ship == self.player_ship)
+        if target_is_player:
+            stance_to_target = ship.stances.get(self.player_ship.id, 'neutral')
+        else:
+            stance_to_target = ship.stances.get(target_ship.id, 'neutral')
+        
+        # If target is friendly, cancel all attack orders
+        can_attack = (stance_to_target != 'friendly')
+        
+        # Priority 1: Fire phasers if requested and in range (and not friendly)
+        if can_attack and decision['fire_phasers'] and target_distance < 10:
             ship.weapons.phaser_locked_target = target_ship.id
             result = ship.fire_phaser(target_ship)
             if result:  # result is now a dict
@@ -654,8 +666,8 @@ class GameEngine:
                 if show_debug:
                     self.messages.append(f"[DEBUG] {ship.id}: phaser attack on {target_name} - {decision['reason']}")
         
-        # Priority 2: Fire torpedoes if no other action and requested
-        elif decision['fire_torpedos'] and target_distance < 50 and ship.weapons.torpedos > 0:
+        # Priority 2: Fire torpedoes if no other action and requested (and not friendly)
+        elif can_attack and decision['fire_torpedos'] and target_distance < 50 and ship.weapons.torpedos > 0:
             result = ship.fire_torpedo(target_ship.position, target_ship)
             if result:  # result is now a dict
                 result_target_id = result.get('target_id', 'unknown')
@@ -802,10 +814,12 @@ class GameEngine:
             
             # Check stance first - hostile stance increases likelihood of attack
             stance_bonus = 0
+            is_friendly = False
             if target_is_player:
                 if stance_to_player == 'hostile':
                     stance_bonus = 2  # Increase attack likelihood
                 elif stance_to_player == 'friendly':
+                    is_friendly = True
                     should_attack = False  # Never attack friendly targets
                     # But flee if heavily damaged
                     if ship.damage > 70.0:
@@ -816,12 +830,13 @@ class GameEngine:
                 if target_stance == 'hostile':
                     stance_bonus = 2
                 elif target_stance == 'friendly':
+                    is_friendly = True
                     should_attack = False
                     if ship.damage > 70.0:
                         should_flee = True
             
             # Only continue with attack logic if not friendly stance
-            if stance_bonus >= 0 or (target_is_player and stance_to_player != 'friendly') or (not target_is_player and ship.stances.get(target_ship.id, 'neutral') != 'friendly'):
+            if not is_friendly:
                 # Check attack conditions based on behavior trait and ship condition
                 if behavior == 'aggressive':
                     # Aggressive: attack if hostile stance OR player reputation < 70 or targeting any damaged npc
