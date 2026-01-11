@@ -379,11 +379,13 @@ class GameEngine:
                 if ship.auto_nav_target_id:
                     self.messages.append(f"Auto-navigation cancelled")
                     ship.auto_nav_target_id = None
+                    ship.auto_nav_warp_speed = None
         
         elif cmd == 'impulse':
             # Cancel auto-navigate first (as per requirements)
             if ship.auto_nav_target_id:
                 ship.auto_nav_target_id = None
+                ship.auto_nav_warp_speed = None
                 self.messages.append(f"Auto-navigation cancelled")
             
             active = command.get('active', False)
@@ -406,6 +408,7 @@ class GameEngine:
             # Cancel auto-navigate first (as per requirements)
             if ship.auto_nav_target_id:
                 ship.auto_nav_target_id = None
+                ship.auto_nav_warp_speed = None
                 self.messages.append(f"Auto-navigation cancelled")
             
             degrees = command.get('degrees', 0)
@@ -415,6 +418,7 @@ class GameEngine:
             if ship.auto_nav_target_id:
                 self.messages.append(f"Auto-navigation cancelled")
                 ship.auto_nav_target_id = None
+                ship.auto_nav_warp_speed = None
         
         elif cmd == 'shields':
             active = command.get('active', False)
@@ -448,6 +452,7 @@ class GameEngine:
             # Cancel auto-navigate and stop ship
             if ship.auto_nav_target_id:
                 ship.auto_nav_target_id = None
+                ship.auto_nav_warp_speed = None
                 self.messages.append("Auto-navigation cancelled")
             ship.stop()
             self.messages.append("All stop")
@@ -457,6 +462,7 @@ class GameEngine:
         
         elif cmd == 'nav':
             target_id = command.get('target_id')
+            warp_speed = command.get('warp_speed')  # Optional custom warp speed
             if target_id:
                 # Check if target exists in universe or is an npc ship
                 target_obj = self.universe_objects.get(target_id)
@@ -482,7 +488,13 @@ class GameEngine:
                         target_type = type(target_obj).__name__
                     
                     ship.auto_nav_target_id = target_id
-                    self.messages.append(f"Auto-navigation engaged to {target_type} {target_id} ({distance:.1f} AU away)")
+                    ship.auto_nav_warp_speed = float(warp_speed) if warp_speed else None
+                    
+                    # Build message
+                    nav_msg = f"Auto-navigation engaged to {target_type} {target_id} ({distance:.1f} AU away)"
+                    if warp_speed:
+                        nav_msg += f" at warp {warp_speed}"
+                    self.messages.append(nav_msg)
                 else:
                     self.messages.append(f"Navigation error: Target {target_id} not found")
             else:
@@ -523,6 +535,7 @@ class GameEngine:
         if not target_obj:
             self.messages.append(f"Auto-nav: Target {ship.auto_nav_target_id} not found")
             ship.auto_nav_target_id = None
+            ship.auto_nav_warp_speed = None
             return
         
         # Calculate distance to target
@@ -533,6 +546,7 @@ class GameEngine:
         if distance <= 0.51:
             self.messages.append(f"Auto-nav: Target {ship.auto_nav_target_id} reached (within 0.5 AU)")
             ship.auto_nav_target_id = None
+            ship.auto_nav_warp_speed = None  # Clear custom warp speed
             ship.propulsion.warp_active = False
             ship.propulsion.impulse_active = False
             ship.propulsion.current_speed = 0.0
@@ -548,10 +562,13 @@ class GameEngine:
         # If next turn's movement would overshoot, reduce speed accordingly
         safe_speed = distance - 0.5  # Stop 0.5 AU before target
         
+        # Determine maximum warp speed (use custom if specified, otherwise default to 9)
+        max_warp = ship.auto_nav_warp_speed if ship.auto_nav_warp_speed else 9.0
+        
         # Choose drive based on distance, but cap speed to prevent overshoot
         if distance > 20.0:
-            # Use warp drive for long distances (speed 9 AU/turn max)
-            desired_speed = min(9.0, safe_speed)
+            # Use warp drive for long distances
+            desired_speed = min(max_warp, safe_speed)
             if desired_speed >= 2.0:
                 if ship.set_warp_speed(desired_speed):
                     ship.propulsion.impulse_active = False
@@ -567,7 +584,7 @@ class GameEngine:
                 ship.propulsion.current_speed = min(1.0, safe_speed)
         elif distance > 2.0:
             # Medium distance: use slower warp or fast impulse
-            desired_speed = min(4.0, safe_speed)
+            desired_speed = min(min(max_warp, 4.0), safe_speed)
             if desired_speed >= 2.0:
                 if ship.set_warp_speed(desired_speed):
                     ship.propulsion.impulse_active = False
@@ -2111,6 +2128,7 @@ class GameEngine:
                                     # Cancel auto-navigate if this was the target
                                     if self.player_ship.auto_nav_target_id == hit_id:
                                         self.player_ship.auto_nav_target_id = None
+                                        self.player_ship.auto_nav_warp_speed = None
                                         self.messages.append(f"Auto-navigation cancelled - target destroyed")
                                     
                                     # Clear weapon lock if this was the locked target

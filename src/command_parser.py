@@ -230,13 +230,29 @@ class CommandParser:
         return None
     
     def _match_nav(self, text: str) -> Optional[dict]:
-        """Match navigation command: 'navigate to st12345' or 'nav s1'"""
-        patterns = [
+        """Match navigation command: 'navigate to st12345' or 'nav s1' or 'nav s1, 5' or 'nav s1 5'"""
+        # Patterns with optional warp speed (with or without comma, but requires separator)
+        patterns_with_speed = [
+            r'(?:nav|navigate|auto-nav|auto\s+nav)\s+(?:to\s+)?([a-z]{1,2}\d+)(?:\s*,\s*|\s+)(\d+)',
+            r'go\s+to\s+([a-z]{1,2}\d+)(?:\s*,\s*|\s+)(\d+)',
+        ]
+        
+        # Try patterns with speed first
+        for pattern in patterns_with_speed:
+            match = re.search(pattern, text)
+            if match:
+                target_id = match.group(1)
+                warp_speed = int(match.group(2))
+                self.last_command = {'command': 'nav', 'target_id': target_id, 'warp_speed': warp_speed}
+                return self.last_command
+        
+        # Fall back to patterns without speed
+        patterns_no_speed = [
             r'(?:nav|navigate|auto-nav|auto\s+nav)\s+(?:to\s+)?([a-z]{1,2}\d+)',
             r'go\s+to\s+([a-z]{1,2}\d+)',
         ]
         
-        for pattern in patterns:
+        for pattern in patterns_no_speed:
             match = re.search(pattern, text)
             if match:
                 target_id = match.group(1)

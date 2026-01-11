@@ -96,6 +96,7 @@ class Ship:
         
         # Navigation
         self.auto_nav_target_id: Optional[str] = None
+        self.auto_nav_warp_speed: Optional[float] = None  # Custom warp speed for auto-nav
         self.is_docked_with: Optional[str] = None
         self.is_destroyed = False
         self.is_disabled = False
