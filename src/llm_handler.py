@@ -654,17 +654,21 @@ Keep your response to 1-2 sentences maximum. Make it punchy and dramatic."""
                 starbase_filter = 'hostile'
         
         # Determine which object types are relevant to the question
-        if any(word in lower_q for word in ['star', 'sun']):
+        # Use word boundaries to avoid matching "star" in "starbase"
+        import re
+        words_in_question = re.findall(r'\b\w+\b', lower_q)
+        
+        if any(word in words_in_question for word in ['star', 'stars', 'sun']):
             priority_types.add('Star')
-        if any(word in lower_q for word in ['planet', 'world']):
+        if any(word in words_in_question for word in ['planet', 'planets', 'world', 'worlds']):
             priority_types.add('Planet')
-        if any(word in lower_q for word in ['black hole', 'blackhole']):
+        if 'black hole' in lower_q or 'blackhole' in lower_q:
             priority_types.add('BlackHole')
-        if any(word in lower_q for word in ['wormhole', 'worm hole']):
+        if 'wormhole' in lower_q or 'worm hole' in lower_q:
             priority_types.add('WormHole')
-        if any(word in lower_q for word in ['pulsar']):
+        if any(word in words_in_question for word in ['pulsar', 'pulsars']):
             priority_types.add('Pulsar')
-        if any(word in lower_q for word in ['asteroid']):
+        if any(word in words_in_question for word in ['asteroid', 'asteroids']):
             priority_types.add('AsteroidField')
         
         # If no specific type mentioned, show a reasonable mix

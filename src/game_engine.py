@@ -1199,8 +1199,8 @@ class GameEngine:
             # Track that ship fired upon this starbase
             target_starbase.fired_upon_by.add(ship.id)
             
-            # Apply phaser damage (5% to shields or hull)
-            damage = 5.0
+            # Apply phaser damage (25% of ship damage: 1.25% to shields or hull)
+            damage = 5.0 * 0.25  # 25% of normal ship phaser damage
             shields_before = target_starbase.shields
             target_starbase.take_shield_hit(damage)
             shields_after = target_starbase.shields
@@ -2057,24 +2057,29 @@ class GameEngine:
                                     # Record that player fired upon this starbase
                                     hit_obj.fired_upon_by.add(torpedo['source_ship_id'])
                                     
-                                    # Torpedo damages shields first (20%), then starbase (10%)
+                                    # Torpedo damages starbases at 25% of ship damage (5% shields, 2.5% hull)
+                                    ship_shield_damage = 20.0
+                                    ship_hull_damage = 10.0
+                                    starbase_shield_damage = ship_shield_damage * 0.25  # 25% of ship damage
+                                    starbase_hull_damage = ship_hull_damage * 0.25  # 25% of ship damage
+                                    
                                     if hit_obj.shields_active and hit_obj.shields > 0:
-                                        shield_damage = min(20.0, hit_obj.shields)
+                                        shield_damage = min(starbase_shield_damage, hit_obj.shields)
                                         hit_obj.shields -= shield_damage
                                         
-                                        if shield_damage >= 20.0:
-                                            self.messages.append(f"Torpedo hit {hit_id}! Shields damaged by {shield_damage:.0f}%")
+                                        if shield_damage >= starbase_shield_damage:
+                                            self.messages.append(f"Torpedo hit {hit_id}! Shields damaged by {shield_damage:.1f}%")
                                         else:
                                             # Partial shield damage, rest goes to starbase
-                                            remaining_damage = 20.0 - shield_damage
-                                            starbase_damage = min(10.0, remaining_damage * 0.5)
-                                            hit_obj.damage = min(100.0, hit_obj.damage + starbase_damage)
-                                            self.messages.append(f"Torpedo hit {hit_id}! Shields absorbed {shield_damage:.0f}%, starbase took {starbase_damage:.1f}% damage")
+                                            remaining_damage = starbase_shield_damage - shield_damage
+                                            hull_damage = min(starbase_hull_damage, remaining_damage * 0.5)
+                                            hit_obj.damage = min(100.0, hit_obj.damage + hull_damage)
+                                            self.messages.append(f"Torpedo hit {hit_id}! Shields absorbed {shield_damage:.1f}%, starbase took {hull_damage:.1f}% damage")
                                     else:
                                         # Shields down or at 0%, damage starbase directly
-                                        damage = 10.0
+                                        damage = starbase_hull_damage
                                         hit_obj.damage = min(100.0, hit_obj.damage + damage)
-                                        self.messages.append(f"Torpedo hit {hit_id}! Damage: {damage:.0f}%")
+                                        self.messages.append(f"Torpedo hit {hit_id}! Damage: {damage:.1f}%")
                                 else:
                                     self.messages.append(f"Torpedo impacted {hit_id}")
                         else:
