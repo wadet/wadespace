@@ -528,9 +528,15 @@ class GameEngine:
         
         # Get target object (check universe objects first, then npc ships)
         target_obj = self.universe_objects.get(ship.auto_nav_target_id)
+        is_ship_target = False
         if not target_obj:
             # Check if it's an npc ship
             target_obj = self.npc_ships.get(ship.auto_nav_target_id)
+            is_ship_target = True
+        if not target_obj and ship.auto_nav_target_id == self.player_ship.id:
+            # Target is the player ship
+            target_obj = self.player_ship
+            is_ship_target = True
         
         if not target_obj:
             self.messages.append(f"Auto-nav: Target {ship.auto_nav_target_id} not found")
@@ -565,6 +571,44 @@ class GameEngine:
         # Determine maximum warp speed (use custom if specified, otherwise default to 9)
         max_warp = ship.auto_nav_warp_speed if ship.auto_nav_warp_speed else 9.0
         
+        # Special handling for ship targets when within sensor range
+        # Adjust speed to close to within 10 AU
+        target_distance_threshold = 10.0  # Desired distance for combat/interaction
+        sensor_range = ship.sensors.sensor_range  # Typically 50 AU
+        
+        if is_ship_target and distance <= sensor_range and distance > target_distance_threshold:
+            # Within sensor range but not at combat distance yet
+            # Adjust speed dynamically based on closing rate needed
+            closing_distance = distance - target_distance_threshold
+            
+            # Calculate appropriate speed to close the gap efficiently
+            if closing_distance > 30:
+                # Far but within sensor range - use high speed
+                desired_speed = min(max_warp, closing_distance * 0.3, safe_speed)
+            elif closing_distance > 15:
+                # Medium distance - moderate speed
+                desired_speed = min(max_warp * 0.7, closing_distance * 0.4, safe_speed)
+            else:
+                # Close to target distance - slow down for precision
+                desired_speed = min(max_warp * 0.5, closing_distance * 0.5, safe_speed)
+            
+            # Apply the calculated speed
+            if desired_speed >= 2.0:
+                if ship.set_warp_speed(desired_speed):
+                    ship.propulsion.impulse_active = False
+                else:
+                    # Warp failed, use impulse
+                    ship.propulsion.warp_active = False
+                    ship.propulsion.impulse_active = True
+                    ship.propulsion.current_speed = min(1.0, safe_speed)
+            else:
+                # Speed too low for warp, use impulse
+                ship.propulsion.warp_active = False
+                ship.propulsion.impulse_active = True
+                ship.propulsion.current_speed = min(1.0, safe_speed)
+            return
+        
+        # Standard navigation logic for non-ship targets or when outside sensor range
         # Choose drive based on distance, but cap speed to prevent overshoot
         if distance > 20.0:
             # Use warp drive for long distances
@@ -604,6 +648,35 @@ class GameEngine:
             ship.propulsion.warp_active = False
             ship.propulsion.impulse_active = True
             ship.propulsion.current_speed = min(speed, safe_speed)
+    
+    def _adjust_ship_speed_to_target(self, ship: Ship, target_distance: float, max_speed: float = 8.0) -> None:
+        """
+        Adjust ship speed dynamically based on distance to target.
+        Applies when within sensor range and target is beyond 10 AU.
+        """
+        sensor_range = ship.sensors.sensor_range  # Typically 50 AU
+        target_distance_threshold = 10.0  # Desired distance for interaction/combat
+        
+        if target_distance <= sensor_range and target_distance > target_distance_threshold:
+            # Within sensor range but not at target distance
+            closing_distance = target_distance - target_distance_threshold
+            
+            if closing_distance > 30:
+                # Far but within sensor range - use high speed
+                desired_speed = min(max_speed, closing_distance * 0.3)
+            elif closing_distance > 15:
+                # Medium distance - moderate speed
+                desired_speed = min(max_speed * 0.75, closing_distance * 0.4)
+            else:
+                # Close to target distance - slow down
+                desired_speed = min(max_speed * 0.5, closing_distance * 0.5)
+            
+            # Ensure speed is at least 2.0 for warp
+            desired_speed = max(2.0, desired_speed)
+            ship.set_warp_speed(desired_speed)
+        else:
+            # Default speed when outside sensor range or very close
+            ship.set_warp_speed(max_speed * 0.75)
     
     def _execute_npc_command(self, ship: Ship, show_debug: bool = False) -> None:
         """Execute a command for an npc ship using GPT-4o LLM when in sensor range."""
@@ -747,7 +820,38 @@ class GameEngine:
         # Priority 3: Movement if no weapons fired
         else:
             ship.set_heading(decision['heading'])
-            ship.set_warp_speed(decision['speed'])
+            
+            # Dynamically adjust speed based on distance to target
+            # When moving toward a ship target, adjust speed to close to within 10 AU efficiently
+            # This applies to all actions (attack, patrol, etc.) except evade
+            if decision['action'] != 'evade' and target_distance > 10.0:
+                sensor_range = ship.sensors.sensor_range  # Typically 50 AU
+                target_distance_threshold = 10.0  # Desired combat distance
+                
+                if target_distance <= sensor_range:
+                    # Within sensor range - adjust speed to close efficiently
+                    closing_distance = target_distance - target_distance_threshold
+                    
+                    if closing_distance > 30:
+                        # Far but within sensor range - use high speed
+                        desired_speed = min(decision['speed'], closing_distance * 0.3)
+                    elif closing_distance > 15:
+                        # Medium distance - moderate speed
+                        desired_speed = min(decision['speed'], closing_distance * 0.4)
+                    else:
+                        # Close to target distance - slow down
+                        desired_speed = min(decision['speed'], closing_distance * 0.5)
+                    
+                    # Ensure speed is at least 2.0 for warp
+                    desired_speed = max(2.0, min(desired_speed, decision['speed']))
+                    ship.set_warp_speed(desired_speed)
+                else:
+                    # Outside sensor range - use decision speed
+                    ship.set_warp_speed(decision['speed'])
+            else:
+                # For evade or when already at optimal distance, use decision speed as-is
+                ship.set_warp_speed(decision['speed'])
+            
             action_taken = "movement"
             
             # If fleeing, only return fire if already fired upon by the target
@@ -1122,7 +1226,8 @@ class GameEngine:
                             attack_heading += 360
                         
                         ship.set_heading(attack_heading)
-                        ship.set_warp_speed(6.0)
+                        self._adjust_ship_speed_to_target(ship, target_distance, max_speed=8.0)
+                        
                         target_name = "player" if target_is_player else target_ship.id
                         action_desc = f"closing in to attack {target_name} ({behavior}) at {target_distance:.1f} AU"
                         if show_debug:
