@@ -55,7 +55,8 @@ class LLMHandler:
                           player_reputation: int,
                           nearby_objects: list,
                           nearby_npc_ships: list,
-                          turn_count: int) -> Dict[str, Any]:
+                          turn_count: int,
+                          locked_by: list = None) -> Dict[str, Any]:
         """
         Use GPT-4o to determine npc ship behavior.
         
@@ -73,6 +74,7 @@ class LLMHandler:
             nearby_objects: List of nearby objects with their positions
             nearby_npc_ships: List of nearby npc ships (id, position, damage, distance)
             turn_count: Current turn number
+            locked_by: List of ship IDs that have locked weapons on this NPC (hostile action!)
         
         Returns:
             Dictionary with decision keys:
@@ -87,6 +89,9 @@ class LLMHandler:
         if not self.enabled or not self.client:
             return self._default_decision()
         
+        if locked_by is None:
+            locked_by = []
+        
         try:
             # Build context for GPT-4o
             distance_to_player = (
@@ -97,7 +102,7 @@ class LLMHandler:
             prompt = self._build_decision_prompt(
                 npc_ship_id, npc_position, npc_damage, npc_energy,
                 npc_shields, npc_shields_active, npc_behavior, stance_to_player, player_position, player_damage, 
-                player_reputation, distance_to_player, nearby_objects, nearby_npc_ships, turn_count
+                player_reputation, distance_to_player, nearby_objects, nearby_npc_ships, turn_count, locked_by
             )
             
             # Prepare request data for logging
@@ -172,8 +177,12 @@ class LLMHandler:
                                distance_to_player: float,
                                nearby_objects: list,
                                nearby_npc_ships: list,
-                               turn_count: int) -> str:
+                               turn_count: int,
+                               locked_by: list = None) -> str:
         """Build a prompt for GPT-4o decision making."""
+        
+        if locked_by is None:
+            locked_by = []
         
         nearby_desc = ""
         for i, obj in enumerate(nearby_objects[:5]):  # Limit to 5 nearest objects
@@ -185,6 +194,31 @@ class LLMHandler:
         for i, npc_data in enumerate(nearby_npc_ships[:5]):  # Limit to 5 nearest npc ships
             npc_id, pos, damage, dist = npc_data
             nearby_enemies_desc += f"  - {npc_id} at {dist:.1f} AU, Damage: {damage:.1f}%, Position: ({pos[0]:.1f}, {pos[1]:.1f})\n"
+        
+        # Build weapon lock warning with behavior-specific guidance
+        weapon_lock_warning = ""
+        if locked_by:
+            weapon_lock_warning = f"\n🚨 WEAPON LOCK ALERT: The following ships have LOCKED WEAPONS on you: {', '.join(locked_by)}\n"
+            weapon_lock_warning += "   This is a HOSTILE ACTION!\n\n"
+            
+            # Behavior-specific response guidance
+            if npc_behavior == 'aggressive':
+                weapon_lock_warning += "   YOUR AGGRESSIVE RESPONSE:\n"
+                weapon_lock_warning += "   - This is an act of WAR! Lock weapons back immediately!\n"
+                weapon_lock_warning += "   - Prepare to engage and destroy the aggressor\n"
+                weapon_lock_warning += "   - Close distance and attack unless severely damaged (>80%)\n"
+            elif npc_behavior == 'timid':
+                weapon_lock_warning += "   YOUR CAUTIOUS RESPONSE:\n"
+                weapon_lock_warning += "   - This is a serious threat! Prioritize survival\n"
+                weapon_lock_warning += "   - If damaged (>20%), consider immediate evasion\n"
+                weapon_lock_warning += "   - Only engage if you have tactical advantage (enemy damaged >50%)\n"
+                weapon_lock_warning += "   - Consider fleeing to nearest friendly starbase\n"
+            else:  # neutral
+                weapon_lock_warning += "   YOUR BALANCED RESPONSE:\n"
+                weapon_lock_warning += "   - Assess the tactical situation carefully\n"
+                weapon_lock_warning += "   - Lock weapons back to show you're not defenseless\n"
+                weapon_lock_warning += "   - Engage if conditions favor you, evade if outmatched\n"
+                weapon_lock_warning += "   - Consider your damage level and enemy's condition\n"
         
         # Define behavior-specific attack and flee thresholds
         if npc_behavior == 'aggressive':
@@ -225,7 +259,7 @@ CAPTAIN PERSONALITY: {npc_behavior.upper()}
 {behavior_desc}
 
 YOUR STANCE TOWARD PLAYER: {stance_display}{stance_instruction}
-
+{weapon_lock_warning}
 CURRENT SITUATION (Turn {turn_count}):
 Your Ship Status:
 - Position: ({npc_position[0]:.1f}, {npc_position[1]:.1f})

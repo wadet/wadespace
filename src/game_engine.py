@@ -153,6 +153,25 @@ class GameEngine:
         starbases = [obj for obj in self.universe_objects.values() if isinstance(obj, Starbase)]
         
         for starbase in starbases:
+            # Check if anyone has locked weapons on this starbase (HOSTILE ACTION!)
+            locked_by = []
+            if self.player_ship.weapons.phaser_locked_target == starbase.id:
+                locked_by.append(self.player_ship.id)
+                # Add player to fired_upon_by to trigger hostile response
+                starbase.fired_upon_by.add(self.player_ship.id)
+            
+            for npc_id, npc_ship in self.npc_ships.items():
+                if not npc_ship.is_destroyed:
+                    if npc_ship.weapons.phaser_locked_target == starbase.id:
+                        locked_by.append(npc_id)
+                        # Add NPC to fired_upon_by to trigger hostile response
+                        starbase.fired_upon_by.add(npc_id)
+            
+            # Respond to weapon locks as a hostile action
+            if locked_by and not starbase.shields_active and starbase.energy > 10.0:
+                starbase.shields_active = True
+                self.messages.append(f"{starbase.id} detects weapon lock from {', '.join(locked_by)}! Raising shields!")
+            
             # Manage starbase shields based on nearby threats
             self._manage_starbase_shields(starbase)
             
@@ -619,6 +638,16 @@ class GameEngine:
         
         nearby_npc_ships.sort(key=lambda x: x[3])  # Sort by distance
         
+        # Check if anyone has locked weapons on this NPC ship
+        locked_by = []
+        if self.player_ship.weapons.phaser_locked_target == ship.id:
+            locked_by.append(self.player_ship.id)
+        
+        for npc_id, npc_ship in self.npc_ships.items():
+            if npc_id != ship.id and not npc_ship.is_destroyed:
+                if npc_ship.weapons.phaser_locked_target == ship.id:
+                    locked_by.append(npc_id)
+        
         # Request decision from LLM
         stance_to_player = ship.stances.get(self.player_ship.id, 'neutral')
         decision = self.llm_handler.get_npc_decision(
@@ -635,7 +664,8 @@ class GameEngine:
             player_reputation=self.player_ship.reputation,
             nearby_objects=nearby_objects,
             nearby_npc_ships=nearby_npc_ships,
-            turn_count=self.turn_count
+            turn_count=self.turn_count,
+            locked_by=locked_by
         )
         
         return decision
@@ -817,6 +847,49 @@ class GameEngine:
         action_desc = None
         behavior = ship.behavior_trait if ship.behavior_trait else 'neutral'
         player_rep = self.player_ship.reputation
+        
+        # Check if anyone has locked weapons on this NPC ship (HOSTILE ACTION!)
+        locked_by = []
+        if self.player_ship.weapons.phaser_locked_target == ship.id:
+            locked_by.append(self.player_ship.id)
+        
+        for npc_id, npc_ship in self.npc_ships.items():
+            if npc_id != ship.id and not npc_ship.is_destroyed:
+                if npc_ship.weapons.phaser_locked_target == ship.id:
+                    locked_by.append(npc_id)
+        
+        # Respond to weapon locks based on behavior trait
+        if locked_by:
+            # All personalities raise shields as a defensive reflex
+            if not ship.shields_active and ship.energy > 10.0:
+                ship.shields_active = True
+                if show_debug:
+                    self.messages.append(f"[DEBUG] {ship.id}: Weapon lock detected from {', '.join(locked_by)}! Raising shields! ({behavior})")
+            
+            # Behavior-specific weapon lock responses
+            if behavior == 'aggressive':
+                # Aggressive: immediately lock back and prepare for combat
+                if not ship.weapons.phaser_locked_target:
+                    ship.lock_phasers(locked_by[0])
+                    if show_debug:
+                        self.messages.append(f"[DEBUG] {ship.id}: Aggressively locking weapons on {locked_by[0]} in response!")
+            elif behavior == 'timid':
+                # Timid: prioritize evasion if already damaged, only lock if cornered
+                if ship.damage > 20.0:
+                    # Don't lock back, prepare to flee instead (handled later in AI logic)
+                    if show_debug:
+                        self.messages.append(f"[DEBUG] {ship.id}: Weapon lock detected - preparing evasive maneuvers! ({behavior})")
+                elif not ship.weapons.phaser_locked_target:
+                    # Only lock back if not too damaged
+                    ship.lock_phasers(locked_by[0])
+                    if show_debug:
+                        self.messages.append(f"[DEBUG] {ship.id}: Cautiously locking weapons on {locked_by[0]}")
+            else:  # neutral
+                # Neutral: lock back if not already locked, proportional response
+                if not ship.weapons.phaser_locked_target:
+                    ship.lock_phasers(locked_by[0])
+                    if show_debug:
+                        self.messages.append(f"[DEBUG] {ship.id}: Locking weapons on {locked_by[0]} in response")
         
         # Get stance toward player
         stance_to_player = ship.stances.get(self.player_ship.id, 'neutral')
