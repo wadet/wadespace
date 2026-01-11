@@ -374,12 +374,12 @@ class GameEngine:
         if cmd == 'warp':
             speed = command.get('speed', 5)
             if ship.set_warp_speed(float(speed)):
-                self.messages.append(f"Warp drive engaged: {speed} AU/turn")
-                # Cancel auto-navigate if active
+                # If in auto-navigate mode, update the nav speed instead of canceling
                 if ship.auto_nav_target_id:
-                    self.messages.append(f"Auto-navigation cancelled")
-                    ship.auto_nav_target_id = None
-                    ship.auto_nav_warp_speed = None
+                    ship.auto_nav_warp_speed = float(speed)
+                    self.messages.append(f"Auto-navigation speed updated to warp {speed}")
+                else:
+                    self.messages.append(f"Warp drive engaged: {speed} AU/turn")
         
         elif cmd == 'impulse':
             # Cancel auto-navigate first (as per requirements)

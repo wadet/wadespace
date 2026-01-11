@@ -78,7 +78,8 @@ SHIP COMMANDS:
 * Hitting the up arrow on the keyboard should show the last command that the player issued and allow the player to execute the command again
 * The player can query the status of each object on the map if the player's ship's onboard sensors are operational using the "scan" command
 * If the npc ship is destroyed, the player's ship should exit auto-navigate mode
-* If the player issues a warp, imp, or head command while auto-navigate mode is enabled, auto-navigate should be cancelled and the ship should comply with the new command
+* If the player issues an imp or head command while auto-navigate mode is enabled, auto-navigate should be cancelled and the ship should comply with the new command
+* If the player issues a warp command while auto-navigate mode is enabled, the auto-navigate mode should remain active but the speed at which the ship travels should be updated to the new warp speed specified by the player
 * Heading is expressed as a number between 0 and 359 with 0 for northbound, 90 for eastbound, 180 for southbound, and 270 for westbound.  Headings inbetween the 4 cardinal points should be honored
 * Once the player locks onto an npc ship using the "lock" command, the "fire" and "tor" commands can be issued against the locked target without any further command arguments
 
