@@ -135,11 +135,15 @@ class Starbase(UniverseObject):
     def __init__(self, obj_id: str, position: Position):
         super().__init__(obj_id, position, energy=100.0)
         self.shields = 100.0
+        self.shields_active = False  # Shields start down
         self.damage = 0.0
         self.max_torpedos = 500
         self.torpedos = 500
         self.service_range = 1.0  # AU
         self.defense_range = 10.0  # AU
+        
+        # Track ships that have fired upon this starbase (for defense)
+        self.fired_upon_by = set()  # Set of ship IDs that have fired upon this starbase
         
         # Stance tracking: tracks stance toward all ships (player and NPCs)
         # Keys are ship IDs, values are 'hostile', 'neutral', or 'friendly'
@@ -151,6 +155,31 @@ class Starbase(UniverseObject):
         """Update starbase state - regenerate energy."""
         if self.energy < 100.0:
             self.energy = min(100.0, self.energy + 1.0)
+        
+        # Consume energy for shields
+        if self.shields_active and self.energy > 0:
+            self.energy = max(0.0, self.energy - 2.0)
+    
+    def take_damage(self, damage: float, bypass_shields: bool = False) -> None:
+        """Apply damage to the starbase."""
+        if bypass_shields or self.shields <= 0 or not self.shields_active:
+            # Direct starbase damage
+            self.damage += damage
+        else:
+            # Damage shields first
+            shield_damage = min(damage, self.shields)
+            self.shields -= shield_damage
+            remaining_damage = damage - shield_damage
+            if remaining_damage > 0:
+                self.damage += remaining_damage
+    
+    def take_shield_hit(self, damage: float = 5.0) -> None:
+        """Take a hit to shields or hull."""
+        if self.shields_active and self.shields > 0:
+            self.shields = max(0.0, self.shields - damage)
+        else:
+            # Direct starbase damage
+            self.damage += damage
     
     def get_display_symbol(self) -> str:
         return "⊕"  # Green (friendly) or red (npc) in actual UI

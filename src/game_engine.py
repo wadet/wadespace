@@ -153,6 +153,9 @@ class GameEngine:
         starbases = [obj for obj in self.universe_objects.values() if isinstance(obj, Starbase)]
         
         for starbase in starbases:
+            # Manage starbase shields based on nearby threats
+            self._manage_starbase_shields(starbase)
+            
             # Skip if starbase is heavily damaged
             if starbase.damage > 70:
                 continue
@@ -571,6 +574,9 @@ class GameEngine:
         if ship.is_destroyed or ship.is_disabled:
             return
         
+        # Manage NPC shields based on combat status
+        self._manage_npc_shields(ship)
+        
         distance_to_player = ship.position.distance_to(self.player_ship.position)
         player_in_range = distance_to_player <= ship.sensors.sensor_range
         
@@ -621,6 +627,7 @@ class GameEngine:
             npc_damage=ship.damage,
             npc_energy=ship.energy,
             npc_shields=ship.shields,
+            npc_shields_active=ship.shields_active,
             npc_behavior=ship.behavior_trait if ship.behavior_trait else 'neutral',
             stance_to_player=stance_to_player,
             player_position=(self.player_ship.position.x, self.player_ship.position.y),
@@ -724,6 +731,85 @@ class GameEngine:
                 self.messages.append(
                     f"[DEBUG] {ship.id}: {action} @ heading {heading}° warp {speed} targeting {target_name} - {decision['reason']}"
                 )
+    
+    def _manage_npc_shields(self, ship: Ship) -> None:
+        """
+        Manage NPC ship shields based on combat status and energy.
+        
+        Shields should be:
+        - UP when under attack (fired_upon_by is not empty)
+        - UP when in active combat (stance is hostile toward nearby ships)
+        - DOWN when safe (not under attack and no nearby threats)
+        - DOWN when fleeing and energy is low (< 30%) to conserve energy for warp
+        """
+        # Check if ship is under attack
+        under_attack = len(ship.fired_upon_by) > 0
+        
+        # Check if ship is fleeing (heavily damaged)
+        is_fleeing = ship.damage > 50.0
+        
+        # Check if ship has low energy
+        low_energy = ship.energy < 30.0
+        
+        # Decision logic for shields
+        if under_attack:
+            # Always raise shields when under attack if we have energy
+            if not ship.shields_active and ship.energy > 10.0:
+                ship.update_shields(True)
+        elif is_fleeing and low_energy:
+            # Lower shields when fleeing with low energy to conserve power for warp
+            if ship.shields_active:
+                ship.update_shields(False)
+        elif ship.energy < 10.0:
+            # Lower shields if energy is critical
+            if ship.shields_active:
+                ship.update_shields(False)
+        elif not under_attack:
+            # Lower shields when safe to conserve energy
+            if ship.shields_active:
+                ship.update_shields(False)
+    
+    def _manage_starbase_shields(self, starbase: 'Starbase') -> None:
+        """
+        Manage starbase shields based on nearby threats.
+        
+        Starbases should:
+        - Raise shields when hostile ships are within defense range (10 AU)
+        - Raise shields when fired upon
+        - Lower shields when no threats nearby to conserve energy
+        """
+        # Check if starbase is under attack
+        under_attack = len(starbase.fired_upon_by) > 0
+        
+        # Check for nearby hostile ships
+        nearby_threats = False
+        for npc_id, npc_ship in self.npc_ships.items():
+            if npc_ship.is_destroyed:
+                continue
+            stance = starbase.stances.get(npc_id, 'neutral')
+            if stance == 'hostile':
+                distance = starbase.position.distance_to(npc_ship.position)
+                if distance <= starbase.defense_range:
+                    nearby_threats = True
+                    break
+        
+        # Check player as well
+        if not nearby_threats:
+            stance_to_player = starbase.stances.get(self.player_ship.id, 'neutral')
+            if stance_to_player == 'hostile':
+                distance_to_player = starbase.position.distance_to(self.player_ship.position)
+                if distance_to_player <= starbase.defense_range:
+                    nearby_threats = True
+        
+        # Decision logic for starbase shields
+        if (under_attack or nearby_threats) and starbase.energy > 10.0:
+            # Raise shields when threats are present
+            if not starbase.shields_active:
+                starbase.shields_active = True
+        elif not under_attack and not nearby_threats:
+            # Lower shields when safe to conserve energy
+            if starbase.shields_active:
+                starbase.shields_active = False
     
     def _execute_basic_npc_ai(self, ship: Ship, distance_to_player: float, 
                                player_in_range: bool, show_debug: bool) -> None:
@@ -1068,31 +1154,69 @@ class GameEngine:
         # Find target
         target_id = ship.weapons.phaser_locked_target
         target_ship = None
+        target_starbase = None
         
         if target_id == self.player_ship.id:
             target_ship = self.player_ship
-        else:
+        elif target_id in self.npc_ships:
             target_ship = self.npc_ships.get(target_id)
+        elif target_id in self.universe_objects:
+            obj = self.universe_objects.get(target_id)
+            if isinstance(obj, Starbase):
+                target_starbase = obj
         
-        if not target_ship:
-            self.messages.append(f"Target {target_id} not found")
+        if not target_ship and not target_starbase:
+            self.messages.append(f"Target {target_id} not found or cannot be targeted")
             ship.weapons.phaser_locked_target = None  # Clear invalid lock
             return
         
-        distance = ship.position.distance_to(target_ship.position)
+        target = target_ship if target_ship else target_starbase
+        distance = ship.position.distance_to(target.position)
         if distance > ship.weapons.phaser_range:
             self.messages.append(f"Target out of phaser range ({distance:.1f} AU)")
             return
         
-        result = ship.fire_phaser(target_ship)
-        if result:  # result is now a dict
-            damage = result.get('damage', 0)
-            damage_type = result.get('damage_type', 'unknown')
-            self.messages.append(f"Phaser fired at {target_id}! Hit for {damage:.1f}% {damage_type} damage!")
+        if target_ship:
+            result = ship.fire_phaser(target_ship)
+            if result:  # result is now a dict
+                damage = result.get('damage', 0)
+                damage_type = result.get('damage_type', 'unknown')
+                self.messages.append(f"Phaser fired at {target_id}! Hit for {damage:.1f}% {damage_type} damage!")
+                
+                # Check if target destroyed and apply reputation changes
+                if target_ship.is_destroyed:
+                    self._handle_ship_destruction(ship, target_ship, target_id)
+        elif target_starbase:
+            # Fire at starbase
+            if not ship.can_fire_weapons():
+                self.messages.append("Cannot fire weapons")
+                return
             
-            # Check if target destroyed and apply reputation changes
-            if target_ship.is_destroyed:
-                self._handle_ship_destruction(ship, target_ship, target_id)
+            if not ship.weapons.phaser_operational:
+                self.messages.append("Phasers offline")
+                return
+            
+            # Track that ship fired upon this starbase
+            target_starbase.fired_upon_by.add(ship.id)
+            
+            # Apply phaser damage (5% to shields or hull)
+            damage = 5.0
+            shields_before = target_starbase.shields
+            target_starbase.take_shield_hit(damage)
+            shields_after = target_starbase.shields
+            
+            # Determine damage type
+            if shields_before > shields_after:
+                damage_type = 'shield'
+                actual_damage = shields_before - shields_after
+            else:
+                damage_type = 'starbase'
+                actual_damage = damage
+            
+            ship.weapons.phaser_can_fire_this_turn = True
+            ship.energy -= 1.0  # Energy to fire
+            
+            self.messages.append(f"Phaser fired at {target_id}! Hit for {actual_damage:.1f}% {damage_type} damage!")
     
     def _execute_torpedo(self, ship: Ship, target_id: Optional[str] = None) -> None:
         """Execute torpedo fire."""
@@ -1928,7 +2052,31 @@ class GameEngine:
                                         new_npc = self.npc_ships[new_npc_id]
                                         self.messages.append(f"New npc ship {new_npc_id} spawned at ({new_npc.position.x:.0f}, {new_npc.position.y:.0f})")
                             else:
-                                self.messages.append(f"Torpedo impacted {hit_id}")
+                                # Hit a universe object (possibly a starbase)
+                                if isinstance(hit_obj, Starbase):
+                                    # Record that player fired upon this starbase
+                                    hit_obj.fired_upon_by.add(torpedo['source_ship_id'])
+                                    
+                                    # Torpedo damages shields first (20%), then starbase (10%)
+                                    if hit_obj.shields_active and hit_obj.shields > 0:
+                                        shield_damage = min(20.0, hit_obj.shields)
+                                        hit_obj.shields -= shield_damage
+                                        
+                                        if shield_damage >= 20.0:
+                                            self.messages.append(f"Torpedo hit {hit_id}! Shields damaged by {shield_damage:.0f}%")
+                                        else:
+                                            # Partial shield damage, rest goes to starbase
+                                            remaining_damage = 20.0 - shield_damage
+                                            starbase_damage = min(10.0, remaining_damage * 0.5)
+                                            hit_obj.damage = min(100.0, hit_obj.damage + starbase_damage)
+                                            self.messages.append(f"Torpedo hit {hit_id}! Shields absorbed {shield_damage:.0f}%, starbase took {starbase_damage:.1f}% damage")
+                                    else:
+                                        # Shields down or at 0%, damage starbase directly
+                                        damage = 10.0
+                                        hit_obj.damage = min(100.0, hit_obj.damage + damage)
+                                        self.messages.append(f"Torpedo hit {hit_id}! Damage: {damage:.0f}%")
+                                else:
+                                    self.messages.append(f"Torpedo impacted {hit_id}")
                         else:
                             self.messages.append("Torpedo target missed")
                     else:

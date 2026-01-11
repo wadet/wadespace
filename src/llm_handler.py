@@ -49,6 +49,7 @@ class LLMHandler:
                           npc_damage: float,
                           npc_energy: float,
                           npc_shields: float,
+                          npc_shields_active: bool,
                           npc_behavior: str,                        stance_to_player: str,                          player_position: tuple,
                           player_damage: float,
                           player_reputation: int,
@@ -64,6 +65,7 @@ class LLMHandler:
             npc_damage: Damage percentage of npc ship (0-100)
             npc_energy: Energy percentage of npc ship (0-100)
             npc_shields: Shield percentage of npc ship (0-100)
+            npc_shields_active: Whether shields are currently active
             npc_behavior: Behavior trait ('aggressive', 'neutral', 'timid')
             player_position: (x, y) position of player ship
             player_damage: Damage percentage of player ship (0-100)
@@ -94,7 +96,7 @@ class LLMHandler:
             
             prompt = self._build_decision_prompt(
                 npc_ship_id, npc_position, npc_damage, npc_energy,
-                npc_shields, npc_behavior, stance_to_player, player_position, player_damage, 
+                npc_shields, npc_shields_active, npc_behavior, stance_to_player, player_position, player_damage, 
                 player_reputation, distance_to_player, nearby_objects, nearby_npc_ships, turn_count
             )
             
@@ -161,6 +163,7 @@ class LLMHandler:
                                npc_damage: float,
                                npc_energy: float,
                                npc_shields: float,
+                               npc_shields_active: bool,
                                npc_behavior: str,
                                stance_to_player: str,
                                player_position: tuple,
@@ -228,9 +231,11 @@ Your Ship Status:
 - Position: ({npc_position[0]:.1f}, {npc_position[1]:.1f})
 - Damage: {npc_damage:.1f}%
 - Energy: {npc_energy:.1f}%
-- Shields: {npc_shields:.1f}%
+- Shields: {npc_shields:.1f}% ({'ACTIVE' if npc_shields_active else 'DOWN'})
 - Behavior Type: {npc_behavior}
 - Stance to Player: {stance_display}
+
+⚠️  SHIELD MANAGEMENT: Shields are automatically managed based on combat status. Your shields will be raised when under attack and lowered when safe to conserve energy (shields drain 2% energy per turn).
 
 Player Ship:
 - ID: PLAYER
