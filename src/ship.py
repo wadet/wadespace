@@ -101,6 +101,11 @@ class Ship:
         self.is_destroyed = False
         self.is_disabled = False
         
+        # Docking tracking
+        self.docked_at: Optional[str] = None  # ID of starbase/planet ship is docked at
+        self.turns_since_last_dock: int = 999  # Track turns since last dock (start high to allow immediate docking)
+        self.crew_received_this_dock: bool = False  # Track if crew was received during current dock
+        
         # Repair tracking
         self.manual_repair_this_turn = False  # Track if manual repair was used this turn
         

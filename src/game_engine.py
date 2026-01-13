@@ -306,7 +306,7 @@ class GameEngine:
     
     def get_ships_in_range(self, position: Position, range_au: float, exclude_ship: Optional[str] = None) -> List[tuple]:
         """
-        Get all ships within range.
+        Get all ships within range (excludes docked ships).
         
         Returns:
             List of tuples (ship_id, ship, distance)
@@ -314,15 +314,17 @@ class GameEngine:
         ships = []
         
         # Check player ship
-        distance = position.distance_to(self.player_ship.position)
-        if distance <= range_au and (exclude_ship is None or self.player_ship.id != exclude_ship):
-            ships.append((self.player_ship.id, self.player_ship, distance))
+        if not self.player_ship.docked_at:  # Exclude if docked
+            distance = position.distance_to(self.player_ship.position)
+            if distance <= range_au and (exclude_ship is None or self.player_ship.id != exclude_ship):
+                ships.append((self.player_ship.id, self.player_ship, distance))
         
         # Check npc ships
         for npc_id, npc in self.npc_ships.items():
-            distance = position.distance_to(npc.position)
-            if distance <= range_au and (exclude_ship is None or npc_id != exclude_ship):
-                ships.append((npc_id, npc, distance))
+            if not npc.docked_at:  # Exclude if docked
+                distance = position.distance_to(npc.position)
+                if distance <= range_au and (exclude_ship is None or npc_id != exclude_ship):
+                    ships.append((npc_id, npc, distance))
         
         return sorted(ships, key=lambda x: x[2])
     
@@ -431,8 +433,18 @@ class GameEngine:
         
         elif cmd == 'lock':
             target_id = command.get('target_id')
-            ship.lock_phasers(target_id)
-            self.messages.append(f"Weapons locked onto {target_id}")
+            # Check if target is a docked ship
+            target_ship = None
+            if target_id == self.player_ship.id:
+                target_ship = self.player_ship
+            elif target_id in self.npc_ships:
+                target_ship = self.npc_ships[target_id]
+            
+            if target_ship and target_ship.docked_at:
+                self.messages.append(f"Cannot lock on {target_id}: target is docked")
+            else:
+                ship.lock_phasers(target_id)
+                self.messages.append(f"Weapons locked onto {target_id}")
         
         elif cmd == 'fire':
             self._execute_fire(ship)
@@ -520,6 +532,13 @@ class GameEngine:
         elif cmd == 'repair':
             target_id = command.get('target_id')
             self._execute_repair(ship, target_id)
+        
+        elif cmd == 'dock':
+            target_id = command.get('target_id')
+            self._execute_dock(ship, target_id)
+        
+        elif cmd == 'undock':
+            self._execute_undock(ship)
     
     def _process_auto_nav(self, ship: Ship) -> None:
         """Process auto-navigation for a ship."""
@@ -1365,6 +1384,12 @@ class GameEngine:
             ship.weapons.phaser_locked_target = None  # Clear invalid lock
             return
         
+        # Check if target ship is docked (cannot be targeted)
+        if target_ship and target_ship.docked_at:
+            self.messages.append(f"Target {target_id} is docked and cannot be targeted")
+            ship.weapons.phaser_locked_target = None  # Clear lock
+            return
+        
         target = target_ship if target_ship else target_starbase
         distance = ship.position.distance_to(target.position)
         if distance > ship.weapons.phaser_range:
@@ -1435,6 +1460,11 @@ class GameEngine:
         
         if not target_pos:
             self.messages.append(f"Target {target_id} not found")
+            return
+        
+        # Check if target ship is docked (cannot be targeted)
+        if target_ship and target_ship.docked_at:
+            self.messages.append(f"Target {target_id} is docked and cannot be targeted")
             return
         
         result = ship.fire_torpedo(target_pos)
@@ -2083,6 +2113,168 @@ class GameEngine:
             ship.manual_repair_this_turn = True
             self.messages.append(f"Self-repair: {repair_amount:.1f}% damage repaired (Damage: {ship.damage:.1f}%)")
     
+    def _execute_dock(self, ship: Ship, target_id: Optional[str] = None) -> None:
+        """
+        Execute dock command.
+        
+        Ship can dock at a starbase or planet within 1 AU.
+        Docked ships receive repairs and resupply.
+        Ships must wait 5 turns between docks.
+        """
+        # Check cooldown
+        if ship.turns_since_last_dock < 5:
+            turns_remaining = 5 - ship.turns_since_last_dock
+            self.messages.append(f"Dock error: Must wait {turns_remaining} more turn(s) before docking again")
+            return
+        
+        # Check if already docked
+        if ship.docked_at:
+            self.messages.append(f"Dock error: Already docked at {ship.docked_at}")
+            return
+        
+        # Find target to dock at
+        target_obj = None
+        target_type = None
+        
+        if target_id:
+            # Specific target provided
+            if target_id in self.universe_objects:
+                obj = self.universe_objects[target_id]
+                if isinstance(obj, (Starbase, Planet)):
+                    target_obj = obj
+                    target_type = 'starbase' if isinstance(obj, Starbase) else 'planet'
+                    target_id = target_id
+                else:
+                    self.messages.append(f"Dock error: {target_id} is not a starbase or planet")
+                    return
+            else:
+                self.messages.append(f"Dock error: Target {target_id} not found")
+                return
+        else:
+            # Auto-find nearest starbase or planet within 1 AU
+            nearest_obj = None
+            nearest_dist = float('inf')
+            nearest_id = None
+            
+            for obj_id, obj in self.universe_objects.items():
+                if isinstance(obj, (Starbase, Planet)):
+                    dist = ship.position.distance_to(obj.position)
+                    if dist <= 1.0 and dist < nearest_dist:
+                        # For starbases, check if friendly
+                        if isinstance(obj, Starbase):
+                            stance = obj.stances.get(ship.id, 'neutral')
+                            if stance == 'friendly':
+                                nearest_obj = obj
+                                nearest_dist = dist
+                                nearest_id = obj_id
+                                target_type = 'starbase'
+                        else:
+                            # Planet - always dockable
+                            nearest_obj = obj
+                            nearest_dist = dist
+                            nearest_id = obj_id
+                            target_type = 'planet'
+            
+            if nearest_obj:
+                target_obj = nearest_obj
+                target_id = nearest_id
+            else:
+                self.messages.append("Dock error: No friendly starbase or planet within 1 AU")
+                return
+        
+        # Check distance
+        distance = ship.position.distance_to(target_obj.position)
+        if distance > 1.0:
+            self.messages.append(f"Dock error: {target_id} is too far away ({distance:.2f} AU). Must be within 1 AU")
+            return
+        
+        # For starbases, check if friendly
+        if isinstance(target_obj, Starbase):
+            stance = target_obj.stances.get(ship.id, 'neutral')
+            if stance != 'friendly':
+                self.messages.append(f"Dock error: Starbase {target_id} is not friendly")
+                return
+        
+        # Dock the ship
+        ship.docked_at = target_id
+        ship.turns_since_last_dock = 0
+        ship.crew_received_this_dock = False
+        
+        # Stop the ship
+        ship.propulsion.current_speed = 0.0
+        ship.propulsion.warp_active = False
+        ship.propulsion.impulse_active = False
+        
+        # Cancel auto-navigation
+        if ship.auto_nav_target_id:
+            ship.auto_nav_target_id = None
+            ship.auto_nav_warp_speed = None
+        
+        # Clear weapon locks targeting this ship from all other ships
+        self._clear_targeting_on_ship(ship.id)
+        
+        # Message
+        self.messages.append(f"Docked at {target_type} {target_id}")
+        
+        # For planets, handle crew recruitment immediately (once per dock)
+        if isinstance(target_obj, Planet) and target_obj.is_inhabited and not ship.crew_received_this_dock:
+            crew_gained = target_obj.crew_available
+            if crew_gained > 0:
+                old_crew = ship.crew
+                ship.crew = min(1000, ship.crew + crew_gained)
+                actual_gain = ship.crew - old_crew
+                ship.crew_received_this_dock = True
+                if actual_gain > 0:
+                    self.messages.append(f"Recruited {actual_gain} crew members (Total: {ship.crew}/1000)")
+    
+    def _execute_undock(self, ship: Ship) -> None:
+        """
+        Execute undock command.
+        
+        Ship detaches from starbase/planet and reappears at 0.5 AU distance.
+        """
+        if not ship.docked_at:
+            self.messages.append("Undock error: Not currently docked")
+            return
+        
+        target_id = ship.docked_at
+        target_obj = self.universe_objects.get(target_id)
+        
+        if not target_obj:
+            # Target no longer exists, just undock
+            ship.docked_at = None
+            self.messages.append(f"Undocked (target {target_id} no longer exists)")
+            return
+        
+        # Position ship at 0.5 AU from the target (random direction)
+        import math
+        angle = random.uniform(0, 2 * math.pi)
+        ship.position.x = target_obj.position.x + 0.5 * math.cos(angle)
+        ship.position.y = target_obj.position.y + 0.5 * math.sin(angle)
+        
+        # Undock
+        target_type = 'starbase' if isinstance(target_obj, Starbase) else 'planet'
+        ship.docked_at = None
+        
+        self.messages.append(f"Undocked from {target_type} {target_id}")
+    
+    def _clear_targeting_on_ship(self, ship_id: str) -> None:
+        """Clear all weapon locks and auto-nav targeting the specified ship."""
+        # Clear player ship targeting
+        if self.player_ship.weapons.phaser_locked_target == ship_id:
+            self.player_ship.weapons.phaser_locked_target = None
+        if self.player_ship.auto_nav_target_id == ship_id:
+            self.player_ship.auto_nav_target_id = None
+            self.player_ship.auto_nav_warp_speed = None
+        
+        # Clear NPC ship targeting
+        for npc_ship in self.npc_ships.values():
+            if npc_ship.weapons.phaser_locked_target == ship_id:
+                npc_ship.weapons.phaser_locked_target = None
+            if npc_ship.auto_nav_target_id == ship_id:
+                npc_ship.auto_nav_target_id = None
+                npc_ship.auto_nav_warp_speed = None
+    
     def _update_all_objects(self) -> None:
         """Update all game objects."""
         # Update universe objects
@@ -2104,14 +2296,22 @@ class GameEngine:
         if ship.is_destroyed or ship.is_disabled:
             return
         
-        # Move ship
-        ship.move()
+        # Increment turns since last dock
+        ship.turns_since_last_dock += 1
+        
+        # Move ship (skip if docked)
+        if not ship.docked_at:
+            ship.move()
         
         # Update energy
         ship.update_energy()
         
-        # Update damage
-        ship.update_damage_repair()
+        # Handle docked repairs
+        if ship.docked_at:
+            self._process_docked_repairs(ship)
+        else:
+            # Normal auto-repair when not docked
+            ship.update_damage_repair()
         
         # Update warp core
         ship.update_warp_core()
@@ -2410,56 +2610,67 @@ class GameEngine:
         self._check_starbase_docking()
     
     def _check_starbase_docking(self) -> None:
-        """Check if player ship is docked at friendly starbase and provide services."""
-        docked_starbase = None
+        """Legacy method - no longer used. Docking now handled via dock/undock commands."""
+        pass
+    
+    def _process_docked_repairs(self, ship: Ship) -> None:
+        """Process repairs and resupply for docked ships."""
+        if not ship.docked_at:
+            return
         
-        # Find friendly starbase within 1 AU
-        for obj_id, obj in self.universe_objects.items():
-            if isinstance(obj, Starbase):
-                stance = obj.stances.get(self.player_ship.id, 'neutral')
-                if stance == 'friendly' and self.player_ship.position.distance_to(obj.position) < 1.0:
-                    docked_starbase = obj
-                    self.player_ship.is_docked_with = obj_id
-                    break
+        # Skip auto-repair if manual repair was used this turn, but still do resupply
+        skip_auto_repair = ship.manual_repair_this_turn
+        if ship.manual_repair_this_turn:
+            ship.manual_repair_this_turn = False  # Reset for next turn
         
-        # If docked, provide services
-        if docked_starbase:
-            repairs_done = 0.0
-            torpedos_purchased = 0
-            fuel_loaded = 0.0
-            cost = 0
-            
-            # Repair damage (can repair up to 25%)
-            if self.player_ship.damage > 0 and self.player_ship.cash >= 1:
-                repair_amount = min(25.0, self.player_ship.damage)
-                self.player_ship.damage -= repair_amount
+        target_obj = self.universe_objects.get(ship.docked_at)
+        if not target_obj:
+            # Target no longer exists, force undock
+            ship.docked_at = None
+            return
+        
+        repairs_done = 0.0
+        torpedos_purchased = 0
+        fuel_loaded = 0.0
+        cost = 0
+        
+        # Handle starbase docking
+        if isinstance(target_obj, Starbase):
+            # Auto-repair at starbase (up to 10% per turn, scaled by starbase damage)
+            # Skip if manual repair was used this turn
+            if ship.damage > 0 and not skip_auto_repair:
+                # Starbase repair effectiveness is proportional to its health
+                starbase_effectiveness = (100.0 - target_obj.damage) / 100.0
+                max_repair_rate = 10.0 * starbase_effectiveness
+                repair_amount = min(max_repair_rate, ship.damage)
+                ship.damage = max(0.0, ship.damage - repair_amount)
                 repairs_done = repair_amount
             
-            # Replenish torpedos (up to 25% of max)
-            if self.player_ship.weapons.torpedos < self.player_ship.weapons.max_torpedos:
-                torpedos_can_buy = self.player_ship.weapons.max_torpedos // 4  # 25%
-                torpedos_needed = torpedos_can_buy - self.player_ship.weapons.torpedos
-                torpedo_cost = min(torpedos_needed, self.player_ship.cash // 50)  # $50 per torpedo
-                
-                if torpedo_cost > 0:
-                    self.player_ship.weapons.torpedos += torpedo_cost
-                    torpedos_purchased = torpedo_cost
-                    cost += torpedo_cost * 50
-                    self.player_ship.cash -= cost
+            # Replenish torpedos (25% of max per turn) - requires payment
+            torpedos_to_add = ship.weapons.max_torpedos // 4  # 25%
+            torpedos_can_afford = ship.cash // 50  # $50 per torpedo
+            torpedos_needed = max(0, ship.weapons.max_torpedos - ship.weapons.torpedos)
+            torpedos_to_buy = min(torpedos_to_add, torpedos_can_afford, torpedos_needed)
             
-            # Refuel (up to 10%)
-            if self.player_ship.energy < 100.0:
-                fuel_to_load = min(10.0, 100.0 - self.player_ship.energy)
-                self.player_ship.energy += fuel_to_load
+            if torpedos_to_buy > 0:
+                ship.weapons.torpedos += torpedos_to_buy
+                torpedos_purchased = torpedos_to_buy
+                cost = torpedos_to_buy * 50
+                ship.cash -= cost
+            
+            # Refuel (10% per turn)
+            if ship.energy < 100.0:
+                fuel_to_load = min(10.0, 100.0 - ship.energy)
+                ship.energy += fuel_to_load
                 fuel_loaded = fuel_to_load
-                # Starbase energy drain is 1% per turn per refueling ship
-                docked_starbase.energy = max(0.0, docked_starbase.energy - 1.0)
+                # Starbase energy drain is 1% per turn
+                target_obj.energy = max(0.0, target_obj.energy - 1.0)
             
-            # Send docking message if any services were used
-            if repairs_done > 0 or torpedos_purchased > 0 or fuel_loaded > 0:
-                message = f"Docked at {docked_starbase.id}:"
+            # Send docking message if any services were used (only for player)
+            if ship == self.player_ship and (repairs_done > 0 or torpedos_purchased > 0 or fuel_loaded > 0):
+                message = f"Docked at starbase {ship.docked_at}:"
                 if repairs_done > 0:
-                    message += f" Repaired {repairs_done:.1f}%"
+                    message += f" Auto-repaired {repairs_done:.1f}%"
                 if torpedos_purchased > 0:
                     message += f" Purchased {torpedos_purchased} torpedos"
                 if fuel_loaded > 0:
@@ -2467,10 +2678,19 @@ class GameEngine:
                 if cost > 0:
                     message += f" Cost: ${cost}"
                 self.messages.append(message)
-        else:
-            # Clear docking status if not near friendly starbase
-            if self.player_ship.is_docked_with:
-                self.player_ship.is_docked_with = None
+        
+        # Handle planet docking
+        elif isinstance(target_obj, Planet):
+            # Auto-repair at planet (10% per turn)
+            # Skip if manual repair was used this turn
+            if ship.damage > 0 and not skip_auto_repair:
+                repair_amount = min(10.0, ship.damage)
+                ship.damage = max(0.0, ship.damage - repair_amount)
+                repairs_done = repair_amount
+            
+            # Send message if repaired (only for player)
+            if ship == self.player_ship and repairs_done > 0:
+                self.messages.append(f"Docked at planet {ship.docked_at}: Auto-repaired {repairs_done:.1f}%")
     
     def _check_black_hole_destruction(self) -> None:
         """Check if ships are destroyed by black holes."""

@@ -61,6 +61,10 @@ class CommandParser:
             return self._match_debug(input_text)
         elif self._match_repair(input_text):
             return self._match_repair(input_text)
+        elif self._match_dock(input_text):
+            return self._match_dock(input_text)
+        elif self._match_undock(input_text):
+            return self._match_undock(input_text)
         
         return None
     
@@ -301,6 +305,33 @@ class CommandParser:
         if re.search(r'repair\s*$', text):
             self.last_command = {'command': 'repair'}
             return self.last_command
+        
+        return None
+    
+    def _match_dock(self, text: str) -> Optional[dict]:
+        """Match dock command: 'dock', 'dock at sb123', 'dock pl456'"""
+        # Match dock with target ID: 'dock sb123', 'dock at pl456'
+        match = re.search(r'dock(?:\s+at)?\s+([a-z]{1,2}\d+)', text)
+        if match:
+            target_id = match.group(1)
+            self.last_command = {'command': 'dock', 'target_id': target_id}
+            return self.last_command
+        
+        # Match dock without target (auto-find nearest)
+        if re.search(r'^dock\s*$', text):
+            self.last_command = {'command': 'dock'}
+            return self.last_command
+        
+        return None
+    
+    def _match_undock(self, text: str) -> Optional[dict]:
+        """Match undock command: 'undock', 'detach', 'depart'"""
+        patterns = [r'^undock\s*$', r'^detach\s*$', r'^depart\s*$', r'^leave\s+dock\s*$']
+        
+        for pattern in patterns:
+            if re.search(pattern, text):
+                self.last_command = {'command': 'undock'}
+                return self.last_command
         
         return None
     
