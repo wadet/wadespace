@@ -314,7 +314,13 @@ class Ship:
             damage = 0  # Warp core hit doesn't cause normal damage
             damage_type = 'warp core'
         else:
-            damage = self.weapons.phaser_damage
+            # Variable damage based on shield status
+            if target_ship.shields_active and target_ship.shields > 0:
+                # Shields up: 20-30% damage to shields
+                damage = random.uniform(20.0, 30.0)
+            else:
+                # Shields down: 10-20% damage to hull
+                damage = random.uniform(10.0, 20.0)
         
         # Record that this ship fired upon the target
         target_ship.fired_upon_by.add(self.id)
