@@ -16,7 +16,7 @@ class ShipWeaponSystem:
     phaser_operational: bool = True
     phaser_charge: float = 100.0  # 0-100%
     phaser_locked_target: Optional[str] = None
-    phaser_range: float = 10.0  # AU
+    phaser_range: float = 5.0  # AU
     phaser_recharge_rate: float = 25.0  # % per turn
     phaser_damage: float = 5.0  # % per hit
     phaser_can_fire_this_turn: bool = True
