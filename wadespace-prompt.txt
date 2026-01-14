@@ -75,6 +75,8 @@ SHIP COMMANDS:
 	15) targets (show the first 25 npc ships closest to the player's ship sorted by distance in ascending order)
 	16) debug (this command takes a single argument.  If the argument is "on", debug mode is on and what npc ships are currently thinking and doing should be displayed in the Messages area each turn.  If the argument is "off", debug mode is then turned off and what the npc ships are thinking and doing will no longer be shown in the Messages area.  When debug is on, only show the thinking and activities of the 5 npc ships closest to the player's ship)
 	17) repair (this command can optionally accept an object ID which allows the player to repair another object such as a ship when the player's ship is within 0.5 AU of the object and the player's ship is not moving (stopped). When within 0.5 AU of another ship, the player can repair that ship at the rate of 5% per turn. The player can repair friendly starbases at the rate of 2% per turn. When submitted by the player without the object ID, the command will repair the player's own ship at the rate of 10% per turn only when the player's ship is stopped. The existing auto repair functionality will not be in effect when the player manually issues the repair command. The ship auto repair functionality while moving is preserved. This command can be issued by npc ships as well following the same logic.)
+	18) dock (allows the player to dock at a starbase or planet when within 0.5 AU of the target. Ships must dock to receive repairs and resupply - this is no longer automatic when within 1 AU. While docked at a starbase, ships receive up to 10% auto-repair per turn (scaled by starbase damage level), torpedo resupply (25% per turn for $50 each), and fuel at 10% per turn. While docked at a planet, ships receive 10% auto-repair per turn. Inhabited planets provide crew replenishment once per dock. Ships can issue manual repair commands while docked for combined repair rates. Docked ships are invisible to sensors and cannot be targeted by weapons. All weapon locks and auto-navigation targeting the ship are cleared when it docks. There is a 5-turn cooldown between docks. This applies to both player and NPC ships.)
+	19) undock (allows the player to detach from a starbase or planet. The ship is repositioned at 0.5 AU from the docking location in a random direction. Aliases include 'detach', 'depart', and 'leave dock'. This applies to both player and NPC ships.)
 * Hitting the up arrow on the keyboard should show the last command that the player issued and allow the player to execute the command again
 * The player can query the status of each object on the map if the player's ship's onboard sensors are operational using the "scan" command
 * If the npc ship is destroyed, the player's ship should exit auto-navigate mode
@@ -160,8 +162,12 @@ STARS:
 * Ships recover 10 percent energy each turn while next to a star
 
 PLANETS:
-* Planets can be habited or inhabited.  Habited planets can contain a random number of crew members between 0 to 1000 that are willing to join the player.
+* Planets can be habited or inhabited.  Inhabited planets can contain a random number of crew members between 0 to 1000 that are willing to join the player.
+* Ships must dock at a planet using the 'dock' command to receive repairs and crew
+* Docked ships at planets receive 10% auto-repair per turn
 * The player cannot recruit new crew members from the planet when the ship's shields are up
+* Crew replenishment at inhabited planets happens once per dock (not per turn) and is transferred immediately upon docking
+* Ships cannot dock again for 5 turns after undocking (cooldown period)
 * Planets cannot be destroyed by ships
 
 BLACK HOLES:
@@ -181,16 +187,18 @@ STARBASES:
 * There are two types of starbases:
 	1) starbases that are friendly to the player's ship shown as green icons in the game's map
 	2) starbases that are friendly to npc ships shown as red icons in the game's map
-* The player's ship cannot use starbases that are friendly to npc ships
-* NPC ships cannot use starbases that are friendly to the player's ship
+* The player's ship cannot dock at starbases that are friendly to npc ships
+* NPC ships cannot dock at starbases that are friendly to the player's ship
 * The total number of starbases should be 100 in the entire universe and 50 percent of the total should be friendly to the player and 50 percent of the total should be friendly to the npc ships
 * Starbases should be randomly positioned in the universe
 * Starbases should be greater than 10 AU from one another
 * Starbases have the same onboard systems as ships
-* Starbases allow ships to be repaired when the ship is within 1 AU of the starbase
-* Ships can replenish 25 percent their torpedos each turn when the ship is within 1 AU of the starbase
-* Ships can refuel at a starbase at the rate of 10 percent energy gained per turn
+* Ships must dock at a starbase using the 'dock' command to receive repairs and resupply (no longer automatic at 1 AU)
+* Starbases allow docked ships to be repaired up to 10% per turn, scaled by the starbase's damage level (e.g., a starbase at 50% damage provides only 5% repair per turn)
+* Docked ships can replenish 25 percent of their torpedos each turn at the starbase for $50 per torpedo
+* Docked ships can refuel at a starbase at the rate of 10 percent energy gained per turn
 * Refueling a ship drains the starbase's energy by 1 percent per turn
+* Ships cannot dock again for 5 turns after undocking (cooldown period)
 * Starbases use shields for defense with phasers and photon torpedos for weapons
 * Starbases that are friendly to the player should attack npc ships that are within 10 AU of the starbase
 * Starbases that are friendly to npc ships should attack the player's ship when the player is within 10 AU of the starbase
@@ -199,7 +207,9 @@ STARBASES:
 * Starbases are destroyed when their damage reaches 100 percent
 * Each torpedo costs 50 dollars at a starbase
 * Starbases should be shown as an o-ring on the map
-* When the player's ship is within 1 AU of a friendly starbase getting repairs, torpedos, and fuel, print a message to the Message panel to indicate repair status, number of torpedos purchased, the amount of fuel loaded, and the amount of money spent at the starbase each turn that the player's ship is docked at the starbase
+* When the player's ship is docked at a friendly starbase getting repairs, torpedos, and fuel, print a message to the Message panel to indicate repair status, number of torpedos purchased, the amount of fuel loaded, and the amount of money spent at the starbase each turn that the player's ship is docked at the starbase
+* Docked ships are invisible to sensors and cannot be detected by other ships
+* Docked ships cannot be targeted with weapons - all weapon locks are cleared when a ship docks
 
 ASTEROIDS AND ASTEROID FIELDS:
 * Asteroid fields contain a random number of asteroids in each cluster
