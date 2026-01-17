@@ -747,6 +747,20 @@ class GameEngine:
         
         nearby_npc_ships.sort(key=lambda x: x[3])  # Sort by distance
         
+        # Get nearby starbases for targeting decisions
+        nearby_starbases = []
+        for obj_id, obj in self.universe_objects.items():
+            if isinstance(obj, Starbase):
+                stance_to_starbase = ship.stances.get(obj_id, 'neutral')
+                dist = ship.position.distance_to(obj.position)
+                if dist < 50 and obj.damage < 100:  # Within sensor range and not destroyed
+                    nearby_starbases.append(
+                        (obj_id, (obj.position.x, obj.position.y), 
+                         obj.damage, stance_to_starbase, dist)
+                    )
+        
+        nearby_starbases.sort(key=lambda x: x[4])  # Sort by distance
+        
         # Check if anyone has locked weapons on this NPC ship
         locked_by = []
         if self.player_ship.weapons.phaser_locked_target == ship.id:
@@ -773,6 +787,7 @@ class GameEngine:
             player_reputation=self.player_ship.reputation,
             nearby_objects=nearby_objects,
             nearby_npc_ships=nearby_npc_ships,
+            nearby_starbases=nearby_starbases,
             turn_count=self.turn_count,
             locked_by=locked_by
         )
@@ -787,7 +802,9 @@ class GameEngine:
         # Determine target from decision
         target_id = decision.get('target_id', 'PLAYER')
         target_ship = None
+        target_starbase = None
         target_distance = distance_to_player
+        target_is_starbase = False
         
         if target_id == 'PLAYER':
             target_ship = self.player_ship
@@ -798,43 +815,88 @@ class GameEngine:
             if target_ship.is_destroyed:
                 target_ship = self.player_ship  # Fallback to player if target destroyed
                 target_distance = distance_to_player
+        elif target_id in self.universe_objects:
+            obj = self.universe_objects[target_id]
+            if isinstance(obj, Starbase):
+                target_starbase = obj
+                target_distance = ship.position.distance_to(obj.position)
+                target_is_starbase = True
         else:
             target_ship = self.player_ship  # Default to player if invalid target
             target_distance = distance_to_player
         
         # Check stance toward target - NEVER attack friendly targets
-        target_is_player = (target_ship == self.player_ship)
-        if target_is_player:
-            stance_to_target = ship.stances.get(self.player_ship.id, 'neutral')
+        if target_is_starbase:
+            stance_to_target = ship.stances.get(target_id, 'neutral')
         else:
-            stance_to_target = ship.stances.get(target_ship.id, 'neutral')
+            target_is_player = (target_ship == self.player_ship)
+            if target_is_player:
+                stance_to_target = ship.stances.get(self.player_ship.id, 'neutral')
+            else:
+                stance_to_target = ship.stances.get(target_ship.id, 'neutral')
         
         # If target is friendly, cancel all attack orders
         can_attack = (stance_to_target != 'friendly')
         
         # Priority 1: Fire phasers if requested and in range (and not friendly)
         if can_attack and decision['fire_phasers'] and target_distance < 10:
-            ship.weapons.phaser_locked_target = target_ship.id
-            result = ship.fire_phaser(target_ship)
-            if result:  # result is now a dict
-                damage = result.get('damage', 0)
-                damage_type = result.get('damage_type', 'unknown')
-                target_name = "you" if target_ship == self.player_ship else target_ship.id
-                self.messages.append(f"{ship.id} fires phasers at {target_name}! Hit for {damage:.1f}% {damage_type} damage!")
-                action_taken = "fire_phasers"
-                if show_debug:
-                    self.messages.append(f"[DEBUG] {ship.id}: phaser attack on {target_name} - {decision['reason']}")
+            if target_is_starbase:
+                # Fire phasers at starbase
+                if ship.can_fire_weapons() and ship.weapons.phaser_operational:
+                    target_starbase.fired_upon_by.add(ship.id)
+                    damage = 5.0 * 0.25  # 25% of normal ship phaser damage
+                    shields_before = target_starbase.shields
+                    target_starbase.take_shield_hit(damage)
+                    shields_after = target_starbase.shields
+                    
+                    if shields_before > shields_after:
+                        damage_type = 'shield'
+                        actual_damage = shields_before - shields_after
+                    else:
+                        damage_type = 'starbase'
+                        actual_damage = damage
+                    
+                    ship.energy -= 1.0
+                    self.messages.append(f"{ship.id} fires phasers at {target_id}! Hit for {actual_damage:.1f}% {damage_type} damage!")
+                    action_taken = "fire_phasers"
+                    if show_debug:
+                        self.messages.append(f"[DEBUG] {ship.id}: phaser attack on starbase {target_id} - {decision['reason']}")
+            else:
+                # Fire phasers at ship
+                ship.weapons.phaser_locked_target = target_ship.id
+                result = ship.fire_phaser(target_ship)
+                if result:  # result is now a dict
+                    damage = result.get('damage', 0)
+                    damage_type = result.get('damage_type', 'unknown')
+                    target_name = "you" if target_ship == self.player_ship else target_ship.id
+                    self.messages.append(f"{ship.id} fires phasers at {target_name}! Hit for {damage:.1f}% {damage_type} damage!")
+                    action_taken = "fire_phasers"
+                    if show_debug:
+                        self.messages.append(f"[DEBUG] {ship.id}: phaser attack on {target_name} - {decision['reason']}")
         
         # Priority 2: Fire torpedoes if no other action and requested (and not friendly)
         elif can_attack and decision['fire_torpedos'] and target_distance < 50 and ship.weapons.torpedos > 0:
-            result = ship.fire_torpedo(target_ship.position, target_ship)
-            if result:  # result is now a dict
-                result_target_id = result.get('target_id', 'unknown')
-                target_name = "you" if result_target_id == self.player_ship.id else result_target_id
-                self.messages.append(f"{ship.id} launches a torpedo at {target_name}!")
-                action_taken = "fire_torpedo"
-                if show_debug:
-                    self.messages.append(f"[DEBUG] {ship.id}: torpedo attack on {target_name}")
+            if target_is_starbase:
+                # Fire torpedo at starbase
+                result = ship.fire_torpedo(target_starbase.position, None)
+                if result:
+                    # Track the torpedo's target manually
+                    if ship.weapons.active_torpedos:
+                        ship.weapons.active_torpedos[-1]['target_starbase_id'] = target_id
+                    self.messages.append(f"{ship.id} launches a torpedo at {target_id}!")
+                    action_taken = "fire_torpedo"
+                    if show_debug:
+                        self.messages.append(f"[DEBUG] {ship.id}: torpedo attack on starbase {target_id}")
+            else:
+                # Fire torpedo at ship
+                result = ship.fire_torpedo(target_ship.position, target_ship)
+                if result:  # result is now a dict
+                    result_target_id = result.get('target_id', 'unknown')
+                    target_name = "you" if result_target_id == self.player_ship.id else result_target_id
+                    self.messages.append(f"{ship.id} launches a torpedo at {target_name}!")
+                    action_taken = "fire_torpedo"
+                    if show_debug:
+                        self.messages.append(f"[DEBUG] {ship.id}: torpedo attack on {target_name}")
         
         # Priority 3: Movement if no weapons fired
         else:
@@ -984,6 +1046,10 @@ class GameEngine:
     def _execute_basic_npc_ai(self, ship: Ship, distance_to_player: float, 
                                player_in_range: bool, show_debug: bool) -> None:
         """Fallback basic AI for when LLM is unavailable. Only ONE action per turn."""
+        
+        if show_debug:
+            self.messages.append(f"[DEBUG] {ship.id}: _execute_basic_npc_ai called, player_in_range={player_in_range}, distance={distance_to_player:.1f}")
+        
         action_desc = None
         behavior = ship.behavior_trait if ship.behavior_trait else 'neutral'
         player_rep = self.player_ship.reputation
@@ -1047,17 +1113,36 @@ class GameEngine:
         # Sort by distance
         nearby_enemies.sort(key=lambda x: x[2])
         
-        # Determine best target (player or another npc)
+        # Determine best target (player, another npc, or starbase)
         target_ship = self.player_ship
+        target_starbase = None
         target_distance = distance_to_player
         target_is_player = True
+        target_is_starbase = False
         
-        # Priority 1: Attack hostile targets based on stance
-        # If this ship is hostile to the player and player is in range, prioritize player
+        # Get nearby hostile starbases
+        nearby_hostile_starbases = []
+        for obj_id, obj in self.universe_objects.items():
+            if isinstance(obj, Starbase):
+                stance_to_starbase = ship.stances.get(obj_id, 'neutral')
+                if stance_to_starbase == 'hostile':
+                    dist = ship.position.distance_to(obj.position)
+                    if dist < 50 and obj.damage < 100:  # Within sensor range and not destroyed
+                        nearby_hostile_starbases.append((obj_id, obj, dist))
+        
+        nearby_hostile_starbases.sort(key=lambda x: x[2])  # Sort by distance
+        
+        # Priority 1: Always prioritize hostile ships over starbases
+        # If ANY hostile ship is present, target it instead of starbases
+        hostile_ship_present = False
+        
+        # Check if this ship is hostile to the player and player is in range
         if stance_to_player == 'hostile' and distance_to_player < 50:
             target_ship = self.player_ship
             target_distance = distance_to_player
             target_is_player = True
+            target_is_starbase = False
+            hostile_ship_present = True
             if show_debug and distance_to_player < 25:
                 self.messages.append(f"[DEBUG] {ship.id}: Hostile stance toward player, targeting")
         else:
@@ -1068,13 +1153,25 @@ class GameEngine:
                     target_ship = npc_ship
                     target_distance = dist
                     target_is_player = False
+                    target_is_starbase = False
+                    hostile_ship_present = True
                     if show_debug and dist < 25:
                         self.messages.append(f"[DEBUG] {ship.id}: Hostile stance toward {npc_id}, targeting")
                     break
         
-        # Priority 2: Consider attacking nearby damaged enemies based on behavior
-        # Only if not already targeting based on hostile stance
-        if target_is_player and stance_to_player != 'hostile' and nearby_enemies:
+        # Priority 2: If no hostile ships, consider hostile starbases
+        if not hostile_ship_present and nearby_hostile_starbases:
+            starbase_id, starbase_obj, starbase_dist = nearby_hostile_starbases[0]
+            target_starbase = starbase_obj
+            target_distance = starbase_dist
+            target_is_player = False
+            target_is_starbase = True
+            if show_debug and starbase_dist < 25:
+                self.messages.append(f"[DEBUG] {ship.id}: Hostile stance toward starbase {starbase_id}, targeting")
+        
+        # Priority 3: Consider attacking nearby damaged enemies based on behavior
+        # Only if not already targeting based on hostile stance (and no starbase target)
+        if target_is_player and stance_to_player != 'hostile' and not target_is_starbase and nearby_enemies:
             # Aggressive enemies are opportunistic - attack any nearby damaged npc
             if behavior == 'aggressive':
                 for npc_id, npc_ship, dist, stance_to_npc in nearby_enemies[:5]:  # Check 5 closest
@@ -1119,7 +1216,8 @@ class GameEngine:
                             self.messages.append(f"[DEBUG] {ship.id}: Targeting very damaged npc {npc_id} ({npc_ship.damage:.1f}% dmg)")
                         break
         
-        if player_in_range or target_distance < 50:
+        # Execute combat and movement logic if there's a viable target
+        if player_in_range or target_distance < 50 or target_is_starbase:
             # Determine if npc should attack based on stance, behavior trait, and condition
             should_attack = False
             should_flee = False
@@ -1127,7 +1225,12 @@ class GameEngine:
             # Check stance first - hostile stance increases likelihood of attack
             stance_bonus = 0
             is_friendly = False
-            if target_is_player:
+            
+            if target_is_starbase:
+                # Starbases are always attacked if hostile
+                should_attack = True
+                is_friendly = False
+            elif target_is_player:
                 if stance_to_player == 'hostile':
                     stance_bonus = 2  # Increase attack likelihood
                 elif stance_to_player == 'friendly':
@@ -1214,43 +1317,121 @@ class GameEngine:
             
             # Execute attack behavior
             elif should_attack:
-                # Priority: Fire phasers if very close (30% chance)
-                if target_distance < 15 and random.random() < 0.3:
-                    ship.weapons.phaser_locked_target = target_ship.id
-                    result = ship.fire_phaser(target_ship)
-                    if result:  # result is now a dict
-                        damage = result.get('damage', 0)
-                        damage_type = result.get('damage_type', 'unknown')
-                        target_name = "you" if result['target_id'] == self.player_ship.id else result['target_id']
-                        self.messages.append(f"{ship.id} fires phasers at {target_name}! Hit for {damage:.1f}% {damage_type} damage!")
-                        if show_debug:
-                            self.messages.append(f"[DEBUG] {ship.id}: phaser attack on {target_name} ({behavior})")
-                # Or fire torpedoes if in range (20% chance)
-                elif target_distance < 50 and target_distance > 15 and random.random() < 0.2 and ship.weapons.torpedos > 0:
-                    result = ship.fire_torpedo(target_ship.position, target_ship)
-                    if result:  # result is now a dict
-                        result_target_id = result.get('target_id', 'unknown')
-                        target_name = "you" if result_target_id == self.player_ship.id else result_target_id
-                        self.messages.append(f"{ship.id} launches a torpedo at {target_name}!")
-                        if show_debug:
-                            self.messages.append(f"[DEBUG] {ship.id}: torpedo attack on {target_name} ({behavior})")
-                # Otherwise move to close in
-                else:
-                    dx = target_ship.position.x - ship.position.x
-                    dy = target_ship.position.y - ship.position.y
+                # If attacking a starbase, prioritize it UNLESS a hostile ship appears
+                if target_is_starbase:
+                    # Check for hostile ships that appeared nearby
+                    hostile_ship_nearby = False
+                    for npc_id, npc_ship, dist, stance_to_npc in nearby_enemies:
+                        if stance_to_npc == 'hostile' and dist < 25:
+                            # Switch target to hostile ship
+                            target_ship = npc_ship
+                            target_distance = dist
+                            target_is_player = False
+                            target_is_starbase = False
+                            hostile_ship_nearby = True
+                            if show_debug:
+                                self.messages.append(f"[DEBUG] {ship.id}: Disengaging starbase, hostile ship {npc_id} appeared!")
+                            break
                     
-                    if dx != 0 or dy != 0:
-                        attack_heading = math.atan2(dy, dx) * 180 / math.pi
-                        if attack_heading < 0:
-                            attack_heading += 360
-                        
-                        ship.set_heading(attack_heading)
-                        self._adjust_ship_speed_to_target(ship, target_distance, max_speed=8.0)
-                        
-                        target_name = "player" if target_is_player else target_ship.id
-                        action_desc = f"closing in to attack {target_name} ({behavior}) at {target_distance:.1f} AU"
+                    # Also check if player is hostile and nearby
+                    if stance_to_player == 'hostile' and distance_to_player < 25:
+                        target_ship = self.player_ship
+                        target_distance = distance_to_player
+                        target_is_player = True
+                        target_is_starbase = False
+                        hostile_ship_nearby = True
                         if show_debug:
-                            self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
+                            self.messages.append(f"[DEBUG] {ship.id}: Disengaging starbase, hostile player appeared!")
+                
+                # Attack starbase with weapons
+                if target_is_starbase and target_starbase:
+                    # Priority: Fire phasers if in range (30% chance)
+                    if target_distance < 10 and random.random() < 0.3 and ship.weapons.phaser_operational:
+                        # Fire phasers at starbase
+                        if ship.can_fire_weapons():
+                            target_starbase.fired_upon_by.add(ship.id)
+                            damage = 5.0 * 0.25  # 25% of normal ship phaser damage
+                            shields_before = target_starbase.shields
+                            target_starbase.take_shield_hit(damage)
+                            shields_after = target_starbase.shields
+                            
+                            if shields_before > shields_after:
+                                damage_type = 'shield'
+                                actual_damage = shields_before - shields_after
+                            else:
+                                damage_type = 'starbase'
+                                actual_damage = damage
+                            
+                            ship.energy -= 1.0
+                            self.messages.append(f"{ship.id} fires phasers at {target_starbase.id}! Hit for {actual_damage:.1f}% {damage_type} damage!")
+                            if show_debug:
+                                self.messages.append(f"[DEBUG] {ship.id}: phaser attack on starbase ({behavior})")
+                    # Or fire torpedoes if in range (20% chance)
+                    elif target_distance < 50 and target_distance > 10 and random.random() < 0.2 and ship.weapons.torpedos > 0:
+                        # Fire torpedo at starbase
+                        result = ship.fire_torpedo(target_starbase.position, None)
+                        if result:
+                            # Track the torpedo's target manually
+                            if ship.weapons.active_torpedos:
+                                ship.weapons.active_torpedos[-1]['target_starbase_id'] = target_starbase.id
+                            self.messages.append(f"{ship.id} launches a torpedo at {target_starbase.id}!")
+                            if show_debug:
+                                self.messages.append(f"[DEBUG] {ship.id}: torpedo attack on starbase ({behavior})")
+                    # Otherwise move to close in
+                    else:
+                        dx = target_starbase.position.x - ship.position.x
+                        dy = target_starbase.position.y - ship.position.y
+                        
+                        if dx != 0 or dy != 0:
+                            attack_heading = math.atan2(dy, dx) * 180 / math.pi
+                            if attack_heading < 0:
+                                attack_heading += 360
+                            
+                            ship.set_heading(attack_heading)
+                            self._adjust_ship_speed_to_target(ship, target_distance, max_speed=8.0)
+                            
+                            action_desc = f"closing in to attack starbase {target_starbase.id} ({behavior}) at {target_distance:.1f} AU"
+                            if show_debug:
+                                self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
+                # Attack ship with weapons
+                elif not target_is_starbase:
+                    # Priority: Fire phasers if very close (30% chance)
+                    if target_distance < 15 and random.random() < 0.3:
+                        ship.weapons.phaser_locked_target = target_ship.id
+                        result = ship.fire_phaser(target_ship)
+                        if result:  # result is now a dict
+                            damage = result.get('damage', 0)
+                            damage_type = result.get('damage_type', 'unknown')
+                            target_name = "you" if result['target_id'] == self.player_ship.id else result['target_id']
+                            self.messages.append(f"{ship.id} fires phasers at {target_name}! Hit for {damage:.1f}% {damage_type} damage!")
+                            if show_debug:
+                                self.messages.append(f"[DEBUG] {ship.id}: phaser attack on {target_name} ({behavior})")
+                    # Or fire torpedoes if in range (20% chance)
+                    elif target_distance < 50 and target_distance > 15 and random.random() < 0.2 and ship.weapons.torpedos > 0:
+                        result = ship.fire_torpedo(target_ship.position, target_ship)
+                        if result:  # result is now a dict
+                            result_target_id = result.get('target_id', 'unknown')
+                            target_name = "you" if result_target_id == self.player_ship.id else result_target_id
+                            self.messages.append(f"{ship.id} launches a torpedo at {target_name}!")
+                            if show_debug:
+                                self.messages.append(f"[DEBUG] {ship.id}: torpedo attack on {target_name} ({behavior})")
+                    # Otherwise move to close in
+                    else:
+                        dx = target_ship.position.x - ship.position.x
+                        dy = target_ship.position.y - ship.position.y
+                        
+                        if dx != 0 or dy != 0:
+                            attack_heading = math.atan2(dy, dx) * 180 / math.pi
+                            if attack_heading < 0:
+                                attack_heading += 360
+                            
+                            ship.set_heading(attack_heading)
+                            self._adjust_ship_speed_to_target(ship, target_distance, max_speed=8.0)
+                            
+                            target_name = "player" if target_is_player else target_ship.id
+                            action_desc = f"closing in to attack {target_name} ({behavior}) at {target_distance:.1f} AU"
+                            if show_debug:
+                                self.messages.append(f"[DEBUG] {ship.id}: {action_desc}")
             else:
                 # Not attacking or fleeing - patrol or maintain distance
                 if random.random() < 0.3:

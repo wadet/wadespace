@@ -328,7 +328,7 @@ def test_torpedo_vs_starbase():
     engine = GameEngine()
     
     # Find or create a starbase near player
-    from universe_objects import Starbase
+    from src.universe_objects import Starbase
     
     starbase = Starbase("sb1000", Position(engine.player_ship.position.x + 5.0,
                                            engine.player_ship.position.y))

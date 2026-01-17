@@ -55,6 +55,7 @@ class LLMHandler:
                           player_reputation: int,
                           nearby_objects: list,
                           nearby_npc_ships: list,
+                          nearby_starbases: list,
                           turn_count: int,
                           locked_by: list = None) -> Dict[str, Any]:
         """
@@ -68,18 +69,20 @@ class LLMHandler:
             npc_shields: Shield percentage of npc ship (0-100)
             npc_shields_active: Whether shields are currently active
             npc_behavior: Behavior trait ('aggressive', 'neutral', 'timid')
+            stance_to_player: Stance toward player ('hostile', 'neutral', 'friendly')
             player_position: (x, y) position of player ship
             player_damage: Damage percentage of player ship (0-100)
             player_reputation: Player's reputation (0-100)
             nearby_objects: List of nearby objects with their positions
             nearby_npc_ships: List of nearby npc ships (id, position, damage, distance)
+            nearby_starbases: List of nearby starbases (id, position, damage, stance, distance)
             turn_count: Current turn number
             locked_by: List of ship IDs that have locked weapons on this NPC (hostile action!)
         
         Returns:
             Dictionary with decision keys:
             - action: 'attack', 'evade', 'patrol', 'dock'
-            - target_id: ship ID to target (player or npc ship)
+            - target_id: ship or starbase ID to target (player, npc ship, or starbase)
             - heading: 0-359 degrees
             - speed: 0-20 AU/turn
             - fire_phasers: True/False
@@ -102,7 +105,7 @@ class LLMHandler:
             prompt = self._build_decision_prompt(
                 npc_ship_id, npc_position, npc_damage, npc_energy,
                 npc_shields, npc_shields_active, npc_behavior, stance_to_player, player_position, player_damage, 
-                player_reputation, distance_to_player, nearby_objects, nearby_npc_ships, turn_count, locked_by
+                player_reputation, distance_to_player, nearby_objects, nearby_npc_ships, nearby_starbases, turn_count, locked_by
             )
             
             # Prepare request data for logging
@@ -177,6 +180,7 @@ class LLMHandler:
                                distance_to_player: float,
                                nearby_objects: list,
                                nearby_npc_ships: list,
+                               nearby_starbases: list,
                                turn_count: int,
                                locked_by: list = None) -> str:
         """Build a prompt for GPT-4o decision making."""
@@ -194,6 +198,13 @@ class LLMHandler:
         for i, npc_data in enumerate(nearby_npc_ships[:5]):  # Limit to 5 nearest npc ships
             npc_id, pos, damage, dist = npc_data
             nearby_enemies_desc += f"  - {npc_id} at {dist:.1f} AU, Damage: {damage:.1f}%, Position: ({pos[0]:.1f}, {pos[1]:.1f})\n"
+        
+        # Format nearby starbases
+        nearby_starbases_desc = ""
+        for i, sb_data in enumerate(nearby_starbases[:5]):  # Limit to 5 nearest starbases
+            sb_id, pos, damage, stance, dist = sb_data
+            stance_marker = "🔴 HOSTILE" if stance == 'hostile' else ("🟢 FRIENDLY" if stance == 'friendly' else "🟡 NEUTRAL")
+            nearby_starbases_desc += f"  - {sb_id} ({stance_marker}) at {dist:.1f} AU, Damage: {damage:.1f}%, Position: ({pos[0]:.1f}, {pos[1]:.1f})\n"
         
         # Build weapon lock warning with behavior-specific guidance
         weapon_lock_warning = ""
@@ -281,6 +292,9 @@ Player Ship:
 Nearby NPC Ships (potential targets or threats):
 {nearby_enemies_desc if nearby_enemies_desc else "  None"}
 
+Nearby Starbases (potential targets or threats):
+{nearby_starbases_desc if nearby_starbases_desc else "  None"}
+
 Nearby Objects:
 {nearby_desc if nearby_desc else "  None"}
 
@@ -292,15 +306,21 @@ TACTICAL CONTEXT:
 - Impulse range: 1 AU/turn
 
 TARGET SELECTION:
-- You can attack the PLAYER or any nearby npc ships
+- You can attack the PLAYER, any nearby npc ships, OR hostile starbases
+- 🎯 PRIORITY RULE: ALWAYS prioritize hostile SHIPS over starbases
+  * If ANY hostile ship is nearby, engage it FIRST
+  * Only attack starbases when NO hostile ships are present
+  * If a hostile ship appears while attacking a starbase, IMMEDIATELY disengage and engage the ship
 - PRIORITIZE opportunistic targets: damaged npc ships are easier kills and less risky
 - Consider these factors when choosing targets:
   * Distance: Closer targets are easier to engage
   * Damage: Enemies with >30% damage are vulnerable and good targets
   * Threat level: Who poses the biggest immediate threat?
+  * Starbases are stationary but have powerful weapons (10% phaser, 15% torpedo damage)
 - Attack damaged nearby enemies BEFORE the player if they're easier targets
 - Heavily damaged enemies (>50% damage) should be prioritized for quick kills
 - If multiple threats exist, attack the weakest/closest first
+- COORDINATE with friendly NPCs: if a friendly NPC is attacking a hostile starbase, join the attack (unless hostile ships are present)
 
 BEHAVIOR-SPECIFIC RULES:
 - Attack threshold: Target reputation/damage justifies attack OR you have been provoked (damage > 0%)
@@ -310,7 +330,7 @@ BEHAVIOR-SPECIFIC RULES:
 Make a tactical decision based on your {npc_behavior} personality. Return ONLY valid JSON (no markdown, no code blocks):
 {{
     "action": "attack"|"evade"|"patrol"|"dock",
-    "target_id": "PLAYER"|"<npc_ship_id>"|null,
+    "target_id": "PLAYER"|"<npc_ship_id>"|"<starbase_id>"|null,
     "heading": <0-359>,
     "speed": <0-20>,
     "fire_phasers": true|false,

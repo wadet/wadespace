@@ -24,7 +24,7 @@ def test_nearest_enemy_starbase():
     print(f"\nPlayer position: ({player_pos.x:.1f}, {player_pos.y:.1f})")
     
     # Count all starbases
-    from universe_objects import Starbase
+    from src.universe_objects import Starbase
     all_starbases = [obj for obj in engine.universe_objects.values() if isinstance(obj, Starbase)]
     friendly_count = sum(1 for sb in all_starbases if sb.friendly_to_player)
     enemy_count = sum(1 for sb in all_starbases if not sb.friendly_to_player)
