@@ -109,6 +109,10 @@ class Ship:
         # Repair tracking
         self.manual_repair_this_turn = False  # Track if manual repair was used this turn
         
+        # System damage tracking
+        # Set of disabled systems: 'shields', 'engines', 'torpedoes', 'phasers', 'scanners', 'radios', 'computers'
+        self.disabled_systems = set()
+        
         # Game statistics (for player ships only)
         self.stats = {
             'enemies_destroyed': 0,
@@ -119,15 +123,23 @@ class Ship:
     
     def can_move(self) -> bool:
         """Check if ship can move."""
-        return self.energy > 0 and self.crew > 0 and not self.is_destroyed
+        return (self.energy > 0 and self.crew > 0 and not self.is_destroyed and 
+                'engines' not in self.disabled_systems)
     
     def can_fire_weapons(self) -> bool:
         """Check if ship can fire weapons."""
-        return self.energy > 0 and self.crew > 0 and not self.is_destroyed
+        # Can fire if at least one weapon system is operational
+        has_working_weapon = ('phasers' not in self.disabled_systems or 
+                            'torpedoes' not in self.disabled_systems)
+        return self.energy > 0 and self.crew > 0 and not self.is_destroyed and has_working_weapon
     
     def update_shields(self, active: bool) -> None:
         """Activate or deactivate shields."""
-        self.shields_active = active
+        # Can only activate shields if system is not disabled
+        if 'shields' in self.disabled_systems:
+            self.shields_active = False
+        else:
+            self.shields_active = active
     
     def get_current_energy_consumption(self) -> float:
         """Calculate and return current energy consumption per turn."""
@@ -253,7 +265,7 @@ class Ship:
             )
         self.weapons.phaser_can_fire_this_turn = False
     
-    def take_damage(self, damage: float, bypass_shields: bool = False) -> None:
+    def take_damage(self, damage: float, bypass_shields: bool = False, messages: list = None) -> None:
         """Apply damage to the ship."""
         if bypass_shields or self.shields <= 0:
             # Direct ship damage
@@ -269,8 +281,12 @@ class Ship:
         # Check if destroyed
         if self.damage >= 100.0:
             self.is_destroyed = True
+        
+        # Check for system damage if ship is now heavily damaged
+        if self.damage > 50.0 and messages is not None:
+            self.check_for_system_damage(messages)
     
-    def take_shield_hit(self, damage: float = 5.0) -> None:
+    def take_shield_hit(self, damage: float = 5.0, messages: list = None) -> None:
         """Take a phaser hit to shields."""
         if self.shields_active:
             self.shields = max(0.0, self.shields - damage)
@@ -281,6 +297,10 @@ class Ship:
         # Check if destroyed
         if self.damage >= 100.0:
             self.is_destroyed = True
+        
+        # Check for system damage if ship is now heavily damaged
+        if self.damage > 50.0 and messages is not None:
+            self.check_for_system_damage(messages)
     
     def fire_phaser(self, target_ship: 'Ship') -> dict:
         """
@@ -291,6 +311,10 @@ class Ship:
             or empty dict if fire failed
         """
         if not self.can_fire_weapons():
+            return {}
+        
+        # Check if phasers are disabled
+        if 'phasers' in self.disabled_systems:
             return {}
         
         if not self.weapons.phaser_operational:
@@ -332,7 +356,7 @@ class Ship:
         
         # Record shield status before damage
         shields_before = target_ship.shields
-        target_ship.take_shield_hit(damage)
+        target_ship.take_shield_hit(damage, messages=[])
         shields_after = target_ship.shields
         
         # Determine actual damage type applied
@@ -368,6 +392,10 @@ class Ship:
             or empty dict if fire failed
         """
         if not self.can_fire_weapons():
+            return {}
+        
+        # Check if torpedoes are disabled
+        if 'torpedoes' in self.disabled_systems:
             return {}
         
         if not self.weapons.torpedo_operational:
@@ -460,6 +488,105 @@ class Ship:
         self.propulsion.warp_active = False
         self.propulsion.impulse_active = False
     
+    def check_for_system_damage(self, messages: list) -> None:
+        """
+        Check if ship should suffer system damage.
+        Called when ship takes additional damage after already having >50% damage.
+        25% chance to disable one of 7 major systems.
+        """
+        # Only check if damage is over 50%
+        if self.damage <= 50.0:
+            return
+        
+        # 25% chance for a system to be disabled
+        if random.random() >= 0.25:
+            return
+        
+        # List of all possible systems
+        all_systems = ['shields', 'engines', 'torpedoes', 'phasers', 'scanners', 'radios', 'computers']
+        
+        # Filter out already disabled systems
+        available_systems = [s for s in all_systems if s not in self.disabled_systems]
+        
+        # If all systems are disabled, nothing to do
+        if not available_systems:
+            return
+        
+        # Randomly pick a system to disable
+        system_to_disable = random.choice(available_systems)
+        self.disabled_systems.add(system_to_disable)
+        
+        # Apply system-specific effects
+        if system_to_disable == 'shields':
+            # Shields become ineffective
+            self.shields_active = False
+            if self.is_player:
+                messages.append(">>> CRITICAL: Shield system disabled due to severe damage! <<<")
+        
+        elif system_to_disable == 'engines':
+            # Ship comes to a full stop
+            self.stop()
+            if self.is_player:
+                messages.append(">>> CRITICAL: Engine system disabled due to severe damage! <<<")
+        
+        elif system_to_disable == 'torpedoes':
+            # Torpedoes inoperative
+            if self.is_player:
+                messages.append(">>> CRITICAL: Torpedo system disabled due to severe damage! <<<")
+        
+        elif system_to_disable == 'phasers':
+            # Phasers inoperative
+            if self.is_player:
+                messages.append(">>> CRITICAL: Phaser system disabled due to severe damage! <<<")
+        
+        elif system_to_disable == 'scanners':
+            # Scanners inoperative
+            if self.is_player:
+                messages.append(">>> CRITICAL: Scanner system disabled due to severe damage! <<<")
+        
+        elif system_to_disable == 'radios':
+            # Radios inoperative
+            if self.is_player:
+                messages.append(">>> CRITICAL: Radio system disabled due to severe damage! <<<")
+        
+        elif system_to_disable == 'computers':
+            # Computers inoperative - cancel weapons lock and auto-nav
+            self.weapons.phaser_locked_target = None
+            if self.auto_nav_target_id:
+                # Cancel auto-nav but keep ship moving on current heading
+                self.auto_nav_target_id = None
+                self.auto_nav_warp_speed = None
+            if self.is_player:
+                messages.append(">>> CRITICAL: Computer system disabled due to severe damage! <<<")
+    
+    def attempt_system_repair(self, messages: list) -> None:
+        """
+        Attempt to repair one disabled system per turn.
+        Repair chance: 25% if damage >= 50%, 50% if damage < 50%
+        Only one system can be repaired per turn.
+        """
+        # No systems to repair
+        if not self.disabled_systems:
+            return
+        
+        # Determine repair chance based on damage level
+        repair_chance = 0.25 if self.damage >= 50.0 else 0.50
+        
+        # Roll for repair
+        if random.random() >= repair_chance:
+            return
+        
+        # Pick a random system to repair
+        system_to_repair = random.choice(list(self.disabled_systems))
+        self.disabled_systems.remove(system_to_repair)
+        
+        # Display repair message
+        if self.is_player:
+            messages.append(f">> System repair: {system_to_repair.upper()} system is now operational <<")
+        
+        # Note: No special logic needed here since checks for disabled systems
+        # are done in the relevant command/action methods
+    
     def get_status_dict(self) -> dict:
         """Return ship status as dictionary."""
         return {
@@ -476,4 +603,5 @@ class Ship:
             'shields_active': self.shields_active,
             'is_destroyed': self.is_destroyed,
             'is_disabled': self.is_disabled,
+            'disabled_systems': list(self.disabled_systems),
         }

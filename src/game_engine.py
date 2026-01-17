@@ -215,9 +215,12 @@ class GameEngine:
         # Record that starbase fired upon the target
         target_ship.fired_upon_by.add(starbase.id)
         
+        # Track disabled systems before damage (for NPC notification)
+        systems_before = set(target_ship.disabled_systems) if not target_ship.is_player else set()
+        
         # Apply damage
         shields_before = target_ship.shields
-        target_ship.take_shield_hit(damage)
+        target_ship.take_shield_hit(damage, messages=self.messages)
         shields_after = target_ship.shields
         
         # Determine damage type
@@ -230,6 +233,10 @@ class GameEngine:
         
         target_name = "you" if target_ship == self.player_ship else target_ship.id
         self.messages.append(f"{starbase.id} fires phasers at {target_name}! Hit for {actual_damage:.1f}% {damage_type} damage!")
+        
+        # Check for NPC system damage
+        if not target_ship.is_player:
+            self._check_npc_system_damage(target_ship, target_name, systems_before)
     
     def _starbase_fire_torpedo(self, starbase: Starbase, target_ship: Ship) -> None:
         """Fire torpedo from starbase at target ship."""
@@ -244,9 +251,12 @@ class GameEngine:
         # Record that starbase fired upon the target
         target_ship.fired_upon_by.add(starbase.id)
         
+        # Track disabled systems before damage (for NPC notification)
+        systems_before = set(target_ship.disabled_systems) if not target_ship.is_player else set()
+        
         # Apply damage
         shields_before = target_ship.shields
-        target_ship.take_damage(damage, bypass_shields=False)
+        target_ship.take_damage(damage, bypass_shields=False, messages=self.messages)
         shields_after = target_ship.shields
         
         # Determine damage type
@@ -258,10 +268,27 @@ class GameEngine:
         target_name = "you" if target_ship == self.player_ship else target_ship.id
         self.messages.append(f"{starbase.id} launches torpedo at {target_name}! Hit for {damage:.1f}% damage!")
         
+        # Check for NPC system damage
+        if not target_ship.is_player:
+            self._check_npc_system_damage(target_ship, target_name, systems_before)
+        
         # Track torpedo hit for player stats
         if target_ship == self.player_ship:
             # Could add starbase torpedo tracking here if desired
             pass
+    
+    def _check_npc_system_damage(self, npc_ship: Ship, npc_id: str, systems_before: set) -> None:
+        """Check if NPC ship suffered system damage and notify player if scanners operational."""
+        # Only notify if player's scanners are operational
+        if 'scanners' in self.player_ship.disabled_systems:
+            return
+        
+        # Check for newly disabled systems
+        new_disabled = npc_ship.disabled_systems - systems_before
+        
+        if new_disabled:
+            for system in new_disabled:
+                self.messages.append(f"[SCAN] {npc_id}'s {system.upper()} system has been disabled!")
     
     def _handle_ship_destruction(self, destroyer: Ship, destroyed: Ship, destroyed_id: str) -> None:
         """
@@ -374,37 +401,45 @@ class GameEngine:
         cmd = command.get('command')
         
         if cmd == 'warp':
-            speed = command.get('speed', 5)
-            if ship.set_warp_speed(float(speed)):
-                # If in auto-navigate mode, update the nav speed instead of canceling
-                if ship.auto_nav_target_id:
-                    ship.auto_nav_warp_speed = float(speed)
-                    self.messages.append(f"Auto-navigation speed updated to warp {speed}")
-                else:
-                    self.messages.append(f"Warp drive engaged: {speed} AU/turn")
+            # Check if engines are disabled
+            if 'engines' in ship.disabled_systems:
+                self.messages.append("Engines are inoperative due to damage to the ship")
+            else:
+                speed = command.get('speed', 5)
+                if ship.set_warp_speed(float(speed)):
+                    # If in auto-navigate mode, update the nav speed instead of canceling
+                    if ship.auto_nav_target_id:
+                        ship.auto_nav_warp_speed = float(speed)
+                        self.messages.append(f"Auto-navigation speed updated to warp {speed}")
+                    else:
+                        self.messages.append(f"Warp drive engaged: {speed} AU/turn")
         
         elif cmd == 'impulse':
-            # Cancel auto-navigate first (as per requirements)
-            if ship.auto_nav_target_id:
-                ship.auto_nav_target_id = None
-                ship.auto_nav_warp_speed = None
-                self.messages.append(f"Auto-navigation cancelled")
-            
-            active = command.get('active', False)
-            percent = command.get('percent', 100)
-            
-            if active:
-                # Calculate speed as percentage of 1 AU
-                speed = percent / 100.0  # Convert percentage to decimal (1-100 -> 0.01-1.0)
-                ship.propulsion.impulse_active = True
-                ship.propulsion.warp_active = False
-                ship.propulsion.current_speed = speed
-                self.messages.append(f"Impulse drive activated at {percent}% ({speed:.2f} AU/turn)")
+            # Check if engines are disabled
+            if 'engines' in ship.disabled_systems:
+                self.messages.append("Engines are inoperative due to damage to the ship")
             else:
-                ship.propulsion.impulse_active = False
-                ship.propulsion.warp_active = False
-                ship.propulsion.current_speed = 0.0
-                self.messages.append(f"Impulse drive deactivated")
+                # Cancel auto-navigate first (as per requirements)
+                if ship.auto_nav_target_id:
+                    ship.auto_nav_target_id = None
+                    ship.auto_nav_warp_speed = None
+                    self.messages.append(f"Auto-navigation cancelled")
+                
+                active = command.get('active', False)
+                percent = command.get('percent', 100)
+                
+                if active:
+                    # Calculate speed as percentage of 1 AU
+                    speed = percent / 100.0  # Convert percentage to decimal (1-100 -> 0.01-1.0)
+                    ship.propulsion.impulse_active = True
+                    ship.propulsion.warp_active = False
+                    ship.propulsion.current_speed = speed
+                    self.messages.append(f"Impulse drive activated at {percent}% ({speed:.2f} AU/turn)")
+                else:
+                    ship.propulsion.impulse_active = False
+                    ship.propulsion.warp_active = False
+                    ship.propulsion.current_speed = 0.0
+                    self.messages.append(f"Impulse drive deactivated")
         
         elif cmd == 'heading':
             # Cancel auto-navigate first (as per requirements)
@@ -423,39 +458,59 @@ class GameEngine:
                 ship.auto_nav_warp_speed = None
         
         elif cmd == 'shields':
-            active = command.get('active', False)
-            ship.update_shields(active)
-            self.messages.append(f"Shields {'raised' if active else 'lowered'}")
+            # Check if shields are disabled
+            if 'shields' in ship.disabled_systems:
+                self.messages.append("Shields are inoperative due to damage to the ship")
+            else:
+                active = command.get('active', False)
+                ship.update_shields(active)
+                self.messages.append(f"Shields {'raised' if active else 'lowered'}")
         
         elif cmd == 'scan':
-            target_id = command.get('target_id')
-            self._execute_scan(ship, target_id)
+            # Check if scanners are disabled
+            if 'scanners' in ship.disabled_systems:
+                self.messages.append("Scanners are inoperative due to damage to the ship")
+            else:
+                target_id = command.get('target_id')
+                self._execute_scan(ship, target_id)
         
         elif cmd == 'lock':
-            target_id = command.get('target_id')
-            # Check if target is a docked ship
-            target_ship = None
-            if target_id == self.player_ship.id:
-                target_ship = self.player_ship
-            elif target_id in self.npc_ships:
-                target_ship = self.npc_ships[target_id]
-            
-            if target_ship and target_ship.docked_at:
-                self.messages.append(f"Cannot lock on {target_id}: target is docked")
+            # Check if computers are disabled
+            if 'computers' in ship.disabled_systems:
+                self.messages.append("Computers are inoperative due to damage to the ship")
             else:
-                ship.lock_phasers(target_id)
-                self.messages.append(f"Weapons locked onto {target_id}")
+                target_id = command.get('target_id')
+                # Check if target is a docked ship
+                target_ship = None
+                if target_id == self.player_ship.id:
+                    target_ship = self.player_ship
+                elif target_id in self.npc_ships:
+                    target_ship = self.npc_ships[target_id]
+                
+                if target_ship and target_ship.docked_at:
+                    self.messages.append(f"Cannot lock on {target_id}: target is docked")
+                else:
+                    ship.lock_phasers(target_id)
+                    self.messages.append(f"Weapons locked onto {target_id}")
         
         elif cmd == 'fire':
-            self._execute_fire(ship)
+            # Check if phasers are disabled
+            if 'phasers' in ship.disabled_systems:
+                self.messages.append("Phasers are inoperative due to damage to the ship")
+            else:
+                self._execute_fire(ship)
         
         elif cmd == 'torpedo':
-            target_id = command.get('target_id')
-            # If no target specified, use locked target
-            if not target_id and ship.weapons.phaser_locked_target:
-                target_id = ship.weapons.phaser_locked_target
-                self.messages.append(f"Firing torpedo at locked target {target_id}")
-            self._execute_torpedo(ship, target_id)
+            # Check if torpedoes are disabled
+            if 'torpedoes' in ship.disabled_systems:
+                self.messages.append("Torpedoes are inoperative due to damage to the ship")
+            else:
+                target_id = command.get('target_id')
+                # If no target specified, use locked target
+                if not target_id and ship.weapons.phaser_locked_target:
+                    target_id = ship.weapons.phaser_locked_target
+                    self.messages.append(f"Firing torpedo at locked target {target_id}")
+                self._execute_torpedo(ship, target_id)
         
         elif cmd == 'status':
             self._execute_status(ship)
@@ -473,56 +528,72 @@ class GameEngine:
             self.messages.append("Turn skipped")
         
         elif cmd == 'nav':
-            target_id = command.get('target_id')
-            warp_speed = command.get('warp_speed')  # Optional custom warp speed
-            if target_id:
-                # Check if target exists in universe or is an npc ship
-                target_obj = self.universe_objects.get(target_id)
-                is_npc = False
-                if not target_obj:
-                    target_obj = self.npc_ships.get(target_id)
-                    is_npc = True
-                
-                if target_obj:
-                    distance = ship.position.distance_to(target_obj.position)
-                    
-                    # Determine target type and stance
-                    if is_npc:
-                        # NPC ship - check stance
-                        stance = target_obj.stances.get(ship.id, 'neutral')
-                        target_type = f"{stance.capitalize()} Ship"
-                    elif isinstance(target_obj, Starbase):
-                        # Starbase - check stance
-                        stance = target_obj.stances.get(ship.id, 'neutral')
-                        target_type = f"{stance.capitalize()} Starbase"
-                    else:
-                        # Other universe object - get the class name
-                        target_type = type(target_obj).__name__
-                    
-                    ship.auto_nav_target_id = target_id
-                    ship.auto_nav_warp_speed = float(warp_speed) if warp_speed else None
-                    
-                    # Build message
-                    nav_msg = f"Auto-navigation engaged to {target_type} {target_id} ({distance:.1f} AU away)"
-                    if warp_speed:
-                        nav_msg += f" at warp {warp_speed}"
-                    self.messages.append(nav_msg)
-                else:
-                    self.messages.append(f"Navigation error: Target {target_id} not found")
+            # Check if computers are disabled
+            if 'computers' in ship.disabled_systems:
+                self.messages.append("Computers are inoperative due to damage to the ship")
             else:
-                self.messages.append("Navigation error: No target specified")
+                target_id = command.get('target_id')
+                warp_speed = command.get('warp_speed')  # Optional custom warp speed
+                if target_id:
+                    # Check if target exists in universe or is an npc ship
+                    target_obj = self.universe_objects.get(target_id)
+                    is_npc = False
+                    if not target_obj:
+                        target_obj = self.npc_ships.get(target_id)
+                        is_npc = True
+                    
+                    if target_obj:
+                        distance = ship.position.distance_to(target_obj.position)
+                        
+                        # Determine target type and stance
+                        if is_npc:
+                            # NPC ship - check stance
+                            stance = target_obj.stances.get(ship.id, 'neutral')
+                            target_type = f"{stance.capitalize()} Ship"
+                        elif isinstance(target_obj, Starbase):
+                            # Starbase - check stance
+                            stance = target_obj.stances.get(ship.id, 'neutral')
+                            target_type = f"{stance.capitalize()} Starbase"
+                        else:
+                            # Other universe object - get the class name
+                            target_type = type(target_obj).__name__
+                        
+                        ship.auto_nav_target_id = target_id
+                        ship.auto_nav_warp_speed = float(warp_speed) if warp_speed else None
+                        
+                        # Build message
+                        nav_msg = f"Auto-navigation engaged to {target_type} {target_id} ({distance:.1f} AU away)"
+                        if warp_speed:
+                            nav_msg += f" at warp {warp_speed}"
+                        self.messages.append(nav_msg)
+                    else:
+                        self.messages.append(f"Navigation error: Target {target_id} not found")
+                else:
+                    self.messages.append("Navigation error: No target specified")
         
         elif cmd == 'tell':
-            target_id = command.get('target_id')
-            message = command.get('message', '')
-            self._execute_tell(ship, target_id, message)
+            # Check if radios are disabled
+            if 'radios' in ship.disabled_systems:
+                self.messages.append("Radios are inoperative due to damage to the ship")
+            else:
+                target_id = command.get('target_id')
+                message = command.get('message', '')
+                self._execute_tell(ship, target_id, message)
         
         elif cmd == 'hal':
-            question = command.get('question', '')
-            self._execute_hal(ship, question)
+            # Check if computers are disabled
+            if 'computers' in ship.disabled_systems:
+                self.messages.append("Computers are inoperative due to damage to the ship")
+            else:
+                question = command.get('question', '')
+                self._execute_hal(ship, question)
         
         elif cmd == 'targets':
-            self._execute_targets(ship)
+            # Check if computers are disabled
+            if 'computers' in ship.disabled_systems:
+                self.messages.append("Computers are inoperative due to damage to the ship")
+            else:
+                self._execute_targets(ship)
         
         elif cmd == 'debug':
             mode = command.get('mode', False)
@@ -1578,11 +1649,18 @@ class GameEngine:
             return
         
         if target_ship:
+            # Track disabled systems before damage (for NPC notification)
+            systems_before = set(target_ship.disabled_systems) if not target_ship.is_player else set()
+            
             result = ship.fire_phaser(target_ship)
             if result:  # result is now a dict
                 damage = result.get('damage', 0)
                 damage_type = result.get('damage_type', 'unknown')
                 self.messages.append(f"Phaser fired at {target_id}! Hit for {damage:.1f}% {damage_type} damage!")
+                
+                # Check for NPC system damage
+                if not target_ship.is_player and not target_ship.is_destroyed:
+                    self._check_npc_system_damage(target_ship, target_id, systems_before)
                 
                 # Check if target destroyed and apply reputation changes
                 if target_ship.is_destroyed:
@@ -2480,8 +2558,8 @@ class GameEngine:
         # Increment turns since last dock
         ship.turns_since_last_dock += 1
         
-        # Move ship (skip if docked)
-        if not ship.docked_at:
+        # Move ship (skip if docked or engines disabled)
+        if not ship.docked_at and 'engines' not in ship.disabled_systems:
             ship.move()
         
         # Update energy
@@ -2493,6 +2571,9 @@ class GameEngine:
         else:
             # Normal auto-repair when not docked
             ship.update_damage_repair()
+        
+        # Attempt system repair (25% if damage >= 50%, 50% if damage < 50%)
+        ship.attempt_system_repair(self.messages)
         
         # Update warp core
         ship.update_warp_core()
@@ -2573,6 +2654,9 @@ class GameEngine:
                                 # Record that player fired upon this npc
                                 hit_obj.fired_upon_by.add(torpedo['source_ship_id'])
                                 
+                                # Track systems before damage for notification
+                                systems_before = set(hit_obj.disabled_systems)
+                                
                                 # Torpedo damages shields first (20%), then ship (10%)
                                 if hit_obj.shields_active and hit_obj.shields > 0:
                                     shield_damage = min(20.0, hit_obj.shields)
@@ -2591,6 +2675,9 @@ class GameEngine:
                                     damage = 10.0
                                     hit_obj.damage = min(100.0, hit_obj.damage + damage)
                                     self.messages.append(f"Torpedo hit {hit_id}! Damage: {damage:.0f}%")
+                                
+                                # Check for NPC system damage notifications
+                                self._check_npc_system_damage(hit_obj, hit_id, systems_before)
                                 
                                 # Track torpedo hit
                                 self.player_ship.stats['torpedo_hits'] += 1
@@ -2716,6 +2803,9 @@ class GameEngine:
                                         # Record that this ship fired upon the npc
                                         npc_ship.fired_upon_by.add(torpedo['source_ship_id'])
                                         
+                                        # Track systems before damage for notification
+                                        systems_before = set(npc_ship.disabled_systems)
+                                        
                                         # Torpedo damages shields first (20%), then ship (10%)
                                         if npc_ship.shields_active and npc_ship.shields > 0:
                                             shield_damage = min(20.0, npc_ship.shields)
@@ -2734,6 +2824,9 @@ class GameEngine:
                                             damage = 10.0
                                             npc_ship.damage = min(100.0, npc_ship.damage + damage)
                                             self.messages.append(f"{torpedo['source_ship_id']} torpedo hit {npc_id}! {damage:.1f}% damage!")
+                                        
+                                        # Check for NPC system damage notifications
+                                        self._check_npc_system_damage(npc_ship, npc_id, systems_before)
                                         
                                         # 1% chance to damage warp core
                                         if random.random() < 0.01:

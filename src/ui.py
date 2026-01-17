@@ -162,6 +162,22 @@ class GameUI:
         # Fill background
         pygame.draw.rect(self.screen, Colors.DARK_GRAY, self.map_rect)
         
+        # Check if scanners are disabled
+        if 'scanners' in self.engine.player_ship.disabled_systems:
+            # Display message in center of map
+            disabled_text = self.font.render("Scanners are inoperative due to damage", True, Colors.RED)
+            text_rect = disabled_text.get_rect(center=self.map_rect.center)
+            self.screen.blit(disabled_text, text_rect)
+            
+            # Draw player ship at center (player can still see their own ship)
+            center_x = self.map_rect.centerx
+            center_y = self.map_rect.centery
+            self._draw_player_ship(center_x, center_y)
+            
+            # Draw border
+            self._draw_border(self.map_rect)
+            return
+        
         # Get viewport size from player sensor range
         viewport_size = self.engine.player_ship.sensors.sensor_range * 2
         
